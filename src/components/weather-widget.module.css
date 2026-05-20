@@ -1,0 +1,238 @@
+.card {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  padding: 20px 22px 18px;
+  border-radius: 22px;
+  background:
+    radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, #fff 14%, transparent) 0%, transparent 55%),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--topbar-bg) 82%, var(--brand-red) 18%) 0%,
+      color-mix(in srgb, var(--topbar-bg) 94%, #1a0505 6%) 100%
+    );
+  border: 1px solid color-mix(in srgb, #fff 14%, transparent);
+  box-shadow:
+    0 4px 0 color-mix(in srgb, #000 12%, transparent),
+    0 20px 48px rgba(0, 0, 0, 0.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 16%, transparent);
+}
+
+.cardSurface {
+  background:
+    radial-gradient(100% 70% at 0% 0%, color-mix(in srgb, var(--brand-red) 10%, transparent) 0%, transparent 50%),
+    linear-gradient(
+      155deg,
+      color-mix(in srgb, var(--card-bg) 96%, var(--brand-red) 5%) 0%,
+      var(--card-bg) 100%
+    );
+  border: 1px solid color-mix(in srgb, var(--card-border) 90%, transparent);
+  box-shadow: var(--shadow-ui-rest), inset 0 1px 0 color-mix(in srgb, #fff 40%, transparent);
+}
+
+.cardSurface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--card-border) 55%, transparent);
+}
+
+.cardSurface .titleRow {
+  color: var(--text-muted);
+}
+
+.cardSurface .select {
+  border-color: color-mix(in srgb, var(--card-border) 95%, transparent);
+  background: var(--bg-secondary);
+  color: var(--text);
+}
+
+.cardSurface .tempMain {
+  color: var(--text);
+}
+
+.cardSurface .tempSub,
+.cardSurface .meta {
+  color: var(--text-muted);
+}
+
+.cardSurface .err {
+  color: #b91c1c;
+}
+
+.cardSurface .attr {
+  border-top-color: color-mix(in srgb, var(--card-border) 80%, transparent);
+  color: var(--text-muted);
+}
+
+.cardSurface .attr a {
+  color: var(--brand-red);
+}
+
+.cardSurface .attr a:hover {
+  color: color-mix(in srgb, var(--brand-red) 85%, #000);
+}
+
+.cardSurface .skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--bg-secondary) 80%, transparent) 0%,
+    color-mix(in srgb, var(--card-border) 35%, transparent) 50%,
+    color-mix(in srgb, var(--bg-secondary) 80%, transparent) 100%
+  );
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #fff 72%, transparent);
+}
+
+.select {
+  min-width: min(100%, 200px);
+  flex: 1;
+  max-width: 100%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, #fff 18%, transparent);
+  background: color-mix(in srgb, #fff 10%, transparent);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.select:hover {
+  border-color: color-mix(in srgb, #fff 28%, transparent);
+  background: color-mix(in srgb, #fff 14%, transparent);
+}
+
+.select option {
+  color: #1a1a1a;
+  background: #fff;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px 18px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.tempBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.tempMain {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 800;
+  font-family: var(--font-ui);
+  color: #fff;
+  line-height: 1;
+}
+
+.tempSub {
+  font-size: 13px;
+  color: color-mix(in srgb, #fff 65%, transparent);
+  font-family: var(--font-body);
+}
+
+.meta {
+  font-size: 13px;
+  color: color-mix(in srgb, #fff 58%, transparent);
+  line-height: 1.5;
+  font-family: var(--font-body);
+}
+
+.skeleton {
+  height: 72px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, #fff 6%, transparent) 0%,
+    color-mix(in srgb, #fff 14%, transparent) 50%,
+    color-mix(in srgb, #fff 6%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: weatherShimmer 1.1s ease-in-out infinite;
+}
+
+@keyframes weatherShimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+    opacity: 0.75;
+  }
+}
+
+.err {
+  font-size: 13px;
+  color: color-mix(in srgb, #ffb4b4 90%, #fff 10%);
+  font-family: var(--font-body);
+}
+
+.attr {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, #fff 10%, transparent);
+  font-size: 11px;
+  line-height: 1.45;
+  color: color-mix(in srgb, #fff 48%, transparent);
+  font-family: var(--font-ui);
+  position: relative;
+  z-index: 1;
+}
+
+.attr a {
+  color: color-mix(in srgb, #fff 78%, transparent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.attr a:hover {
+  color: #fff;
+}

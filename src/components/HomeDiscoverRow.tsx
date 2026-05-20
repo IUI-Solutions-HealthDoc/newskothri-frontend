@@ -1,0 +1,31 @@
+"use client";
+
+import Link from "next/link";
+import { useLang } from "../context/LangContext";
+import WeatherWidget from "./WeatherWidget";
+import styles from "./home-discover-row.module.css";
+
+/** Weather snapshot + link to the mixed “More stories” section on the home page. */
+export default function HomeDiscoverRow() {
+  const { lang, t } = useLang();
+
+  return (
+    <section className={styles.wrap} aria-label={t("मौसम व खोज", "Weather and discovery")}>
+      <div className={styles.grid}>
+        <WeatherWidget variant="surface" />
+        <div className={styles.hint}>
+          <p className={styles.hintTitle}>{t("और खबरें", "More stories")}</p>
+          <p className={styles.hintBody}>
+            {t(
+              "नीचे की ओर «और खबरें» में श्रेणियों से मिली-जुली खबरें मिलेंगी। यहाँ मौसम का संक्षिप्त विवरण है।",
+              "Scroll to “More stories” for a mixed feed from across sections. Here is a quick weather snapshot."
+            )}
+          </p>
+          <Link href="#kn-more-stories" className={styles.hintLink}>
+            {t("और खबरें पर जाएँ", "Jump to more stories")}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}

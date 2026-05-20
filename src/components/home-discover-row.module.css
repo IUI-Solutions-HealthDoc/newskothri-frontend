@@ -1,0 +1,82 @@
+.wrap {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.grid {
+  display: grid;
+  gap: 20px;
+  align-items: stretch;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(280px, 1fr) minmax(0, 1.15fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 899px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hint {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 22px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--card-border) 88%, transparent);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--card-bg) 97%, var(--brand-red) 3%) 0%,
+    var(--card-bg) 55%,
+    color-mix(in srgb, var(--bg-secondary) 94%, var(--card-bg) 6%) 100%
+  );
+  box-shadow: var(--shadow-ui-rest);
+  min-width: 0;
+}
+
+.hintTitle {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.hintBody {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-wrap: anywhere;
+  word-break: normal;
+  hyphens: manual;
+  max-width: 100%;
+}
+
+:global([data-lang="hi"]) .hintBody {
+  font-family: var(--font-hi-body);
+  font-size: 1.05rem;
+  line-height: 1.72;
+}
+
+.hintLink {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--brand-red);
+  text-decoration: none;
+  width: fit-content;
+}
+
+.hintLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

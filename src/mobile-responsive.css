@@ -1,0 +1,415 @@
+/* ══════════════════════════════════════════════════════════════════
+   KOTHARI NEWS — Mobile & narrow-viewport hardening
+   Loaded last. Prevents horizontal scroll and stacks layouts earlier
+   (769–900px) so zoomed-out phones don't get cramped desktop chrome.
+   ══════════════════════════════════════════════════════════════════ */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.app-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.app-wrap > main,
+.homeMain,
+.article-page,
+.cat-page,
+.shows-page,
+.inst-page,
+.reader-auth-page,
+.reader-profile-page,
+.privacy-page {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Media must not force horizontal scroll */
+:where(img, video, iframe, embed, object, svg, canvas) {
+  max-width: 100%;
+}
+
+.article-body :where(img, video, iframe, embed) {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.article-body :where(table, pre, .article-table-wrap) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+:where(
+  .article-body,
+  .article-deck,
+  .article-headline,
+  .card-title,
+  .card-summary,
+  .hero-cin-headline,
+  .hero-cin-side-title,
+  .section-title,
+  .ticker-item-text
+) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ── ≤900px: stack grids + mobile chrome (incl. zoomed-out phones 769–900px) ── */
+@media (max-width: 900px) {
+  :root {
+    --gutter: clamp(12px, 3.6vw, 20px);
+    --kn-fixed-header-h-en: 118px;
+    --kn-fixed-header-h-hi: 134px;
+    --kn-fixed-header-h: calc(var(--kn-fixed-header-h-en) + env(safe-area-inset-top, 0px));
+    --kn-page-top: var(--kn-fixed-header-h);
+    --kn-bottom-nav-h: calc(6px + 54px + max(12px, var(--kn-safe-bottom)));
+    --kn-article-strip-h: 64px;
+  }
+
+  .app-wrap[data-lang="hi"] {
+    --kn-fixed-header-h: calc(var(--kn-fixed-header-h-hi) + env(safe-area-inset-top, 0px));
+    --kn-page-top: var(--kn-fixed-header-h);
+    --kn-bottom-nav-h: calc(6px + 58px + max(12px, var(--kn-safe-bottom)));
+  }
+
+  .topbar {
+    display: none !important;
+  }
+
+  .bottom-nav {
+    display: flex !important;
+  }
+
+  .hero-cinematic-wrap,
+  .hero-section,
+  .inst-page,
+  .cat-page {
+    padding-top: var(--kn-page-top);
+  }
+
+  .site-footer.site-footer-premium {
+    padding-bottom: calc(var(--kn-bottom-nav-h) + var(--sp-10) + var(--kn-safe-bottom)) !important;
+  }
+
+  .cat-page-body,
+  .shows-page-body,
+  .homeMain,
+  .profile-shell,
+  .inst-page-inner,
+  .reader-auth-page,
+  .reader-profile-page,
+  .privacy-page-inner {
+    padding-bottom: max(20px, calc(var(--kn-bottom-nav-h, 72px) + 12px + env(safe-area-inset-bottom, 0px)));
+  }
+
+  .cat-page-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .article-page {
+    padding-bottom: calc(var(--kn-bottom-nav-h) + var(--kn-article-strip-h, 0px) + var(--sp-8));
+  }
+
+  /* Navbar: compact mobile pattern (also for 769–900 bridge) */
+  .nav-main-tabs {
+    display: none !important;
+  }
+
+  .nav-util-cluster {
+    display: none !important;
+  }
+
+  .nav-util-btns .nav-util-btn:not(.nav-mobile-menu):not(.nav-profile-btn) {
+    display: none !important;
+  }
+
+  .nav-util-btns .nav-util-btn.nav-profile-btn {
+    display: flex !important;
+  }
+
+  .nav-mobile-menu {
+    display: flex !important;
+  }
+
+  .nav-row1 {
+    min-height: 56px;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .nav-row1 > * {
+    min-width: 0;
+  }
+
+  .nav-logo {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: calc(100% - 108px);
+  }
+
+  .nav-brand-wordmark-img {
+    max-width: min(200px, 46vw);
+    height: auto;
+    max-height: 32px;
+  }
+
+  .nav-row1-right {
+    flex-shrink: 0;
+  }
+
+  .nav-search-btn {
+    min-width: unset !important;
+    padding: 8px 10px !important;
+  }
+
+  .nav-search-text,
+  .nav-search-shortcut {
+    display: none !important;
+  }
+
+  /* Multi-column home / article layouts → single column */
+  .hero-inner,
+  .hero-cinematic-inner,
+  .latest-v2-layout,
+  .latest-v2-grid,
+  .cat-layout,
+  .cat-layout.cat-variant--rail,
+  .video-layout,
+  .editors-grid,
+  .article-page-layout,
+  .article-related-grid,
+  .footer-inner,
+  .footer-inner-v2,
+  .podcast-layout,
+  .state-layout,
+  .factcheck-grid,
+  .explainer-grid,
+  .opinion-grid,
+  .gallery-grid,
+  .cat-page-grid,
+  .shows-page-grid,
+  .shows-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-side {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-side-item {
+    border-right: none !important;
+  }
+
+  .hero-cinematic-main,
+  .hero-main,
+  .cat-main-card {
+    border-right: none !important;
+  }
+
+  .latest-v2-mostread {
+    display: none;
+  }
+
+  .explainer-featured,
+  .opinion-featured {
+    grid-column: span 1 !important;
+  }
+
+  .article-sidebar {
+    display: none !important;
+  }
+
+  .article-share-section.article-share-section--desktop-only {
+    display: none !important;
+  }
+
+  .article-share-bar-mobile,
+  .article-related-mobile,
+  .article-mobile-share-strip {
+    display: block;
+  }
+
+  .article-mobile-share-strip {
+    display: flex !important;
+    bottom: var(--kn-bottom-nav-h);
+  }
+
+  /* Horizontal story cards: shrink thumb on narrow screens */
+  .card-h,
+  .card-horizontal {
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .card-h-img-wrap {
+    width: min(124px, 34vw) !important;
+    height: auto !important;
+    aspect-ratio: 16 / 11;
+    flex-shrink: 0;
+  }
+
+  .card-h-body {
+    min-width: 0;
+  }
+}
+
+/* ── ≤640px: tighter type & spacing ── */
+@media (max-width: 640px) {
+  :root {
+    --text-base: 16px;
+    --gutter: clamp(10px, 3.2vw, 16px);
+  }
+
+  body {
+    font-size: var(--text-base);
+    line-height: 1.58;
+  }
+
+  .section {
+    padding: var(--sp-8) 0 !important;
+  }
+
+  .briefs-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .footer-inner,
+  .footer-inner-v2,
+  .footer-premium-inner {
+    grid-template-columns: 1fr !important;
+  }
+
+  .nav-brand-wordmark-img {
+    max-width: min(168px, 52vw);
+    max-height: 28px;
+  }
+
+  .nav-brand-logo-img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+/* ── ≤480px: small phones ── */
+@media (max-width: 480px) {
+  .nav-brand-wordmark-img {
+    max-width: min(145px, 58vw);
+    max-height: 26px;
+  }
+
+  .hero-cin-overlay {
+    min-height: min(280px, 52vh);
+  }
+
+  .reader-auth-input,
+  .reader-profile-input,
+  .profile-input,
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1rem);
+  }
+}
+
+/* ── Touch: larger tap targets ── */
+@media (pointer: coarse) {
+  .nav-cat-pill,
+  .bottom-nav-tab,
+  .inst-pill,
+  .editors-all-btn,
+  .cat-pill {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+}
+
+/* Card links (NewsCard, etc.) */
+a.card-link-reset,
+.card-link-reset {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card-default-link,
+.card-editor-link {
+  display: block;
+}
+
+.bottom-nav-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: inherit;
+  touch-action: manipulation;
+}
+
+.article-page--loading {
+  flex-direction: column;
+  gap: 14px;
+  min-height: min(72vh, 720px);
+  padding-bottom: calc(var(--kn-bottom-nav-h, 72px) + var(--kn-article-strip-h, 0px) + 24px);
+}
+
+.article-page-loading-spinner {
+  animation: spin 1s linear infinite;
+  color: var(--brand-red);
+}
+
+.article-page-loading-text {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .hero-cin-side-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0 0 12px;
+  }
+
+  .hero-cin-side-item {
+    width: 100%;
+    max-width: 100%;
+    border-bottom: 1px solid var(--card-border);
+    border-right: none !important;
+    padding: 10px 12px;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .hero-cin-side-item:last-child {
+    border-bottom: none;
+  }
+
+  .hero-cin-side-thumb-wrap {
+    width: 72px;
+    height: 54px;
+    flex-shrink: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
