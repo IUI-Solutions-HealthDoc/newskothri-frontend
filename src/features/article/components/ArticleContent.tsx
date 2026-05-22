@@ -13,11 +13,8 @@ import type { NewsItem } from "../types/article";
 import ArticleAuthor from "./ArticleAuthor";
 import CommentSection from "./CommentSection";
 import { ArticleRecommendationStrip } from "./RelatedArticles";
-import ArticleYoutubeEmbeds, { ArticleYoutubeClip } from "./ArticleYoutubeEmbeds";
-import {
-  collectPlacedYoutubeIndices,
-  splitBodyWithYoutubeSlots,
-} from "../utils/youtubeEmbedMarkers";
+import { ArticleYoutubeClip } from "./ArticleYoutubeEmbeds";
+import { splitBodyWithYoutubeSlots } from "../utils/youtubeEmbedMarkers";
 import { youtubeVideoIdFromUrl } from "../../../utils/youtube";
 import RelatedCard from "./RelatedCard";
 import { isHtmlParagraph } from "../utils/formatArticle";
@@ -93,10 +90,7 @@ export default function ArticleContent({
   const bodyBlocks = useMemo(() => {
     const html = String(bodyHtml || "").trim();
     if (!html) return [];
-    const placed = collectPlacedYoutubeIndices(html);
-    if (!placed.size && youtubeEmbeds.length) {
-      return [{ type: "legacy-youtube" as const }];
-    }
+    // Always keep full article HTML; YouTube clips render only where inserted in the body.
     return splitBodyWithYoutubeSlots(html, youtubeEmbeds);
   }, [bodyHtml, youtubeEmbeds]);
 
@@ -175,9 +169,6 @@ export default function ArticleContent({
         {bodyBlocks.length > 0 ? (
           <>
             {bodyBlocks.map((block, i) => {
-              if (block.type === "legacy-youtube") {
-                return <ArticleYoutubeEmbeds key="legacy-yt" items={youtubeEmbeds} t={t} />;
-              }
               if (block.type === "youtube") {
                 const item = youtubeEmbeds[block.index];
                 if (!item || !youtubeVideoIdFromUrl(item.youtubeUrl)) return null;

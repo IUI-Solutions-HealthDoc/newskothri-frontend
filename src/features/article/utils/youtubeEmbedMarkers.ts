@@ -98,8 +98,11 @@ export function splitBodyWithYoutubeSlots(
   return blocks;
 }
 
-export function collectPlacedYoutubeIndices(html: string): Set<number> {
+export function collectPlacedYoutubeIndices(
+  html: string,
+  youtubeEmbeds: YoutubeEmbedRow[] = []
+): Set<number> {
   const placed = new Set<number>();
-  collectMarkers(html).forEach((mk) => placed.add(mk.index));
+  collectMarkers(html, youtubeEmbeds).forEach((mk) => placed.add(mk.index));
   return placed;
 }

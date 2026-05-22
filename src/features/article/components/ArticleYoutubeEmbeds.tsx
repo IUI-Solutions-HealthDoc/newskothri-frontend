@@ -36,7 +36,6 @@ export function ArticleYoutubeClip({
 
   return (
     <p className="read-also article-youtube-embed-item">
-      <strong>{t("वीडियो देखें", "Watch video")}:</strong>{" "}
       <a
         href={href}
         target="_blank"
