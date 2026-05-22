@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteDefaultDescription, siteName as siteNameForLang, type UiLang } from "../i18n/siteCopy";
 
 function stripTrailingSlash(url: string): string {
   return url.replace(/\/+$/, "");
@@ -28,10 +29,18 @@ export function getSiteUrl(): string {
   return "http://localhost:5280";
 }
 
-export const siteName = "Kothari News";
+/** Default English — prefer `siteName(lang)` / `siteDefaultDescription(lang)` with `getServerUiLang()`. */
+export const siteName = siteNameForLang("en");
 
-export const defaultDescription =
-  "Khabar Kothari brings fast, verified coverage across desh, videsh, rajneeti, khel, health, krishi, business and manoranjan.";
+export const defaultDescription = siteDefaultDescription("en");
+
+export function localizedSiteName(lang: UiLang): string {
+  return siteNameForLang(lang);
+}
+
+export function localizedDefaultDescription(lang: UiLang): string {
+  return siteDefaultDescription(lang);
+}
 
 export function toAbsoluteUrl(path: string): string {
   const t = String(path || "").trim();

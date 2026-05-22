@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Clock, ArrowUpRight, Bookmark, Share2, Eye } from "lucide-react";
 import type { NewsItem } from "../data/mockData";
 import { useLang } from "../context/LangContext";
+import { shareLabels } from "../i18n/siteCopy";
 
 interface NewsCardProps {
   item: NewsItem;
@@ -44,6 +45,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
   const [imgError, setImgError] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const { lang, t } = useLang();
+  const labels = shareLabels(t);
   const color = categoryColors[item.categorySlug] || "#1565c0";
 
   const title    = lang === "hi" ? item.title    : item.titleEn;
@@ -162,7 +164,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
               className="card-action-btn"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); setBookmarked(b => !b); }}
               whileTap={{ scale: 0.85 }}
-              aria-label="Bookmark"
+              aria-label={labels.bookmark}
             >
               <Bookmark size={15} fill={bookmarked ? "currentColor" : "none"} style={{ color: bookmarked ? color : undefined }} />
             </motion.button>
@@ -170,7 +172,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
               className="card-action-btn"
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
               whileTap={{ scale: 0.85 }}
-              aria-label="Share"
+              aria-label={labels.share}
             >
               <Share2 size={15} />
             </motion.button>
@@ -188,7 +190,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
     >
       <Link href={href} className="card-link-reset card-default-link">
         <div className="card-img-wrap">
-          {item.isBreaking && <span className="card-breaking-tag">BREAKING</span>}
+          {item.isBreaking && <span className="card-breaking-tag">{labels.breaking}</span>}
           {!imgError
             ? <img src={item.image} alt={title} className="card-img" onError={() => setImgError(true)} loading="lazy" />
             : <div className="card-img-fallback" style={{ background: color + "22" }} />}
@@ -214,7 +216,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
             className="card-action-btn"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setBookmarked(b => !b); }}
             whileTap={{ scale: 0.85 }}
-            aria-label="Bookmark"
+            aria-label={labels.bookmark}
           >
             <Bookmark size={13} fill={bookmarked ? "currentColor" : "none"} style={{ color: bookmarked ? color : undefined }} />
           </motion.button>
@@ -222,7 +224,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
             className="card-action-btn"
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
             whileTap={{ scale: 0.85 }}
-            aria-label="Share"
+            aria-label={labels.share}
           >
             <Share2 size={13} />
           </motion.button>

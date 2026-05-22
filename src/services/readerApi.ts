@@ -1,5 +1,6 @@
 import { withPublicOrigin } from "../config/publicApi";
 import { apiFetchSignal } from "../lib/apiFetchSignal";
+import { publicSiteApiNetworkError } from "../lib/publicApiNetworkError";
 
 export interface ReaderProfile {
   primaryLanguage: "hi" | "en";
@@ -28,9 +29,20 @@ function api(path: string): string {
   return withPublicOrigin(`/api/reader${path}`);
 }
 
+async function readerFetch(input: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(input, init);
+  } catch (e) {
+    if (e instanceof TypeError) {
+      throw new Error(publicSiteApiNetworkError());
+    }
+    throw e;
+  }
+}
+
 async function authed<T>(path: string, token: string, init: RequestInit = {}): Promise<T> {
   const signal = init.signal ?? apiFetchSignal();
-  const res = await fetch(api(path), {
+  const res = await readerFetch(api(path), {
     ...init,
     signal,
     headers: {
@@ -53,7 +65,7 @@ async function authed<T>(path: string, token: string, init: RequestInit = {}): P
 }
 
 export async function readerGoogleAuth(credential: string): Promise<{ token: string; reader: ReaderAccount }> {
-  const res = await fetch(api("/auth/google"), {
+  const res = await readerFetch(api("/auth/google"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ credential }),

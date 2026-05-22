@@ -1,29 +1,42 @@
 import type { Metadata } from "next";
-import { defaultDescription, siteName, toAbsoluteUrl } from "../../../lib/seo/metadataHelpers";
+import { pickCopy } from "../../../i18n/siteCopy";
+import {
+  localizedDefaultDescription,
+  localizedSiteName,
+  toAbsoluteUrl,
+} from "../../../lib/seo/metadataHelpers";
+import { getServerUiLang } from "../../../lib/serverLocale";
 import { getArticle } from "../server/getArticle";
 
 export async function buildArticleMetadata(id: string): Promise<Metadata> {
+  const uiLang = await getServerUiLang();
   const canonicalPath = `/article/${id}`;
   const article = await getArticle(id);
+  const brand = localizedSiteName(uiLang);
+  const fallbackDesc = localizedDefaultDescription(uiLang);
 
   if (!article) {
     return {
-      title: "Article",
-      description: defaultDescription,
+      title: pickCopy(uiLang, "खबर", "Article"),
+      description: fallbackDesc,
       alternates: { canonical: canonicalPath },
     };
   }
 
-  const hiPrimary = article.primaryLocale === "hi";
-  const metaTitle = hiPrimary
-    ? String(article.metaTitleHi || "").trim() || article.titleHi || article.title
-    : String(article.metaTitle || "").trim() || article.title || article.titleHi;
-  const title = metaTitle || article.titleHi || article.title || "Article";
+  const useHi = uiLang === "hi";
+  const metaTitle = useHi
+    ? String(article.metaTitleHi || "").trim() || article.titleHi || article.title || article.titleEn
+    : String(article.metaTitle || "").trim() || article.title || article.titleEn || article.titleHi;
+  const title =
+    metaTitle ||
+    article.titleHi ||
+    article.title ||
+    pickCopy(uiLang, "खबर", "Article");
 
-  const metaDesc = hiPrimary
-    ? String(article.metaDescriptionHi || "").trim() || article.summaryHi || article.summary
-    : String(article.metaDescription || "").trim() || article.summary || article.summaryHi;
-  const description = metaDesc || defaultDescription;
+  const metaDesc = useHi
+    ? String(article.metaDescriptionHi || "").trim() || article.summaryHi || article.summary || article.summaryEn
+    : String(article.metaDescription || "").trim() || article.summary || article.summaryEn || article.summaryHi;
+  const description = metaDesc || fallbackDesc;
 
   const keywords = String(article.metaKeywords || "").trim();
 
@@ -39,7 +52,7 @@ export async function buildArticleMetadata(id: string): Promise<Metadata> {
       title,
       description,
       url: canonicalPath,
-      siteName,
+      siteName: brand,
       images: imageUrl ? [{ url: imageUrl }] : undefined,
     },
     twitter: {

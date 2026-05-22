@@ -11,26 +11,31 @@ import InfinitePublicArticleList, {
 } from "../components/InfinitePublicArticleList";
 import HomeDiscoverRow from "../components/HomeDiscoverRow";
 import { getServerUiLang } from "../lib/serverLocale";
-import { defaultDescription, siteName } from "../lib/seo/metadataHelpers";
+import { localizedDefaultDescription, localizedSiteName } from "../lib/seo/metadataHelpers";
 import styles from "./newsroom.module.css";
 
-export const metadata: Metadata = {
-  title: siteName,
-  description: defaultDescription,
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    title: siteName,
-    description: defaultDescription,
-    url: "/",
-    siteName,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteName,
-    description: defaultDescription,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerUiLang();
+  const name = localizedSiteName(locale);
+  const description = localizedDefaultDescription(locale);
+  return {
+    title: name,
+    description,
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      title: name,
+      description,
+      url: "/",
+      siteName: name,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: name,
+      description,
+    },
+  };
+}
 
 export default async function Home() {
   const locale = await getServerUiLang();

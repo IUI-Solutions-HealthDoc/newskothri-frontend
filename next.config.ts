@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import { assertVercelWebNextEnv } from "./src/lib/vercelBuildEnv";
+
+assertVercelWebNextEnv();
 
 /** Allow same-origin `/api` + `/uploads` proxy when env points at loopback or is unset (phone-on-LAN dev). */
 function useLocalApiRewrites(): boolean {

@@ -22,6 +22,7 @@ import { youtubeVideoIdFromUrl } from "../../../utils/youtube";
 import RelatedCard from "./RelatedCard";
 import { isHtmlParagraph } from "../utils/formatArticle";
 import { nativeShare, shareToFacebook, shareToTwitter, shareToWhatsApp } from "../utils/share";
+import { shareLabels } from "../../../i18n/siteCopy";
 import { lazyLoadImagesInHtml } from "../../../lib/imageLoading";
 
 function sanitizeArticleHtml(html: string): string {
@@ -83,6 +84,7 @@ export default function ArticleContent({
   pageUrl: string;
 }) {
   const navigate = useNavigate();
+  const sl = shareLabels(t);
   const cat = categories.find((c) => c.slug === article.categorySlug);
   const time = lang === "hi" ? article.time : article.timeEn;
   const author = lang === "hi" ? article.author : article.authorEn;
@@ -152,9 +154,15 @@ export default function ArticleContent({
             {upvoteCount} {t("अपवोट", "upvotes")}
           </span>
           <button type="button" className="article-share-btn art-share-wa" onClick={() => shareToWhatsApp(title, pageUrl)}>
-            <IconWhatsApp size={14} aria-hidden className="article-share-brand-icon" /> WhatsApp
+            <IconWhatsApp size={14} aria-hidden className="article-share-brand-icon" /> {sl.whatsapp}
           </button>
-          <button type="button" className="article-share-btn art-share-tw" onClick={() => shareToTwitter(title, pageUrl)} title="X / Twitter" aria-label="X / Twitter">
+          <button
+            type="button"
+            className="article-share-btn art-share-tw"
+            onClick={() => shareToTwitter(title, pageUrl)}
+            title={sl.twitter}
+            aria-label={sl.twitter}
+          >
             <IconXLogo size={14} aria-hidden className="article-share-brand-icon" />
           </button>
           <button type="button" className="article-share-btn" onClick={onCopyLink}>
@@ -217,17 +225,17 @@ export default function ArticleContent({
         <p className="article-share-section-label">{t("इस खबर को शेयर करें", "Share this story")}</p>
         <div className="article-share-full-row">
           <button type="button" className="art-share-btn-full art-share-wa" onClick={() => shareToWhatsApp(title, pageUrl)}>
-            <IconWhatsApp size={18} aria-hidden className="article-share-brand-icon" /> WhatsApp
+            <IconWhatsApp size={18} aria-hidden className="article-share-brand-icon" /> {sl.whatsapp}
           </button>
           <button type="button" className="art-share-btn-full art-share-tw" onClick={() => shareToTwitter(title, pageUrl)}>
-            <IconXLogo size={18} aria-hidden className="article-share-brand-icon" /> X (Twitter)
+            <IconXLogo size={18} aria-hidden className="article-share-brand-icon" /> {sl.twitter}
           </button>
           <button type="button" className="art-share-btn-full art-share-fb" onClick={() => shareToFacebook(pageUrl)}>
-            <IconFacebook size={18} aria-hidden className="article-share-brand-icon" /> Facebook
+            <IconFacebook size={18} aria-hidden className="article-share-brand-icon" /> {sl.facebook}
           </button>
           <button type="button" className="art-share-btn-full" onClick={onCopyLink}>
             <Link2 size={18} aria-hidden strokeWidth={2} />
-            {copied ? t("कॉपी हो गया!", "Copied!") : t("लिंक कॉपी करें", "Copy Link")}
+            {copied ? sl.copied : sl.copyLink}
           </button>
           {"share" in navigator && (
             <button type="button" className="art-share-btn-full art-share-native" onClick={() => nativeShare(title, pageUrl)}>

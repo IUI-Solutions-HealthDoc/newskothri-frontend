@@ -60,7 +60,7 @@ export default function ProfilePageClient() {
       });
       setLang(prefsForm.primaryLanguage as "hi" | "en");
       await refreshReader();
-      setMessage(t("Preferences saved", "Preferences saved"));
+      setMessage(t("सेटिंग्स सहेजी गईं", "Preferences saved"));
     } finally {
       setBusy(false);
     }

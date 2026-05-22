@@ -168,7 +168,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
           type="button"
           className="mobile-strip-btn mobile-strip-wa"
           onClick={() => shareToWhatsApp(title, pageUrl)}
-          aria-label="WhatsApp"
+          aria-label={t("व्हाट्सऐप", "WhatsApp")}
         >
           <IconWhatsApp size={22} aria-hidden className="article-share-brand-icon" />
         </button>
@@ -176,7 +176,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
           type="button"
           className="mobile-strip-btn mobile-strip-tw"
           onClick={() => shareToTwitter(title, pageUrl)}
-          aria-label="X / Twitter"
+          aria-label={t("एक्स (ट्विटर)", "X (Twitter)")}
         >
           <IconXLogo size={20} aria-hidden className="article-share-brand-icon" />
         </button>

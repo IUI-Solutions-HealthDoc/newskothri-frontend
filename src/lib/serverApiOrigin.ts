@@ -5,6 +5,7 @@ function stripTrailingSlash(url: string): string {
 /**
  * Absolute API origin for server-side Next.js code
  * (`generateMetadata`, `sitemap`, and other server fetches).
+ * On Vercel: set INTERNAL_API_URL and NEXT_PUBLIC_API_ORIGIN to the same Railway URL.
  */
 export function getServerApiOrigin(): string {
   const internal = process.env.INTERNAL_API_URL?.trim();

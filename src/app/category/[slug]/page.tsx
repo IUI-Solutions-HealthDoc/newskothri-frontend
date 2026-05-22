@@ -16,7 +16,8 @@ export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
-  return buildCategoryMetadata(slug);
+  const locale = await getServerUiLang();
+  return buildCategoryMetadata(slug, locale);
 }
 
 export default async function CategoryPage(

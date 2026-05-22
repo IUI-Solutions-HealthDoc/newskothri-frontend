@@ -10,6 +10,7 @@ import { useLang } from "../context/LangContext";
 import { categories } from "../data/publicCategories";
 import BrandLogo from "./BrandLogo";
 import { SITE_SOCIAL } from "../config/siteSocial";
+import { siteBrandLegal } from "../i18n/siteCopy";
 
 const SOCIAL = [
   { key: "yt", name: "YouTube", nameHi: "यूट्यूब", url: SITE_SOCIAL.youtube, icon: CirclePlay, color: "#FF0000" },
@@ -163,7 +164,9 @@ export default function SiteFooter() {
       </div>
 
       <div className="footer-premium-bottom">
-        <span className="footer-premium-copy">© {new Date().getFullYear()} Khabar Kothri</span>
+        <span className="footer-premium-copy">
+          © {new Date().getFullYear()} {siteBrandLegal(lang)}
+        </span>
         <div className="footer-premium-legal">
           <Link to="/privacy" className="footer-premium-legal-chip">
             {t("प्राइवेसी", "Privacy")}

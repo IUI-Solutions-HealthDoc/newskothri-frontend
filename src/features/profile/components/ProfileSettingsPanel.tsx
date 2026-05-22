@@ -30,8 +30,8 @@ export default function ProfileSettingsPanel({
           value={prefsForm.primaryLanguage}
           onChange={(e) => setPrefsForm((s) => ({ ...s, primaryLanguage: e.target.value }))}
         >
-          <option value="hi">Hindi</option>
-          <option value="en">English</option>
+          <option value="hi">{t("हिंदी", "Hindi")}</option>
+          <option value="en">{t("अंग्रेज़ी", "English")}</option>
         </select>
       </div>
       <div className="profile-form-actions">

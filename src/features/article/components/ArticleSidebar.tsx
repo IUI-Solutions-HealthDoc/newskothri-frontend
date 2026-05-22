@@ -7,6 +7,7 @@ import type { NewsItem } from "../types/article";
 import RelatedCard from "./RelatedCard";
 import { categoryColors } from "../utils/formatArticle";
 import { shareToFacebook, shareToTwitter, shareToWhatsApp } from "../utils/share";
+import { shareLabels } from "../../../i18n/siteCopy";
 
 type TFn = (hi: string, en: string) => string;
 
@@ -32,6 +33,7 @@ export default function ArticleSidebar({
   onCopyLink: () => void;
 }) {
   const navigate = useNavigate();
+  const sl = shareLabels(t);
 
   return (
     <aside className="article-sidebar">
@@ -58,7 +60,7 @@ export default function ArticleSidebar({
             onClick={() => shareToWhatsApp(title, pageUrl)}
           >
             <IconWhatsApp size={18} aria-hidden className="article-share-brand-icon" />
-            <span>WhatsApp</span>
+            <span>{sl.whatsapp}</span>
           </button>
           <button
             type="button"
@@ -66,7 +68,7 @@ export default function ArticleSidebar({
             onClick={() => shareToTwitter(title, pageUrl)}
           >
             <IconXLogo size={18} aria-hidden className="article-share-brand-icon" />
-            <span>X / Twitter</span>
+            <span>{sl.twitter}</span>
           </button>
           <button
             type="button"
@@ -74,11 +76,11 @@ export default function ArticleSidebar({
             onClick={() => shareToFacebook(pageUrl)}
           >
             <IconFacebook size={18} aria-hidden className="article-share-brand-icon" />
-            <span>Facebook</span>
+            <span>{sl.facebook}</span>
           </button>
           <button type="button" className="aside-share-btn" onClick={onCopyLink}>
             <Link2 size={18} aria-hidden strokeWidth={2} />
-            <span>{copied ? t("कॉपी!", "Copied!") : t("लिंक", "Copy Link")}</span>
+            <span>{copied ? sl.copied : sl.copyLink}</span>
           </button>
         </div>
       </div>

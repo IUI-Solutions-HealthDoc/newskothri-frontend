@@ -40,7 +40,9 @@ export default function ProfileLikedPanel({
               if (slug) navigate(`/article/${slug}`);
             }}
           >
-            <span className="profile-row-title">{row.article?.titleHi || row.article?.title || "Untitled"}</span>
+            <span className="profile-row-title">
+              {row.article?.titleHi || row.article?.title || t("शीर्षकहीन", "Untitled")}
+            </span>
           </button>
         ))
       )}

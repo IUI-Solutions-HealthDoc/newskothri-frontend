@@ -40,7 +40,9 @@ export default function ProfileBookmarksPanel({
               if (slug) navigate(`/article/${slug}`);
             }}
           >
-            <span className="profile-row-title">{b.article?.titleHi || b.article?.title || "Untitled"}</span>
+            <span className="profile-row-title">
+              {b.article?.titleHi || b.article?.title || t("शीर्षकहीन", "Untitled")}
+            </span>
           </button>
         ))
       )}

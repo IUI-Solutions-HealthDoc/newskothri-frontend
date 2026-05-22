@@ -1,34 +1,46 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
-import { defaultDescription, getMetadataBase, siteName } from "../lib/seo/metadataHelpers";
+import {
+  getMetadataBase,
+  localizedDefaultDescription,
+  localizedSiteName,
+} from "../lib/seo/metadataHelpers";
+import type { UiLang } from "../i18n/siteCopy";
 import AppChrome from "./AppChrome";
 import AppProviders from "./AppProviders";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  metadataBase: getMetadataBase(),
-  icons: {
-    icon: [{ url: "/brand-logo.png", type: "image/png" }],
-    apple: [{ url: "/brand-logo.png", type: "image/png" }],
-  },
-  title: {
-    default: siteName,
-    template: `%s | ${siteName}`,
-  },
-  description: defaultDescription,
-  openGraph: {
-    type: "website",
-    siteName,
-    title: siteName,
-    description: defaultDescription,
-    url: "/",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteName,
-    description: defaultDescription,
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const jar = await cookies();
+  const lang: UiLang = jar.get("kn-lang")?.value === "en" ? "en" : "hi";
+  const name = localizedSiteName(lang);
+  const description = localizedDefaultDescription(lang);
+
+  return {
+    metadataBase: getMetadataBase(),
+    icons: {
+      icon: [{ url: "/brand-logo.png", type: "image/png" }],
+      apple: [{ url: "/brand-logo.png", type: "image/png" }],
+    },
+    title: {
+      default: name,
+      template: `%s | ${name}`,
+    },
+    description,
+    openGraph: {
+      type: "website",
+      siteName: name,
+      title: name,
+      description,
+      url: "/",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: name,
+      description,
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",

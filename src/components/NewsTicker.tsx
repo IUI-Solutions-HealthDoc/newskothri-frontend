@@ -20,11 +20,14 @@ export default function NewsTicker() {
   const items = useMemo(() => {
     return breakingArticles
       .map((a) => {
-        const primary = a.primaryLocale === "hi" ? "hi" : "en";
-        return (primary === "hi" ? (a.titleHi || a.title) : (a.title || a.titleHi || "")).trim();
+        const headline =
+          lang === "hi"
+            ? (a.titleHi || a.title || a.titleEn || "")
+            : (a.title || a.titleEn || a.titleHi || "");
+        return headline.trim();
       })
       .filter(Boolean);
-  }, [breakingArticles]);
+  }, [breakingArticles, lang]);
   const doubled = [...items, ...items];
 
   useEffect(() => {
