@@ -22,8 +22,8 @@ export default function NewsTicker() {
       .map((a) => {
         const headline =
           lang === "hi"
-            ? (a.titleHi || a.title || a.titleEn || "")
-            : (a.title || a.titleEn || a.titleHi || "");
+            ? (a.titleHi || a.title || "")
+            : (a.title || a.titleHi || "");
         return headline.trim();
       })
       .filter(Boolean);

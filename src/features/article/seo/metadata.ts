@@ -25,8 +25,8 @@ export async function buildArticleMetadata(id: string): Promise<Metadata> {
 
   const useHi = uiLang === "hi";
   const metaTitle = useHi
-    ? String(article.metaTitleHi || "").trim() || article.titleHi || article.title || article.titleEn
-    : String(article.metaTitle || "").trim() || article.title || article.titleEn || article.titleHi;
+    ? String(article.metaTitleHi || "").trim() || article.titleHi || article.title || ""
+    : String(article.metaTitle || "").trim() || article.title || article.titleHi || "";
   const title =
     metaTitle ||
     article.titleHi ||
@@ -34,8 +34,8 @@ export async function buildArticleMetadata(id: string): Promise<Metadata> {
     pickCopy(uiLang, "खबर", "Article");
 
   const metaDesc = useHi
-    ? String(article.metaDescriptionHi || "").trim() || article.summaryHi || article.summary || article.summaryEn
-    : String(article.metaDescription || "").trim() || article.summary || article.summaryEn || article.summaryHi;
+    ? String(article.metaDescriptionHi || "").trim() || article.summaryHi || article.summary || ""
+    : String(article.metaDescription || "").trim() || article.summary || article.summaryHi || "";
   const description = metaDesc || fallbackDesc;
 
   const keywords = String(article.metaKeywords || "").trim();

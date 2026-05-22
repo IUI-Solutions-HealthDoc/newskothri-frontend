@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { siteDefaultDescription, siteName as siteNameForLang, type UiLang } from "../i18n/siteCopy";
+import { siteDefaultDescription, siteName as siteNameForLang, type UiLang } from "../../i18n/siteCopy";
 
 function stripTrailingSlash(url: string): string {
   return url.replace(/\/+$/, "");
