@@ -12,7 +12,7 @@ type BrandLogoProps = {
 
 export default function BrandLogo({ className = "", height = 44, decorative = false }: BrandLogoProps) {
   /** Same visual mark for HI/EN — alt stays language-neutral for accessibility. */
-  const alt = decorative ? "" : "Kothari News";
+  const alt = decorative ? "" : "News Kothri";
 
   return (
     <img

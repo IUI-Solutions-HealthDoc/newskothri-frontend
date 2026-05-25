@@ -5,7 +5,7 @@ import InstitutionalRouteClient from "../InstitutionalRouteClient";
 export const metadata: Metadata = {
   title: "About us",
   description:
-    "News Kothari is a digital-first bilingual newsroom focused on verified journalism, clarity, and readers across India.",
+    "News Kothri is a digital-first bilingual newsroom focused on verified journalism, clarity, and readers across India.",
   alternates: { canonical: toAbsoluteUrl("/about") },
   openGraph: {
     title: `About us | ${siteName}`,

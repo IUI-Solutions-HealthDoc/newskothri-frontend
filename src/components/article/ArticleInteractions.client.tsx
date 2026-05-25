@@ -325,7 +325,7 @@ export default function ArticleInteractions({
               <Link href={authNext}>Sign in</Link> to like and save articles.
             </>
           ) : (
-            "Thanks for reading Kothari News."
+            "Thanks for reading News Kothri."
           )}
         </p>
       </div>

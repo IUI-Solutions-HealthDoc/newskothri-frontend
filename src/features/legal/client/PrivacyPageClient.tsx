@@ -20,8 +20,8 @@ export default function PrivacyPageClient() {
       lead={
         <p className="legal-lead">
           {t(
-            "यह नीति बताती है कि News Kothari आपके व्यक्तिगत डेटा को कैसे एकत्र, उपयोग, सुरक्षित और साझा करता है। हम न्यूनतम डेटा सिद्धांत का पालन करने का प्रयास करते हैं। पूर्ण विवरण नीचे दिए गए खंडों में है।",
-            "This policy explains how News Kothari collects, uses, secures, and shares your personal data. We aim to follow data-minimization principles. The sections below contain the full detail."
+            "यह नीति बताती है कि News Kothri आपके व्यक्तिगत डेटा को कैसे एकत्र, उपयोग, सुरक्षित और साझा करता है। हम न्यूनतम डेटा सिद्धांत का पालन करने का प्रयास करते हैं। पूर्ण विवरण नीचे दिए गए खंडों में है।",
+            "This policy explains how News Kothri collects, uses, secures, and shares your personal data. We aim to follow data-minimization principles. The sections below contain the full detail."
           )}
         </p>
       }

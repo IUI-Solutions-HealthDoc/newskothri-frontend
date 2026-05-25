@@ -17,7 +17,7 @@ const SOCIAL = [
   { key: "ig", name: "Instagram", nameHi: "इंस्टाग्राम", url: SITE_SOCIAL.instagram, icon: Camera, color: "#E1306C" },
   { key: "tw", name: "X", nameHi: "एक्स", url: SITE_SOCIAL.x, icon: AtSign, color: "#e7e9ea" },
   { key: "fb", name: "Facebook", nameHi: "फेसबुक", url: SITE_SOCIAL.facebook, icon: Globe, color: "#1877F2" },
-  { key: "tg", name: "Telegram", nameHi: "टेलीग्राम", url: "https://t.me/kotharinews", icon: Send, color: "#2AABEE" },
+  { key: "tg", name: "Telegram", nameHi: "टेलीग्राम", url: "https://t.me/kothrinews", icon: Send, color: "#2AABEE" },
 ] as const;
 
 const CAT_COLOR: Record<string, string> = {
@@ -76,7 +76,7 @@ export default function SiteFooter() {
           </div>
           <p className="footer-premium-brand-tagline">
             {t(
-              "सत्यापित खबरें, साफ़ भाषा — आपकी डिजिटल कोठरी।",
+              "सत्यापित खबरें, साफ़ भाषा — आपकी डिजिटल कोठ्री।",
               "Verified news, clear voice — your digital newsroom."
             )}
           </p>

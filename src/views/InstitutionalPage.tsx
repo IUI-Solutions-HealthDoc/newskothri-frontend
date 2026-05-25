@@ -40,8 +40,8 @@ export default function InstitutionalPage({ kind }: { kind: InstitutionalKind })
   const lead =
     kind === "about"
       ? t(
-          "‘न्यूज़ कोठरी’ कोई ज्ञान बाँचने वाला लाउडस्पीकर या एसी कमरों में बैठकर ‘देश क्या सोच रहा है’ तय करने वाला चैनल नहीं है। ये एक बगावत है उस बोरिंग और पकाऊ न्यूज़ के खिलाफ, जो आपको नींद की गोली जैसी लगती है। सीधी बात: ये आपके मोहल्ले की वो नुक्कड़ वाली चौपाल है, जहाँ बकैती भी होती है और समझ भी बढ़ती है। टीवी वाले जो खबरें टाई लगाकर पढ़ते हैं, हम उन्हें ‘कोठरी’ की भट्टी में तपाकर, बिना किसी फिल्टर के आपके सामने परोसते हैं।",
-          "News Kothari is not a lecturing loudspeaker or an air‑conditioned channel that decides ‘what the nation thinks.’ It is a rebellion against the boring, overcooked news that feels like a sleeping pill. In plain terms: it is your neighbourhood nukkad — where there is banter and there is real sense. We take the tie‑and‑teleprompter headlines, run them through the kothari forge, and serve them to you without the usual filter."
+          "‘न्यूज़ कोठ्री’ कोई ज्ञान बाँचने वाला लाउडस्पीकर या एसी कमरों में बैठकर ‘देश क्या सोच रहा है’ तय करने वाला चैनल नहीं है। ये एक बगावत है उस बोरिंग और पकाऊ न्यूज़ के खिलाफ, जो आपको नींद की गोली जैसी लगती है। सीधी बात: ये आपके मोहल्ले की वो नुक्कड़ वाली चौपाल है, जहाँ बकैती भी होती है और समझ भी बढ़ती है। टीवी वाले जो खबरें टाई लगाकर पढ़ते हैं, हम उन्हें ‘कोठ्री’ की भट्टी में तपाकर, बिना किसी फिल्टर के आपके सामने परोसते हैं।",
+          "News Kothri is not a lecturing loudspeaker or an air‑conditioned channel that decides ‘what the nation thinks.’ It is a rebellion against the boring, overcooked news that feels like a sleeping pill. In plain terms: it is your neighbourhood nukkad — where there is banter and there is real sense. We take the tie‑and‑teleprompter headlines, run them through the kothri forge, and serve them to you without the usual filter."
         )
       : kind === "mission"
         ? t(
@@ -78,7 +78,7 @@ export default function InstitutionalPage({ kind }: { kind: InstitutionalKind })
             ),
           },
           {
-            h: t("कोठरी के पिटारे से और क्या निकलेगा?", "What else comes out of the pitara"),
+            h: t("कोठ्री के पिटारे से और क्या निकलेगा?", "What else comes out of the pitara"),
             p: t(
               "सिर्फ़ सूखी ख़बरें पढ़कर तो दिमाग सुन्न हो जाता है न? इसलिए यहाँ हम सिर्फ़ ज्ञान नहीं पेलते, एंटरटेनमेंट का पूरा जुगाड़ भी रखते हैं — भन्नाट फैक्ट्स, दिमाग के जाले साफ करने वाले रिव्यू, मीम्स, और दुनिया भर का ऐसा रायता जिसे समेटने में आपको मज़ा आएगा। ‘लोग क्या कहेंगे’ वाले टैबू सब्जेक्ट्स पर भी हम ऑपरेशन बिना एनेस्थीसिया के करते हैं। इतिहास के वो पन्ने जो दीमक खा रहे थे, उन्हें झाड़-पोंछ कर लाते हैं। हमारी रेंज? ऑस्कर से लेकर पंचायत चुनाव तक, मंगल मिशन से लेकर गाँव के देसी जुगाड़ तक, और विदेशी वेब सीरीज से लेकर भोजपुरी सिनेमा तक — जहाँ दिल दहलता है, वहाँ हमारी नज़र रहती है।",
               "Dry headlines alone numb the mind — so we do not only shovel ‘gyaan’; we keep the entertainment jugaad too: wild facts, brain‑clearing reviews, memes, and the kind of masala mix that is fun to unpack. We take on taboo topics without the anaesthesia of politeness. We dust off history’s moth‑eaten pages and bring them forward. Our range? From the Oscars to panchayat polls, from Mars missions to village jugaad, from foreign web series to Bhojpuri cinema — if it moves people, we are watching."
@@ -142,8 +142,8 @@ export default function InstitutionalPage({ kind }: { kind: InstitutionalKind })
     kind === "about"
       ? {
           text: t(
-            "“हम वो इंडिया हैं जो अपने ठेठपन पर कॉलर खड़ा करता है — जिसे अपनी जड़ों और अपनी बोली पर गुरूर है, लेकिन जो दुनिया को मुट्ठी में करने का माद्दा रखता है। ‘न्यूज़ कोठरी’ में आपका स्वागत है — आइए, कुंडी खोलिए, अंदर बैठिए और खबरों का असली स्वाद लीजिए!”",
-            "“We are the India that wears its rootedness with pride — proud of its roots and its tongue, yet bold enough to hold the world in its fist. Welcome to News Kothari: open the latch, step inside, and taste the news as it really is.”"
+            "“हम वो इंडिया हैं जो अपने ठेठपन पर कॉलर खड़ा करता है — जिसे अपनी जड़ों और अपनी बोली पर गुरूर है, लेकिन जो दुनिया को मुट्ठी में करने का माद्दा रखता है। ‘न्यूज़ कोठ्री’ में आपका स्वागत है — आइए, कुंडी खोलिए, अंदर बैठिए और खबरों का असली स्वाद लीजिए!”",
+            "“We are the India that wears its rootedness with pride — proud of its roots and its tongue, yet bold enough to hold the world in its fist. Welcome to News Kothri: open the latch, step inside, and taste the news as it really is.”"
           ),
           by: t("— संपादकीय आमंत्रण", "— Editorial welcome"),
         }

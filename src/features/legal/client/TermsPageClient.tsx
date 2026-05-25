@@ -20,8 +20,8 @@ export default function TermsPageClient() {
       lead={
         <p className="legal-lead">
           {t(
-            "ये नियम News Kothari वेबसाइट और उससे जुड़ी सेवाओं (रीडर अकाउंट, बुकमार्क, लाइक, न्यूज़लेटर, टिप्पणी जहाँ उपलब्ध हो, और अन्य फीचर्स) के उपयोग को नियंत्रित करते हैं। पूर्ण विवरण नीचे दिए गए खंडों में है।",
-            "These terms govern your use of the News Kothari website and related services (reader accounts, bookmarks, likes, comments where available, and other features). The sections below set out the full detail."
+            "ये नियम News Kothri वेबसाइट और उससे जुड़ी सेवाओं (रीडर अकाउंट, बुकमार्क, लाइक, न्यूज़लेटर, टिप्पणी जहाँ उपलब्ध हो, और अन्य फीचर्स) के उपयोग को नियंत्रित करते हैं। पूर्ण विवरण नीचे दिए गए खंडों में है।",
+            "These terms govern your use of the News Kothri website and related services (reader accounts, bookmarks, likes, comments where available, and other features). The sections below set out the full detail."
           )}
         </p>
       }

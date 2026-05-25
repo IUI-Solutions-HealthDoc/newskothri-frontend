@@ -5,12 +5,12 @@ import { siteName, toAbsoluteUrl } from "../../lib/seo/metadataHelpers";
 export const metadata: Metadata = {
   title: "Terms & conditions",
   description:
-    "Read News Kothari terms covering service scope, account responsibilities, content usage, and legal conditions.",
+    "Read News Kothri terms covering service scope, account responsibilities, content usage, and legal conditions.",
   alternates: { canonical: toAbsoluteUrl("/terms") },
   openGraph: {
     title: `Terms & conditions | ${siteName}`,
     description:
-      "Usage terms for News Kothari including account rules, disclaimers, and intellectual property conditions.",
+      "Usage terms for News Kothri including account rules, disclaimers, and intellectual property conditions.",
     url: toAbsoluteUrl("/terms"),
   },
 };

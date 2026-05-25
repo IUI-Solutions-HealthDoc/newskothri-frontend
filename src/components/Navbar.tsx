@@ -32,7 +32,7 @@ const SOCIAL_LINKS = [
   { name: "Instagram", icon: <IgIcon />,              url: SITE_SOCIAL.instagram, color: "#E1306C" },
   { name: "X",         icon: <TwIcon />,              url: SITE_SOCIAL.x,          color: "#1DA1F2" },
   { name: "Facebook",  icon: <FbIcon />,              url: SITE_SOCIAL.facebook,  color: "#1877F2" },
-  { name: "Telegram",  icon: <Send size={16} />,      url: "https://t.me/kotharinews",          color: "#2AABEE" },
+  { name: "Telegram",  icon: <Send size={16} />,      url: "https://t.me/kothrinews",          color: "#2AABEE" },
 ];
 
 export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
@@ -179,7 +179,7 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
             href="/"
             className="nav-logo"
             onClick={(e) => { e.preventDefault(); navigate("/"); }}
-            aria-label={t("खबर कोठरी — होम", "Khabar Kothri — Home")}
+            aria-label={t("न्यूज़ कोठ्री — होम", "News Kothri — Home")}
           >
             <BrandLogo className="nav-brand-logo-img" height={44} decorative />
           </a>
@@ -366,7 +366,7 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
                   href="/"
                   className="drawer-brand-hit"
                   onClick={(e) => { e.preventDefault(); navigate("/"); setMobileOpen(false); }}
-                  aria-label={t("खबर कोठरी — होम", "Khabar Kothri — Home")}
+                  aria-label={t("न्यूज़ कोठ्री — होम", "News Kothri — Home")}
                 >
                   <BrandLogo className="drawer-brand-logo-img" height={40} decorative />
                 </a>

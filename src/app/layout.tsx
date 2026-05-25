@@ -18,6 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: getMetadataBase(),
+    applicationName: name,
     icons: {
       icon: [{ url: "/brand-logo.png", type: "image/png" }],
       apple: [{ url: "/brand-logo.png", type: "image/png" }],

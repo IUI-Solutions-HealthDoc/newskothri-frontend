@@ -354,7 +354,7 @@
 
   .cardsGrid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 14px;
   }
 
   .sectionBlock .cardBody {
@@ -402,7 +402,7 @@
 
   .cardsGrid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 16px;
   }
 
   .cardBody {
@@ -435,6 +435,18 @@
   .leadSummary {
     font-size: 14px;
     line-height: 1.52;
+  }
+
+  :global([data-lang="hi"]) .leadSummary {
+    line-height: 1.62;
+  }
+
+  .sectionBlock {
+    contain-intrinsic-size: auto 380px;
+  }
+
+  .homeMixedGrid {
+    gap: 16px;
   }
 
   .cardBody {

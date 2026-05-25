@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════
-   KOTHARI NEWS — Mobile & narrow-viewport hardening
+   KOTHRI NEWS — Mobile & narrow-viewport hardening
    Loaded last. Prevents horizontal scroll and stacks layouts earlier
    (769–900px) so zoomed-out phones don't get cramped desktop chrome.
    ══════════════════════════════════════════════════════════════════ */
@@ -28,7 +28,6 @@ body {
 .shows-page,
 .inst-page,
 .reader-auth-page,
-.reader-profile-page,
 .privacy-page {
   min-width: 0;
   max-width: 100%;
@@ -70,8 +69,8 @@ body {
 @media (max-width: 900px) {
   :root {
     --gutter: clamp(12px, 3.6vw, 20px);
-    --kn-fixed-header-h-en: 118px;
-    --kn-fixed-header-h-hi: 134px;
+    --kn-fixed-header-h-en: 124px;
+    --kn-fixed-header-h-hi: 140px;
     --kn-fixed-header-h: calc(var(--kn-fixed-header-h-en) + env(safe-area-inset-top, 0px));
     --kn-page-top: var(--kn-fixed-header-h);
     --kn-bottom-nav-h: calc(6px + 54px + max(12px, var(--kn-safe-bottom)));
@@ -109,9 +108,14 @@ body {
   .profile-shell,
   .inst-page-inner,
   .reader-auth-page,
-  .reader-profile-page,
   .privacy-page-inner {
     padding-bottom: max(20px, calc(var(--kn-bottom-nav-h, 72px) + 12px + env(safe-area-inset-bottom, 0px)));
+  }
+
+  .profile-shell {
+    padding-top: calc(var(--kn-page-top) + 12px);
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
   }
 
   .cat-page-grid {
@@ -329,7 +333,10 @@ body {
   .bottom-nav-tab,
   .inst-pill,
   .editors-all-btn,
-  .cat-pill {
+  .cat-pill,
+  .hero-cin-action-btn,
+  .hero-cin-read-btn,
+  .hero-cin-side-item {
     min-height: 44px;
     touch-action: manipulation;
   }

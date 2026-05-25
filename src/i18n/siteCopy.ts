@@ -5,18 +5,18 @@ export function pickCopy(lang: UiLang, hi: string, en: string): string {
 }
 
 export function siteName(lang: UiLang): string {
-  return pickCopy(lang, "खबर कोठरी", "Kothari News");
+  return pickCopy(lang, "न्यूज़ कोठ्री", "News Kothri");
 }
 
 export function siteBrandLegal(lang: UiLang): string {
-  return pickCopy(lang, "खबर कोठरी", "Khabar Kothri");
+  return siteName(lang);
 }
 
 export function siteDefaultDescription(lang: UiLang): string {
   return pickCopy(
     lang,
-    "खबर कोठरी — देश, विदेश, राजनीति, खेल, स्वास्थ्य, कृषि, व्यापार और मनोरंजन की तेज़, सत्यापित खबरें।",
-    "Khabar Kothari brings fast, verified coverage across desh, videsh, rajneeti, khel, health, krishi, business and manoranjan."
+    "न्यूज़ कोठ्री — देश, विदेश, राजनीति, खेल, स्वास्थ्य, कृषि, व्यापार और मनोरंजन की तेज़, सत्यापित खबरें।",
+    "News Kothri brings fast, verified coverage across desh, videsh, rajneeti, khel, health, krishi, business and manoranjan."
   );
 }
 

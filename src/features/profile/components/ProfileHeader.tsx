@@ -42,7 +42,11 @@ export default function ProfileHeader({
             {lastLoginLabel && <p className="profile-meta-line">{lastLoginLabel}</p>}
           </div>
         </div>
-        <button type="button" className="profile-btn ghost profile-head-logout" onClick={onLogout}>
+        <button
+          type="button"
+          className="profile-btn ghost profile-head-logout profile-btn-block-sm"
+          onClick={onLogout}
+        >
           {t("लॉग आउट", "Log out")}
         </button>
       </header>
@@ -53,7 +57,11 @@ export default function ProfileHeader({
     return (
       <div className="profile-head profile-head-signedin">
         <h1 className="profile-title">{welcome}</h1>
-        <button type="button" className="profile-btn ghost profile-head-logout" onClick={onLogout}>
+        <button
+          type="button"
+          className="profile-btn ghost profile-head-logout profile-btn-block-sm"
+          onClick={onLogout}
+        >
           {t("लॉग आउट", "Log out")}
         </button>
       </div>

@@ -1,6 +1,6 @@
 import type { BilingualSection } from "../components/LegalMarkdownSections";
 
-const B = "News Kothari";
+const B = "News Kothri";
 
 export const PRIVACY_SECTIONS: BilingualSection[] = [
   {

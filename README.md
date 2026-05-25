@@ -1,4 +1,4 @@
-# Kothari News (`web-next`)
+# Kothri News (`web-next`)
 
 Next.js App Router public reader site for this monorepo (`backend/` API, `cms/` desk).
 
