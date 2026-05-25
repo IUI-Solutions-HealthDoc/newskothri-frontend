@@ -290,9 +290,16 @@ body {
   }
 
   .footer-inner,
-  .footer-inner-v2,
+  .footer-inner-v2 {
+    grid-template-columns: 1fr !important;
+  }
+
   .footer-premium-inner {
     grid-template-columns: 1fr !important;
+  }
+
+  .footer-premium-nav-grid {
+    grid-template-columns: 1fr 1fr !important;
   }
 
   .nav-brand-wordmark-img {

@@ -1,24 +1,12 @@
 "use client";
 
-import { type CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import {
-  CirclePlay, Camera, AtSign, Globe, Send,
-  Heart, Flag, Tv, Sparkles, Building2,
-} from "lucide-react";
+import { Heart, Flag, Tv, Sparkles, Building2 } from "lucide-react";
 import { useLang } from "../context/LangContext";
 import { categories } from "../data/publicCategories";
 import BrandLogo from "./BrandLogo";
-import { SITE_SOCIAL } from "../config/siteSocial";
+import { SITE_SOCIAL_LINKS, SiteSocialIconButton } from "./social/siteSocialLinks";
 import { siteBrandLegal } from "../i18n/siteCopy";
-
-const SOCIAL = [
-  { key: "yt", name: "YouTube", nameHi: "यूट्यूब", url: SITE_SOCIAL.youtube, icon: CirclePlay, color: "#FF0000" },
-  { key: "ig", name: "Instagram", nameHi: "इंस्टाग्राम", url: SITE_SOCIAL.instagram, icon: Camera, color: "#E1306C" },
-  { key: "tw", name: "X", nameHi: "एक्स", url: SITE_SOCIAL.x, icon: AtSign, color: "#e7e9ea" },
-  { key: "fb", name: "Facebook", nameHi: "फेसबुक", url: SITE_SOCIAL.facebook, icon: Globe, color: "#1877F2" },
-  { key: "tg", name: "Telegram", nameHi: "टेलीग्राम", url: "https://t.me/kothrinews", icon: Send, color: "#2AABEE" },
-] as const;
 
 const CAT_COLOR: Record<string, string> = {
   desh: "var(--cat-desh)",
@@ -73,94 +61,81 @@ export default function SiteFooter() {
             <Link to="/" className="footer-premium-brand-logo-link" aria-label={t("होम", "Home")}>
               <BrandLogo className="footer-premium-brand-logo" height={56} decorative />
             </Link>
+            <p className="footer-premium-brand-tagline">
+              {t(
+                "सत्यापित खबरें, साफ़ भाषा — आपकी डिजिटल कोठ्री।",
+                "Verified news, clear voice — your digital newsroom."
+              )}
+            </p>
           </div>
-          <p className="footer-premium-brand-tagline">
-            {t(
-              "सत्यापित खबरें, साफ़ भाषा — आपकी डिजिटल कोठ्री।",
-              "Verified news, clear voice — your digital newsroom."
-            )}
-          </p>
           <div className="footer-premium-social">
-            {SOCIAL.map(({ key, name, nameHi, url, icon: Icon, color }) => {
-              const label = lang === "hi" ? nameHi : name;
-              return (
-              <a
-                key={key}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer-premium-social-btn"
-                style={{ "--social": color } as CSSProperties}
-                title={label}
-                aria-label={label}
-              >
-                <Icon size={17} strokeWidth={2} aria-hidden />
-                <span className="footer-premium-social-label">{label}</span>
-              </a>
-              );
-            })}
+            {SITE_SOCIAL_LINKS.map((link) => (
+              <SiteSocialIconButton key={link.key} link={link} lang={lang} />
+            ))}
           </div>
         </section>
 
-        <nav className="footer-premium-col">
-          <h3 className="footer-premium-heading">
-            <Sparkles size={14} className="footer-premium-heading-icon" aria-hidden />
-            {t("श्रेणियाँ", "Categories")}
-          </h3>
-          <ul className="footer-premium-links">
-            {browseCats.map((c) => (
-              <li key={c.slug}>
-                <Link to={`/category/${c.slug}`} className="footer-premium-cat-link">
-                  <span
-                    className="footer-premium-cat-dot"
-                    style={{ background: CAT_COLOR[c.slug] || "var(--brand-red)" }}
-                  />
-                  {lang === "hi" ? c.name : c.nameEn}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <nav className="footer-premium-col">
-          <h3 className="footer-premium-heading">
-            <Tv size={14} className="footer-premium-heading-icon" aria-hidden />
-            {t("खोजें", "Explore")}
-          </h3>
-          <ul className="footer-premium-links">
-            <li>
-              <Link to="/" className="footer-premium-text-link">{t("होम", "Home")}</Link>
-            </li>
-            <li>
-              <Link to="/category/desh" className="footer-premium-text-link">{t("देश खबरें", "Desh")}</Link>
-            </li>
-            <li>
-              <Link to="/shows" className="footer-premium-text-link">{t("शोज़ व वीडियो", "Shows & video")}</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <nav className="footer-premium-col">
-          <h3 className="footer-premium-heading">
-            <Building2 size={14} className="footer-premium-heading-icon" aria-hidden />
-            {t("कंपनी", "Company")}
-          </h3>
-          <ul className="footer-premium-links">
-            {company.map((row, i) => (
-              <li key={i}>
-                {row.to ? (
-                  <Link to={row.to} className="footer-premium-text-link">
-                    {lang === "hi" ? row.hi : row.en}
+        <div className="footer-premium-nav-grid">
+          <nav className="footer-premium-col">
+            <h3 className="footer-premium-heading">
+              <Sparkles size={14} className="footer-premium-heading-icon" aria-hidden />
+              {t("श्रेणियाँ", "Categories")}
+            </h3>
+            <ul className="footer-premium-links">
+              {browseCats.map((c) => (
+                <li key={c.slug}>
+                  <Link to={`/category/${c.slug}`} className="footer-premium-cat-link">
+                    <span
+                      className="footer-premium-cat-dot"
+                      style={{ background: CAT_COLOR[c.slug] || "var(--brand-red)" }}
+                    />
+                    {lang === "hi" ? c.name : c.nameEn}
                   </Link>
-                ) : (
-                  <button type="button" className="footer-premium-text-link footer-premium-text-btn">
-                    {lang === "hi" ? row.hi : row.en}
-                  </button>
-                )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <nav className="footer-premium-col">
+            <h3 className="footer-premium-heading">
+              <Tv size={14} className="footer-premium-heading-icon" aria-hidden />
+              {t("खोजें", "Explore")}
+            </h3>
+            <ul className="footer-premium-links">
+              <li>
+                <Link to="/" className="footer-premium-text-link">{t("होम", "Home")}</Link>
               </li>
-            ))}
-          </ul>
-        </nav>
+              <li>
+                <Link to="/category/desh" className="footer-premium-text-link">{t("देश खबरें", "Desh")}</Link>
+              </li>
+              <li>
+                <Link to="/shows" className="footer-premium-text-link">{t("शोज़ व वीडियो", "Shows & video")}</Link>
+              </li>
+            </ul>
+          </nav>
+
+          <nav className="footer-premium-col footer-premium-col--company">
+            <h3 className="footer-premium-heading">
+              <Building2 size={14} className="footer-premium-heading-icon" aria-hidden />
+              {t("कंपनी", "Company")}
+            </h3>
+            <ul className="footer-premium-links footer-premium-links--wrap">
+              {company.map((row, i) => (
+                <li key={i}>
+                  {row.to ? (
+                    <Link to={row.to} className="footer-premium-text-link">
+                      {lang === "hi" ? row.hi : row.en}
+                    </Link>
+                  ) : (
+                    <button type="button" className="footer-premium-text-link footer-premium-text-btn">
+                      {lang === "hi" ? row.hi : row.en}
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
 
       <div className="footer-premium-bottom">
@@ -188,7 +163,6 @@ export default function SiteFooter() {
           </span>
         </div>
       </div>
-
     </footer>
   );
 }
