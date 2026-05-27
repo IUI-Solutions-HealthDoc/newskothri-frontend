@@ -6,8 +6,13 @@ import ShowsCategoryGroup from "../components/ShowsCategoryGroup";
 import ShowsPageHeader from "../components/ShowsPageHeader";
 import ShowsStatsRow from "../components/ShowsStatsRow";
 import { useShowsVideos } from "../hooks/useShowsVideos";
+import type { YoutubeChannelStats } from "../../../lib/youtube/fetchChannelStats";
 
-export default function ShowsPageClient() {
+export default function ShowsPageClient({
+  channelStats,
+}: {
+  channelStats: YoutubeChannelStats | null;
+}) {
   const { lang, t } = useLang();
   const videos = useShowsVideos(lang);
 
@@ -17,7 +22,7 @@ export default function ShowsPageClient() {
     <motion.div className="shows-page" initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <ShowsPageHeader t={t} />
       <div className="shows-page-body">
-        <ShowsStatsRow t={t} />
+        <ShowsStatsRow t={t} stats={channelStats} />
         {videos.length === 0 ? (
           <p className="shows-page-sub">
             {t("वीडियो फ़ीड उपलब्ध नहीं है।", "Video feed is currently unavailable.")}

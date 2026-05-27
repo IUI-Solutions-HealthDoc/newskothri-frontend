@@ -8,11 +8,14 @@ import BrandLogo from "./BrandLogo";
 import YoutubeThumbImg from "./YoutubeThumbImg";
 import { fetchPublishedVideos } from "../services/newsApi";
 import { adaptVideos } from "../services/videoAdapter";
+import { useYoutubeChannelStats } from "../hooks/useYoutubeChannelStats";
+import { formatSubscriberSubtitle } from "../lib/youtube/formatChannelCount";
 
 export default function VideoSection() {
   const { lang, t } = useLang();
   const navigate = useNavigate();
   const [videos, setVideos] = useState<VideoItem[]>([]);
+  const { stats: channelStats } = useYoutubeChannelStats();
 
   useEffect(() => {
     fetchPublishedVideos({ limit: 12, locale: lang }).then((raw) => setVideos(adaptVideos(raw)));
@@ -91,7 +94,11 @@ export default function VideoSection() {
                 <BrandLogo className="video-channel-logo" height={36} decorative />
                 <div>
                   <div className="video-channel-name">{t("टीवी", "TV")}</div>
-                  <div className="video-channel-sub">{t("2.4M सब्सक्राइबर्स", "2.4M subscribers")}</div>
+                  <div className="video-channel-sub">
+                    {channelStats
+                      ? formatSubscriberSubtitle(channelStats.subscribersFormatted, lang)
+                      : t("सब्सक्राइबर्स", "subscribers")}
+                  </div>
                 </div>
               </div>
               <span className="card-cat-label" style={{ color: "var(--brand-red)" }}>
