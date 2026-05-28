@@ -9,7 +9,7 @@ import { useLang } from "../context/LangContext";
 import { fetchPublishedArticles } from "../services/newsApi";
 import { adaptArticles } from "../services/articleAdapter";
 
-const ROTATION_INTERVAL = 8000;
+const ROTATION_INTERVAL = 3000;
 
 export default function HeroSection() {
   const [stories, setStories] = useState<ContentArticle[]>([]);
@@ -40,10 +40,10 @@ export default function HeroSection() {
     queueMicrotask(() => {
       if (!cancelled) setHeroLoading(true);
     });
-    fetchPublishedArticles({ limit: 6, locale: lang })
+    fetchPublishedArticles({ limit: 4, locale: lang })
       .then((articles) => {
         if (cancelled) return;
-        setStories(adaptArticles(articles).slice(0, 6));
+        setStories(adaptArticles(articles).slice(0, 4));
       })
       .finally(() => {
         if (!cancelled) setHeroLoading(false);
@@ -56,10 +56,6 @@ export default function HeroSection() {
   useEffect(() => {
     if (stories.length === 0) return;
     if (reduceMotion) {
-      return;
-    }
-    /* Auto-rotate distracts on small screens; user picks from the list */
-    if (narrowHero) {
       return;
     }
     startTimeRef.current = Date.now();
@@ -84,7 +80,7 @@ export default function HeroSection() {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [activeIdx, stories.length, reduceMotion, narrowHero]);
+  }, [activeIdx, stories.length, reduceMotion]);
 
   const displayIdx =
     stories.length === 0 ? 0 : Math.min(activeIdx, stories.length - 1);

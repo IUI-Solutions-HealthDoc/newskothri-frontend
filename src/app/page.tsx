@@ -68,7 +68,7 @@ export default async function Home() {
           </section>
         ) : null}
         {homeSections.map((section) => {
-          const list = pickCategory(feed, section.slug, 6);
+          const list = pickCategory(feed, section.slug, 7);
           if (!list.length) return null;
           const [lead, ...rest] = list;
           return <HomeCategorySection key={section.slug} section={section} locale={locale} lead={lead} rest={rest} />;

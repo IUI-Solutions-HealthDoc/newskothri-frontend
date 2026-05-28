@@ -2349,7 +2349,7 @@ a { text-decoration:none; color:inherit }
 [data-lang="hi"] .ticker-item         { font-size:15px }
 [data-lang="hi"] .ticker-item-text {
   font-size: 17px;
-  line-height: 1.55;
+  line-height: 1.7;
   font-weight: 700;
   color: #fff;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
@@ -2867,11 +2867,11 @@ a { text-decoration:none; color:inherit }
 .ticker-item-text {
   color:rgba(255,255,255,.92);
   font-size:15px;
-  line-height:1.45;
+  line-height:1.62;
   font-family:var(--font-hi), var(--font-ui), system-ui, sans-serif;
   font-weight:600;
   letter-spacing:.015em;
-  padding:2px 0;
+  padding:4px 0;
 }
 .ticker-sep-icon {
   flex-shrink:0;

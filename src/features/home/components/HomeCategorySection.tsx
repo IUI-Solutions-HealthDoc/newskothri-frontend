@@ -59,8 +59,8 @@ export default function HomeCategorySection({
                   loading="lazy"
                   decoding="async"
                 />
-                <h3 className="card-title">{headline(item, locale)}</h3>
-                <p className="card-summary">{dek(item, locale)}</p>
+                <h3 className={styles.cardTitle}>{headline(item, locale)}</h3>
+                <p className={styles.cardSummary}>{dek(item, locale)}</p>
               </Link>
             </article>
           ))}
@@ -69,3 +69,4 @@ export default function HomeCategorySection({
     </section>
   );
 }
+

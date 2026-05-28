@@ -171,12 +171,13 @@
   font-size: 13px;
   color: color-mix(in srgb, #fff 65%, transparent);
   font-family: var(--font-body);
+  line-height: 1.45;
 }
 
 .meta {
   font-size: 13px;
   color: color-mix(in srgb, #fff 58%, transparent);
-  line-height: 1.5;
+  line-height: 1.65;
   font-family: var(--font-body);
 }
 
