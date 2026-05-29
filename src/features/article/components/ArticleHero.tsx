@@ -13,21 +13,23 @@ export default function ArticleHero({
   imgErr: boolean;
   onImgError: () => void;
 }) {
+  if (imgErr) {
+    return (
+      <div className="article-hero-slot">
+        <div className="article-hero-fallback" role="img" aria-label={imageAlt} />
+      </div>
+    );
+  }
+
   return (
     <div className="article-hero-slot">
-      <div className="article-hero-inset kn-media-frame">
-        {!imgErr ? (
-          <img
-            src={imageSrc}
-            alt={imageAlt}
-            className="article-hero-img kn-media-img kn-media-img--hero"
-            onError={onImgError}
-            {...IMG_EAGER_HIGH}
-          />
-        ) : (
-          <div className="article-hero-fallback" />
-        )}
-      </div>
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        className="article-hero-img"
+        onError={onImgError}
+        {...IMG_EAGER_HIGH}
+      />
     </div>
   );
 }

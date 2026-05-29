@@ -1156,26 +1156,28 @@ a { text-decoration:none; color:inherit }
 .article-hero-slot {
   min-width: 0;
   margin: 0 0 clamp(16px, 2vw, 24px);
+  background: transparent;
+  border: none;
+  padding: 0;
+  overflow: visible;
 }
 .article-main-col .article-hero-slot {
   grid-column: unset;
   grid-row: unset;
 }
-.article-hero-inset {
+.article-hero-slot .article-hero-img {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  max-height: min(520px, 56vh);
-  border-radius: 14px;
-  border: 1px solid color-mix(in srgb, var(--card-border) 86%, transparent);
-  background: var(--bg-secondary);
-  overflow: hidden;
-}
-.article-hero-inset .article-hero-img {
-  width: 100%;
-  height: 100%;
-  max-height: none;
+  height: auto;
+  max-height: min(640px, 72vh);
   object-fit: contain;
   object-position: center;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .article-hero-img {
   width: 100%;
@@ -1184,14 +1186,16 @@ a { text-decoration:none; color:inherit }
   object-fit: contain;
   object-position: center;
   display: block;
+  border: none;
+  border-radius: 0;
+  background: transparent;
 }
-/* Next.js article route: hero image without .article-hero-wrap */
-.article-main-col > .article-hero-img {
-  height: auto;
-  max-height: min(640px, 72vh);
-  border-radius: var(--r-card);
+.article-hero-fallback {
+  width: 100%;
+  min-height: min(240px, 40vw);
+  border-radius: 0;
+  background: linear-gradient(135deg, #1a1a2e, #0f3460);
 }
-.article-hero-fallback { width:100%; height:400px; background:linear-gradient(135deg,#1a1a2e,#0f3460) }
 
 /* Two-column layout */
 .article-page-layout {
@@ -2740,24 +2744,42 @@ a { text-decoration:none; color:inherit }
    KOTHRI NEWS v2 — NEW SECTION STYLES
    ══════════════════════════════════════════════════ */
 
-/* ── HERO CINEMATIC (mobile / tablet; hidden ≥900px via .hero-cinematic--mobile) ── */
+/* ── HERO CINEMATIC (breaking — all breakpoints) ── */
 .hero-cinematic-wrap { padding-top:var(--kn-page-top); background:var(--bg); position:relative; z-index:0 }
+.hero-breaking-formal-head {
+  max-width:var(--container); margin:0 auto;
+  display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+  padding:0 var(--gutter) 10px;
+  border-bottom:2px solid var(--brand-red);
+}
+.hero-breaking-formal-title {
+  margin:0;
+  font-family:var(--font-ui);
+  font-size:clamp(13px,1.4vw,15px);
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ink-900);
+}
+.hero-breaking-formal-sub {
+  margin:0;
+  font-family:var(--font-ui);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+}
 .hero-cinematic-inner {
   max-width:var(--container); margin:0 auto;
   display:grid; grid-template-columns:1fr 340px; gap:0;
   border-bottom:1px solid var(--card-border);
 }
-@media (min-width: 900px) {
-  .hero-cinematic--mobile {
-    display: none;
-  }
+.cat-main-card-link {
+  display:flex; flex-direction:column; height:100%;
+  color:inherit; text-decoration:none;
 }
-
-.hero-cin-tags-section--mobile {
-  max-width: var(--container);
-  margin: 12px auto 0;
-  padding: 0 var(--gutter, 16px);
-}
+.cat-main-card-link:hover .cat-main-title { color:var(--brand-red) }
 .hero-cinematic-main { position:relative; overflow:hidden; border-right:1px solid var(--card-border) }
 .hero-cin-img-frame {
   position:absolute; inset:0;
@@ -3243,7 +3265,9 @@ a { text-decoration:none; color:inherit }
   display:flex; align-items:flex-start; gap:var(--sp-3);
   padding:var(--sp-4) var(--sp-5); border-bottom:1px solid var(--card-border);
   cursor:pointer; transition:background var(--t);
+  text-decoration:none; color:inherit;
 }
+a.cat-side-item:hover { color:inherit }
 .cat-side-item:last-child { border-bottom:none }
 .cat-side-item:hover { background:var(--bg-secondary) }
 .cat-side-num {
@@ -4056,28 +4080,12 @@ a { text-decoration:none; color:inherit }
   }
 
   /* ── Article hero ── */
-  .article-hero-inset {
-    aspect-ratio: 16 / 9;
-    max-height: min(240px, 56vw);
-  }
-  .article-hero-inset .article-hero-img {
-    height: 100%;
-    max-height: none;
-    object-fit: contain;
-  }
-  .article-hero-wrap {
-    max-height: none;
-    aspect-ratio: unset;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .article-hero-img { height: auto; max-height: min(220px, 55vw); object-fit: contain }
-  .article-hero-fallback { height: min(220px, 42vw) }
-  .article-main-col > .article-hero-img {
+  .article-hero-slot .article-hero-img {
+    height: auto;
     max-height: min(220px, 55vw);
     object-fit: contain;
   }
+  .article-hero-fallback { min-height: min(220px, 42vw) }
 
   /* ── Search ── */
   .search-overlay { padding-top: 52px }
@@ -5913,14 +5921,10 @@ a { text-decoration:none; color:inherit }
   padding: 12px 14px 12px 16px;
 }
 
-.article-hero-img {
-  border-radius: 14px;
-  border: 1px solid color-mix(in srgb, var(--card-border) 86%, transparent);
-}
-
-.article-hero-inset .article-hero-img {
+.article-main-col .article-hero-slot .article-hero-img {
   border: none;
   border-radius: 0;
+  box-shadow: none;
 }
 
 .article-byline {

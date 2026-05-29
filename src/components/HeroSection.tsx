@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Clock, ArrowUpRight, Zap, Bookmark, Share2, Eye } from "lucide-react";
+import { Clock, ArrowUpRight, Zap, Eye } from "lucide-react";
 import type { ContentArticle } from "../services/contentTypes";
 import { useLang } from "../context/LangContext";
 import { fetchPublishedArticles } from "../services/newsApi";
 import { adaptArticles } from "../services/articleAdapter";
 import styles from "../app/newsroom.module.css";
 
-const ROTATION_INTERVAL = 3000;
+const ROTATION_INTERVAL = 5000;
 
 function storyFields(s: ContentArticle, lang: "hi" | "en") {
   return {
@@ -31,18 +31,9 @@ export default function HeroSection() {
   const { lang, t } = useLang();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
-  const [narrowHero, setNarrowHero] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
-
-  useEffect(() => {
-    const mqNarrow = window.matchMedia("(max-width: 768px)");
-    const sync = () => setNarrowHero(mqNarrow.matches);
-    sync();
-    mqNarrow.addEventListener("change", sync);
-    return () => mqNarrow.removeEventListener("change", sync);
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,6 +44,8 @@ export default function HeroSection() {
       .then((articles) => {
         if (cancelled) return;
         setStories(adaptArticles(articles).slice(0, 4));
+        setActiveIdx(0);
+        setProgress(0);
       })
       .finally(() => {
         if (!cancelled) setHeroLoading(false);
@@ -62,55 +55,70 @@ export default function HeroSection() {
     };
   }, [lang]);
 
-  useEffect(() => {
-    if (stories.length === 0) return;
-    if (reduceMotion) {
-      return;
-    }
-    startTimeRef.current = Date.now();
-    const tick = () => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const p = Math.min((elapsed / ROTATION_INTERVAL) * 100, 100);
-      setProgress(p);
-      if (p < 100) rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    intervalRef.current = setInterval(() => {
-      setActiveIdx((i) => {
-        const len = stories.length;
-        if (len === 0) return 0;
-        const cur = Math.min(i, len - 1);
-        return (cur + 1) % len;
-      });
-      setProgress(0);
-      startTimeRef.current = Date.now();
-    }, ROTATION_INTERVAL);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [activeIdx, stories.length, reduceMotion]);
-
-  const displayIdx =
-    stories.length === 0 ? 0 : Math.min(activeIdx, stories.length - 1);
-  const fillProgress = reduceMotion || narrowHero ? 0 : progress;
-
-  const goTo = (idx: number) => {
+  const goTo = useCallback((idx: number) => {
     const len = stories.length;
     const clamped = len === 0 ? 0 : Math.min(Math.max(0, idx), len - 1);
     setActiveIdx(clamped);
     setProgress(0);
-    queueMicrotask(() => {
-      startTimeRef.current = Date.now();
-    });
-  };
+    startTimeRef.current = Date.now();
+  }, [stories.length]);
+
+  useEffect(() => {
+    if (stories.length <= 1 || reduceMotion) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      return;
+    }
+
+    intervalRef.current = setInterval(() => {
+      setActiveIdx((i) => (i + 1) % stories.length);
+    }, ROTATION_INTERVAL);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [stories.length, reduceMotion]);
+
+  useEffect(() => {
+    if (stories.length <= 1 || reduceMotion) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      return;
+    }
+
+    startTimeRef.current = Date.now();
+    setProgress(0);
+
+    const tick = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const p = Math.min((elapsed / ROTATION_INTERVAL) * 100, 100);
+      setProgress(p);
+      if (p < 100) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [stories.length, reduceMotion, activeIdx]);
+
+  const displayIdx =
+    stories.length === 0 ? 0 : Math.min(activeIdx, stories.length - 1);
+  const fillProgress = reduceMotion ? 0 : progress;
 
   if (!heroLoading && stories.length === 0) {
     return (
       <section className={`hero-section hero-cinematic-wrap ${styles.breakingSection}`} aria-live="polite">
+        <div className="hero-breaking-formal-head section-inner">
+          <h2 className="hero-breaking-formal-title">{t("ताज़ा खबर", "Breaking news")}</h2>
+        </div>
         <div className="hero-cinematic-inner" style={{ padding: "48px 24px", textAlign: "center" }}>
           <p style={{ fontSize: 16, color: "var(--ink-600)", maxWidth: 480, margin: "0 auto" }}>
-            {t("अभी कोई प्रकाशित खबर नहीं है। CMS से लेख प्रकाशित करने के बाद वे यहाँ दिखेंगी।", "No published stories yet. Publish articles from the CMS to see them here.")}
+            {t(
+              "अभी कोई प्रकाशित खबर नहीं है। CMS से लेख प्रकाशित करने के बाद वे यहाँ दिखेंगी।",
+              "No published stories yet. Publish articles from the CMS to see them here."
+            )}
           </p>
         </div>
       </section>
@@ -131,163 +139,22 @@ export default function HeroSection() {
   const { title, summary, category, time, author } = storyFields(story, lang);
   const rawTags = (lang === "hi" ? story.tags : story.tagsEn) ?? [];
   const tags = rawTags.slice(0, 8).map((tag) => (tag.startsWith("#") ? tag : `#${tag}`));
-  const sideStories = stories.filter((_, i) => i !== displayIdx);
 
-  const progressRow = (
-    <div className={styles.breakingProgressRow} role="tablist" aria-label={t("टॉप खबरें", "Top stories")}>
-      {stories.map((s, i) => (
-        <button
-          key={String(s.id)}
-          type="button"
-          className={styles.breakingProgressBar}
-          onClick={() => goTo(i)}
-          aria-label={`${t("खबर", "Story")} ${i + 1}`}
-          aria-selected={i === displayIdx}
-        >
-          <span
-            className={styles.breakingProgressFill}
-            style={{
-              width: narrowHero
-                ? i === displayIdx
-                  ? "100%"
-                  : "0%"
-                : i < displayIdx
-                  ? "100%"
-                  : i === displayIdx
-                    ? `${fillProgress}%`
-                    : "0%",
-            }}
-          />
-        </button>
-      ))}
-    </div>
-  );
+  const progressWidth = (i: number) =>
+    i < displayIdx ? "100%" : i === displayIdx ? `${fillProgress}%` : "0%";
 
   return (
-    <>
-      <section
-        className={`${styles.sectionBlock} ${styles.breakingSection} ${styles.breakingDesktop}`}
-        aria-live="polite"
-      >
-        <div className={`${styles.sectionHead} ${styles.breakingSectionHead}`}>
-          <h2 className="section-title">{t("ताज़ा खबर", "Breaking news")}</h2>
-        </div>
+    <section
+      className={`hero-section hero-cinematic-wrap ${styles.breakingSection}`}
+      aria-live="polite"
+    >
+      <div className="hero-breaking-formal-head section-inner">
+        <h2 className="hero-breaking-formal-title">{t("ताज़ा खबर", "Breaking news")}</h2>
+        <p className="hero-breaking-formal-sub">
+          {t("लाइव अपडेट", "Live updates")}
+        </p>
+      </div>
 
-        <div className={styles.storyLayout}>
-          <article className={`card-default ${styles.leadCard} ${styles.breakingLeadCard}`}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={String(story.id) + lang}
-                initial={false}
-                animate={{ opacity: 1, y: 0 }}
-                exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -6 }}
-                transition={reduceMotion ? { duration: 0 } : { duration: 0.35 }}
-              >
-                <button
-                  type="button"
-                  className={`${styles.leadLink} ${styles.breakingLeadLinkStacked}`}
-                  onClick={() => navigate(`/article/${story.id}`)}
-                >
-                  <div className={`kn-media-frame ${styles.leadMedia} ${styles.breakingLeadMedia}`}>
-                    {!imgErr[story.id] ? (
-                      <img
-                        src={story.image}
-                        alt={title}
-                        width={800}
-                        height={450}
-                        className={styles.leadImage}
-                        loading="eager"
-                        fetchPriority="high"
-                        decoding="async"
-                        onError={() => setImgErr((e) => ({ ...e, [story.id]: true }))}
-                      />
-                    ) : (
-                      <div className={styles.leadImageFallback} aria-hidden />
-                    )}
-                    <span className={styles.breakingLeadScrim} aria-hidden />
-                  </div>
-                  <div className={styles.leadTextWrap}>
-                    <div className={styles.breakingLeadMeta}>
-                      {story.isBreaking ? (
-                        <span className={styles.breakingBadge}>
-                          <span className={styles.breakingBadgeDot} />
-                          {t("ब्रेकिंग", "Breaking")}
-                        </span>
-                      ) : null}
-                      <span className={styles.breakingCat}>{category}</span>
-                    </div>
-                    <h3 className={styles.leadTitle}>{title}</h3>
-                    <p className={styles.leadSummary}>{summary}</p>
-                    <div className={styles.breakingLeadByline}>
-                      <span>{author}</span>
-                      <span className={styles.breakingLeadSep}>·</span>
-                      <Clock size={12} aria-hidden />
-                      <span>{time}</span>
-                      {story.readTime ? (
-                        <>
-                          <span className={styles.breakingLeadSep}>·</span>
-                          <span>
-                            {story.readTime} {t("मिनट", "min")}
-                          </span>
-                        </>
-                      ) : null}
-                    </div>
-                  </div>
-                </button>
-                {progressRow}
-              </motion.div>
-            </AnimatePresence>
-          </article>
-
-          <div className={styles.breakingSideList}>
-            <p className={styles.breakingSideListLabel}>
-              <Zap size={13} fill="currentColor" style={{ color: "var(--brand-red)" }} />
-              {t("टॉप स्टोरीज़", "Top Stories")}
-            </p>
-            {stories.map((s, i) => {
-              const f = storyFields(s, lang);
-              const isActive = i === displayIdx;
-              return (
-                <button
-                  key={String(s.id)}
-                  type="button"
-                  className={`${styles.breakingSideRow}${isActive ? ` ${styles.breakingSideRowActive}` : ""}`}
-                  onClick={() => {
-                    goTo(i);
-                    navigate(`/article/${s.id}`);
-                  }}
-                >
-                  <span className={styles.breakingSideNum}>{String(i + 1).padStart(2, "0")}</span>
-                  <div className={styles.breakingSideThumbWrap}>
-                    {!imgErr[s.id] ? (
-                      <img
-                        src={s.image}
-                        alt=""
-                        className={styles.breakingSideThumb}
-                        loading="lazy"
-                        decoding="async"
-                        onError={() => setImgErr((e) => ({ ...e, [s.id]: true }))}
-                      />
-                    ) : (
-                      <div className={styles.breakingSideThumbFallback} aria-hidden />
-                    )}
-                  </div>
-                  <div className={styles.breakingSideBody}>
-                    <span className={styles.breakingSideCat}>{f.category}</span>
-                    <span className={styles.breakingSideTitle}>{f.title}</span>
-                    <span className={styles.breakingSideMeta}>
-                      <Clock size={10} aria-hidden />
-                      {f.time}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-    <section className="hero-section hero-cinematic-wrap hero-cinematic--mobile">
       <div className="hero-cinematic-inner">
         <div className="hero-cinematic-main">
           <AnimatePresence mode="wait">
@@ -352,53 +219,40 @@ export default function HeroSection() {
                 <span className="hero-cin-avatar">{author.charAt(0)}</span>
                 <span className="hero-cin-author-name">{author}</span>
                 <span className="hero-cin-sep">·</span>
-                <Clock size={12} style={{ opacity: 0.7 }} />
+                <Clock size={12} style={{ opacity: 0.7 }} aria-hidden />
                 <span className="hero-cin-time">{time}</span>
-                {story.readTime && (
+                {story.readTime ? (
                   <>
                     <span className="hero-cin-sep">·</span>
-                    <span className="hero-cin-readtime">{story.readTime} {t("मिनट", "min")}</span>
+                    <span className="hero-cin-readtime">
+                      {story.readTime} {t("मिनट", "min")}
+                    </span>
                   </>
-                )}
+                ) : null}
               </div>
-              <div className="hero-cin-actions">
-                <button className="hero-cin-action-btn" title={t("बुकमार्क", "Bookmark")}>
-                  <Bookmark size={15} />
-                </button>
-                <button className="hero-cin-action-btn" title={t("शेयर", "Share")}>
-                  <Share2 size={15} />
-                </button>
-                <button
-                  className="hero-cin-read-btn"
-                  onClick={() => navigate(`/article/${story.id}`)}
-                >
-                  {t("पूरी खबर", "Read Story")}
-                  <ArrowUpRight size={15} />
-                </button>
-              </div>
+              <button
+                type="button"
+                className="hero-cin-read-btn"
+                onClick={() => navigate(`/article/${story.id}`)}
+              >
+                {t("पूरी खबर", "Read Story")}
+                <ArrowUpRight size={15} aria-hidden />
+              </button>
             </div>
 
-            <div className="hero-cin-progress-row">
+            <div className="hero-cin-progress-row" role="tablist" aria-label={t("टॉप खबरें", "Top stories")}>
               {stories.map((s, i) => (
                 <button
                   key={String(s.id)}
+                  type="button"
                   className="hero-cin-progress-bar"
                   onClick={() => goTo(i)}
-                  aria-label={`Story ${i + 1}`}
+                  aria-label={`${t("खबर", "Story")} ${i + 1}`}
+                  aria-selected={i === displayIdx}
                 >
                   <span
                     className="hero-cin-progress-fill"
-                    style={{
-                      width: narrowHero
-                        ? i === displayIdx
-                          ? "100%"
-                          : "0%"
-                        : i < displayIdx
-                          ? "100%"
-                          : i === displayIdx
-                            ? `${fillProgress}%`
-                            : "0%",
-                    }}
+                    style={{ width: progressWidth(i) }}
                   />
                 </button>
               ))}
@@ -406,58 +260,79 @@ export default function HeroSection() {
           </div>
         </div>
 
-      </div>
-
-      {sideStories.length > 0 ? (
-        <div className={`${styles.breakingMobileCards} ${styles.cardsGrid}`}>
-          {sideStories.map((s) => {
-            const f = storyFields(s, lang);
-            return (
-              <article key={String(s.id)} className={`card-default ${styles.cardBody}`}>
-                <button
-                  type="button"
-                  className={styles.cardLink}
-                  onClick={() => navigate(`/article/${s.id}`)}
+        <aside className="hero-cin-side">
+          <div className="hero-cin-side-header">
+            <Zap size={13} fill="currentColor" style={{ color: "var(--brand-red)" }} aria-hidden />
+            <span>{t("टॉप स्टोरीज़", "Top Stories")}</span>
+          </div>
+          <div
+            className={`hero-cin-side-list${stories.length <= 4 ? " hero-cin-side-list--count-4" : ""}`}
+          >
+            {stories.map((s, i) => {
+              const f = storyFields(s, lang);
+              return (
+                <motion.article
+                  key={String(s.id)}
+                  className={`hero-cin-side-item${displayIdx === i ? " active" : ""}`}
+                  initial={reduceMotion ? false : { opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={reduceMotion ? { duration: 0 } : { delay: 0.1 + i * 0.08, duration: 0.4 }}
+                  onClick={() => goTo(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      goTo(i);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-current={displayIdx === i ? "true" : undefined}
                 >
-                  <div className={styles.cardMedia}>
+                  <span className="hero-cin-side-num">{String(i + 1).padStart(2, "0")}</span>
+                  <div className="hero-cin-side-thumb-wrap">
                     {!imgErr[s.id] ? (
                       <img
                         src={s.image}
-                        alt={f.title}
-                        width={800}
-                        height={450}
-                        className={styles.cardImage}
+                        alt=""
+                        className="hero-cin-side-thumb"
                         loading="lazy"
                         decoding="async"
                         onError={() => setImgErr((e) => ({ ...e, [s.id]: true }))}
                       />
                     ) : (
-                      <div className={styles.cardImageFallback} aria-hidden />
+                      <div className="hero-cin-side-thumb-fallback" aria-hidden />
                     )}
                   </div>
-                  <h3 className={styles.cardTitle}>{f.title}</h3>
-                  <p className={styles.cardSummary}>{f.summary}</p>
-                </button>
-              </article>
-            );
-          })}
-        </div>
-      ) : null}
-
-      {tags.length > 0 ? (
-        <div className="hero-cin-tags-section hero-cin-tags-section--mobile">
-          <p className="hero-cin-tags-label">
-            <Eye size={11} />
-            {t("ट्रेंडिंग", "Trending")}
-          </p>
-          <div className="hero-cin-tags-row">
-            {tags.map((tag) => (
-              <button key={tag} type="button" className="hero-cin-tag">{tag}</button>
-            ))}
+                  <div className="hero-cin-side-body">
+                    <span className="hero-cin-side-cat">{f.category}</span>
+                    <h3 className="hero-cin-side-title">{f.title}</h3>
+                    <div className="hero-cin-side-meta">
+                      <Clock size={10} aria-hidden />
+                      <span>{f.time}</span>
+                    </div>
+                  </div>
+                </motion.article>
+              );
+            })}
           </div>
-        </div>
-      ) : null}
+
+          {tags.length > 0 && (
+            <div className="hero-cin-tags-section">
+              <p className="hero-cin-tags-label">
+                <Eye size={11} aria-hidden />
+                {t("ट्रेंडिंग", "Trending")}
+              </p>
+              <div className="hero-cin-tags-row">
+                {tags.map((tag) => (
+                  <button key={tag} type="button" className="hero-cin-tag">
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </aside>
+      </div>
     </section>
-    </>
   );
 }

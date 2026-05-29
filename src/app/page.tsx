@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import HeroSection from "../components/HeroSection";
-import HomeCategorySection from "../features/home/components/HomeCategorySection";
-import { homeSections } from "../features/home/config/sections";
-import { pickCategory } from "../features/home/server/homeFeed";
+import HomeCategoriesBlock from "../features/home/components/HomeCategoriesBlock";
 import { buildHomeWebSiteJsonLd } from "../features/home/seo/schema";
 import { adaptArticles } from "../services/articleAdapter";
 import { fetchPublicArticlesPage } from "../lib/serverPublicApi";
@@ -67,12 +65,11 @@ export default async function Home() {
             </p>
           </section>
         ) : null}
-        {homeSections.map((section) => {
-          const list = pickCategory(feed, section.slug, 7);
-          if (!list.length) return null;
-          const [lead, ...rest] = list;
-          return <HomeCategorySection key={section.slug} section={section} locale={locale} lead={lead} rest={rest} />;
-        })}
+        <HomeCategoriesBlock
+          feed={feed}
+          locale={locale}
+          sideListLabel={locale === "hi" ? "अन्य खबरें" : "More in section"}
+        />
         <InfinitePublicArticleList {...infiniteListProps} />
       </div>
     </main>
