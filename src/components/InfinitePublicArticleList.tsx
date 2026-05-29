@@ -338,7 +338,7 @@ export default function InfinitePublicArticleList({
       ) : null}
 
       {mixedFallback.length > 0 ? (
-        <div className={`cat-page-grid ${styles.homeMixedGrid}`}>
+        <div className={styles.homeMixedGrid}>
           {mixedFallback.map((item) => (
             <article key={String(item.id)} className={`card-default ${styles.cardBody}`}>
               <Link href={`/article/${item.id}`} className={styles.cardLink}>
@@ -353,8 +353,8 @@ export default function InfinitePublicArticleList({
                     decoding="async"
                   />
                 </div>
-                <h3 className="card-title">{itemHeadline(item, locale, feedSource)}</h3>
-                <p className="card-summary">{itemDek(item, locale, feedSource)}</p>
+                <h3 className={styles.cardTitle}>{itemHeadline(item, locale, feedSource)}</h3>
+                <p className={styles.cardSummary}>{itemDek(item, locale, feedSource)}</p>
               </Link>
             </article>
           ))}
@@ -371,7 +371,7 @@ export default function InfinitePublicArticleList({
       ) : null}
 
       {loadable ? (
-        <div className="cat-page-grid">
+        <div className={styles.homeMixedGrid}>
           {extra.map((item) => (
             <article key={String(item.id)} className={`card-default ${styles.cardBody}`}>
               <Link href={`/article/${item.id}`} className={styles.cardLink}>
@@ -386,8 +386,8 @@ export default function InfinitePublicArticleList({
                     decoding="async"
                   />
                 </div>
-                <h3 className="card-title">{itemHeadline(item, locale, feedSource)}</h3>
-                <p className="card-summary">{itemDek(item, locale, feedSource)}</p>
+                <h3 className={styles.cardTitle}>{itemHeadline(item, locale, feedSource)}</h3>
+                <p className={styles.cardSummary}>{itemDek(item, locale, feedSource)}</p>
               </Link>
             </article>
           ))}

@@ -16,7 +16,6 @@ import { IconWhatsApp, IconXLogo } from "../../../components/icons/ShareBrandIco
 import { useLang } from "../../../context/LangContext";
 import { useReaderAuth } from "../../../context/ReaderAuthContext";
 import ArticleContent from "../components/ArticleContent";
-import ArticleHero from "../components/ArticleHero";
 import ArticleSidebar from "../components/ArticleSidebar";
 import { useArticle, useArticleClipboard } from "../hooks/useArticle";
 import { useBookmarks } from "../hooks/useBookmarks";
@@ -97,7 +96,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
   const bodyHtml = paragraphs[0] && typeof paragraphs[0] === "string" ? paragraphs[0] : "";
 
   const color = categoryColors[article.categorySlug] || "#BB1919";
-  const sideRelated = recommendedArticles.slice(0, 4);
+  const sideRelated = recommendedArticles.slice(0, 8);
   const stripItems = recommendedArticles.slice(0, 8);
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
 
@@ -108,13 +107,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <ArticleHero
-        scaleX={scaleX}
-        imageSrc={article.image}
-        imageAlt={title}
-        imgErr={imgErr}
-        onImgError={() => setImgErr(true)}
-      />
+      <motion.div className="article-progress-bar" style={{ scaleX, transformOrigin: "0%" }} />
       <div className="article-page-layout">
         <ArticleContent
           article={article}
@@ -127,6 +120,9 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
           tags={tags}
           bodyHtml={bodyHtml}
           paragraphs={paragraphs}
+          imageSrc={article.image}
+          imgErr={imgErr}
+          onImgError={() => setImgErr(true)}
           stripItems={stripItems}
           mobileRelated={sideRelated}
           mobileMostRead={mostReadSidebar}

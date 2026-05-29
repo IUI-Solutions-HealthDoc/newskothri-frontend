@@ -1153,6 +1153,30 @@ a { text-decoration:none; color:inherit }
   align-items: center;
   justify-content: center;
 }
+.article-hero-slot {
+  min-width: 0;
+  margin: 0 0 clamp(16px, 2vw, 24px);
+}
+.article-main-col .article-hero-slot {
+  grid-column: unset;
+  grid-row: unset;
+}
+.article-hero-inset {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: min(520px, 56vh);
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--card-border) 86%, transparent);
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+.article-hero-inset .article-hero-img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
+}
 .article-hero-img {
   width: 100%;
   height: auto;
@@ -1178,7 +1202,7 @@ a { text-decoration:none; color:inherit }
   gap:var(--sp-10);
   align-items:start;
 }
-.article-main-col { min-width:0 }
+.article-main-col { min-width:0; grid-column:1; grid-row:1 }
 
 /* Breadcrumb */
 .article-back-btn {
@@ -2123,7 +2147,7 @@ a { text-decoration:none; color:inherit }
 }
 
 /* ── SIDEBAR ── */
-.article-sidebar { position:sticky; top:180px; display:flex; flex-direction:column; gap:var(--sp-6) }
+.article-sidebar { position:sticky; top:180px; display:flex; flex-direction:column; gap:var(--sp-6); grid-column:2; grid-row:1; align-self:start }
 
 .aside-block {
   background:var(--card-bg); border:1px solid var(--card-border);
@@ -2140,6 +2164,17 @@ a { text-decoration:none; color:inherit }
 
 /* Aside related cards */
 .aside-related-list { display:flex; flex-direction:column }
+.aside-more-articles-list .aside-mostread-item {
+  padding: 10px 14px;
+}
+.aside-more-articles-list .aside-mostread-title {
+  font-size: 13px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .aside-related-card {
   display:flex; gap:var(--sp-3); padding:var(--sp-4) var(--sp-5);
   border-bottom:1px solid var(--card-border);
@@ -2581,7 +2616,8 @@ a { text-decoration:none; color:inherit }
 
   /* Article page: single column on mobile */
   .article-page-layout { grid-template-columns:1fr; gap:0; padding:0 var(--gutter) var(--sp-20) }
-  .article-sidebar { display:none }
+  .article-main-col { grid-column:1; grid-row:1 }
+  .article-sidebar { display:none; grid-column:auto; grid-row:auto }
   .article-share-section.article-share-section--desktop-only { display:none !important }
   .article-share-bar-mobile { display:block; padding:var(--sp-4) 0; border-bottom:1px solid var(--card-border); margin-bottom:var(--sp-5) }
   .article-share-bar-label { font-size:11px; font-weight:800; font-family:var(--font-ui); color:var(--text-light); text-transform:uppercase; letter-spacing:.7px; margin-bottom:var(--sp-2) }
@@ -2704,12 +2740,23 @@ a { text-decoration:none; color:inherit }
    KOTHRI NEWS v2 — NEW SECTION STYLES
    ══════════════════════════════════════════════════ */
 
-/* ── HERO CINEMATIC ── */
+/* ── HERO CINEMATIC (mobile / tablet; hidden ≥900px via .hero-cinematic--mobile) ── */
 .hero-cinematic-wrap { padding-top:var(--kn-page-top); background:var(--bg); position:relative; z-index:0 }
 .hero-cinematic-inner {
   max-width:var(--container); margin:0 auto;
   display:grid; grid-template-columns:1fr 340px; gap:0;
   border-bottom:1px solid var(--card-border);
+}
+@media (min-width: 900px) {
+  .hero-cinematic--mobile {
+    display: none;
+  }
+}
+
+.hero-cin-tags-section--mobile {
+  max-width: var(--container);
+  margin: 12px auto 0;
+  padding: 0 var(--gutter, 16px);
 }
 .hero-cinematic-main { position:relative; overflow:hidden; border-right:1px solid var(--card-border) }
 .hero-cin-img-frame {
@@ -4009,6 +4056,15 @@ a { text-decoration:none; color:inherit }
   }
 
   /* ── Article hero ── */
+  .article-hero-inset {
+    aspect-ratio: 16 / 9;
+    max-height: min(240px, 56vw);
+  }
+  .article-hero-inset .article-hero-img {
+    height: 100%;
+    max-height: none;
+    object-fit: contain;
+  }
   .article-hero-wrap {
     max-height: none;
     aspect-ratio: unset;
@@ -5860,6 +5916,11 @@ a { text-decoration:none; color:inherit }
 .article-hero-img {
   border-radius: 14px;
   border: 1px solid color-mix(in srgb, var(--card-border) 86%, transparent);
+}
+
+.article-hero-inset .article-hero-img {
+  border: none;
+  border-radius: 0;
 }
 
 .article-byline {

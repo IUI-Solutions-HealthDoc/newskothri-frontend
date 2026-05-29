@@ -16,6 +16,7 @@ import { ArticleRecommendationStrip } from "./RelatedArticles";
 import { ArticleYoutubeClip } from "./ArticleYoutubeEmbeds";
 import { splitBodyWithYoutubeSlots } from "../utils/youtubeEmbedMarkers";
 import { youtubeVideoIdFromUrl } from "../../../utils/youtube";
+import ArticleHero from "./ArticleHero";
 import RelatedCard from "./RelatedCard";
 import { isHtmlParagraph } from "../utils/formatArticle";
 import { nativeShare, shareToFacebook, shareToTwitter, shareToWhatsApp } from "../utils/share";
@@ -46,6 +47,9 @@ export default function ArticleContent({
   tags,
   bodyHtml,
   paragraphs,
+  imageSrc,
+  imgErr,
+  onImgError,
   stripItems,
   mobileRelated,
   mobileMostRead,
@@ -68,6 +72,9 @@ export default function ArticleContent({
   tags: string[];
   bodyHtml: string;
   paragraphs: string[];
+  imageSrc: string;
+  imgErr: boolean;
+  onImgError: () => void;
   stripItems: NewsItem[];
   mobileRelated: NewsItem[];
   mobileMostRead: NewsItem[];
@@ -165,6 +172,12 @@ export default function ArticleContent({
           </button>
         </div>
       </div>
+      <ArticleHero
+        imageSrc={imageSrc}
+        imageAlt={title}
+        imgErr={imgErr}
+        onImgError={onImgError}
+      />
       <motion.div className="article-body" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.45 }}>
         {bodyBlocks.length > 0 ? (
           <>
