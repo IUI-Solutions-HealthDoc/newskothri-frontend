@@ -256,7 +256,9 @@ export default function HeroSection() {
             <Zap size={13} fill="currentColor" style={{ color: "var(--brand-red)" }} />
             <span>{t("टॉप स्टोरीज़", "Top Stories")}</span>
           </div>
-          <motion.div className="hero-cin-side-list">
+          <motion.div
+            className={`hero-cin-side-list${stories.length <= 4 ? " hero-cin-side-list--count-4" : ""}`}
+          >
             {stories.map((s, i) => {
               const sTitle = lang === "hi" ? s.title : s.titleEn;
               const sCat   = lang === "hi" ? s.category : s.categoryEn;

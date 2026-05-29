@@ -24,15 +24,40 @@ export default function ProfileSignInSection({
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
+
+    let lastWidth = 0;
+    let stableFrames = 0;
+    let debounceId: ReturnType<typeof setTimeout> | undefined;
+
+    const applyWidth = (w: number) => {
+      if (w <= 200) return;
+      if (lastWidth > 0 && Math.abs(w - lastWidth) < 12) return;
+      lastWidth = w;
+      setBtnWidth(w);
+    };
+
     const sync = () => {
       const w = Math.floor(el.getBoundingClientRect().width);
-      if (w > 200) setBtnWidth(w);
+      if (lastWidth > 0 && Math.abs(w - lastWidth) < 12) {
+        stableFrames += 1;
+        if (stableFrames >= 2) ro.disconnect();
+        return;
+      }
+      stableFrames = 0;
+      clearTimeout(debounceId);
+      debounceId = setTimeout(() => applyWidth(w), 80);
     };
-    sync();
+
+    applyWidth(Math.floor(el.getBoundingClientRect().width));
     const ro = new ResizeObserver(sync);
     ro.observe(el);
-    return () => ro.disconnect();
+    return () => {
+      clearTimeout(debounceId);
+      ro.disconnect();
+    };
   }, []);
+
+  const googleBtnWidth = Math.min(Math.max(btnWidth, 280), 400);
 
   return (
     <div className="profile-signin">
@@ -62,7 +87,7 @@ export default function ProfileSignInSection({
               onSuccess={onGoogleSuccess}
               onError={onGoogleError}
               size="large"
-              width={btnWidth}
+              width={googleBtnWidth}
               text="continue_with"
               theme="outline"
               useOneTap={false}

@@ -253,3 +253,25 @@
 .attr a:hover {
   color: #fff;
 }
+
+:global([data-lang="hi"]) .titleRow {
+  font-family: var(--font-hi);
+  line-height: 1.55;
+}
+
+:global([data-lang="hi"]) .select {
+  font-family: var(--font-hi-body);
+  line-height: 1.6;
+}
+
+:global([data-lang="hi"]) .select option {
+  font-family: var(--font-hi-body);
+}
+
+:global([data-lang="hi"]) .tempSub {
+  line-height: 1.65;
+}
+
+:global([data-lang="hi"]) .meta {
+  line-height: 1.7;
+}

@@ -149,9 +149,20 @@
   color: var(--text);
 }
 
+[data-lang="hi"] .profile-signin-title {
+  font-family: var(--font-hi);
+  line-height: 1.55;
+  padding-bottom: 0.06em;
+}
+
 .profile-signin-lead {
   margin-bottom: 14px;
   max-width: 52ch;
+}
+
+[data-lang="hi"] .profile-signin-lead {
+  font-family: var(--font-hi-body);
+  line-height: 1.72;
 }
 
 .profile-signin-copy {
@@ -171,11 +182,16 @@
   gap: 8px;
 }
 
+[data-lang="hi"] .profile-signin-list {
+  font-family: var(--font-hi-body);
+  line-height: 1.72;
+}
+
 .profile-signin-card {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  min-height: 260px;
+  min-height: auto;
   border-radius: 14px;
   padding: 22px;
   box-shadow: var(--shadow-ui-rest);
@@ -196,13 +212,14 @@
 .profile-google-wrap {
   width: 100%;
   max-width: 100%;
-  min-height: 48px;
+  min-height: 52px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
   padding: 4px;
   overflow: hidden;
+  contain: layout style;
 }
 
 .profile-google-wrap > div,

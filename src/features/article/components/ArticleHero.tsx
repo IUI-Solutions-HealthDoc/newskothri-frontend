@@ -19,12 +19,12 @@ export default function ArticleHero({
   return (
     <>
       <motion.div className="article-progress-bar" style={{ scaleX, transformOrigin: "0%" }} />
-      <div className="article-hero-wrap">
+      <div className="article-hero-wrap kn-media-frame">
         {!imgErr ? (
           <img
             src={imageSrc}
             alt={imageAlt}
-            className="article-hero-img"
+            className="article-hero-img kn-media-img kn-media-img--hero"
             onError={onImgError}
             {...IMG_EAGER_HIGH}
           />

@@ -342,15 +342,17 @@ export default function InfinitePublicArticleList({
           {mixedFallback.map((item) => (
             <article key={String(item.id)} className={`card-default ${styles.cardBody}`}>
               <Link href={`/article/${item.id}`} className={styles.cardLink}>
-                <img
-                  src={item.image}
-                  alt={itemHeadline(item, locale, feedSource)}
-                  width={800}
-                  height={450}
-                  className={styles.cardImage}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <div className={styles.cardMedia}>
+                  <img
+                    src={item.image}
+                    alt={itemHeadline(item, locale, feedSource)}
+                    width={800}
+                    height={450}
+                    className={styles.cardImage}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
                 <h3 className="card-title">{itemHeadline(item, locale, feedSource)}</h3>
                 <p className="card-summary">{itemDek(item, locale, feedSource)}</p>
               </Link>
@@ -373,15 +375,17 @@ export default function InfinitePublicArticleList({
           {extra.map((item) => (
             <article key={String(item.id)} className={`card-default ${styles.cardBody}`}>
               <Link href={`/article/${item.id}`} className={styles.cardLink}>
-                <img
-                  src={item.image}
-                  alt={itemHeadline(item, locale, feedSource)}
-                  width={800}
-                  height={450}
-                  className={styles.cardImage}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <div className={styles.cardMedia}>
+                  <img
+                    src={item.image}
+                    alt={itemHeadline(item, locale, feedSource)}
+                    width={800}
+                    height={450}
+                    className={styles.cardImage}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
                 <h3 className="card-title">{itemHeadline(item, locale, feedSource)}</h3>
                 <p className="card-summary">{itemDek(item, locale, feedSource)}</p>
               </Link>

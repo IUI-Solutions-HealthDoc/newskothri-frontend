@@ -163,16 +163,25 @@
   gap: 0;
 }
 
+.leadMedia {
+  min-width: 0;
+}
+
 .leadImage {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  height: auto;
+  max-height: min(420px, 52vh);
+  object-fit: contain;
+  object-position: center;
+  display: block;
 }
 
 .leadTextWrap {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   padding: 14px 16px 16px;
+  min-width: 0;
 }
 
 .leadTitle {
@@ -212,15 +221,31 @@
 }
 
 .cardLink {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   align-content: start;
+  min-width: 0;
+}
+
+.cardMedia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  min-height: 120px;
+  max-height: min(280px, 38vw);
 }
 
 .cardImage {
   width: 100%;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
+  height: auto;
+  max-height: min(280px, 38vw);
+  object-fit: contain;
+  object-position: center;
+  display: block;
   border-radius: 12px;
   transition: transform 220ms var(--ease), filter 220ms var(--ease);
 }
@@ -250,12 +275,19 @@
 
 :global([data-lang="hi"]) .cardTitle {
   font-family: var(--font-hi);
-  line-height: 1.5;
+  line-height: 1.55;
+  padding-bottom: 0.06em;
 }
 
 :global([data-lang="hi"]) .cardSummary {
   font-family: var(--font-hi-body);
-  line-height: 1.62;
+  line-height: 1.72;
+}
+
+:global([data-lang="hi"]) .leadTitle {
+  font-family: var(--font-hi);
+  line-height: 1.55;
+  padding-bottom: 0.06em;
 }
 
 .cardBody:hover .cardImage {
@@ -309,6 +341,52 @@
 
 [data-theme="dark"] .articleHero {
   box-shadow: var(--shadow-ui-rest), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+@media (min-width: 900px) {
+  .leadLink {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 16px;
+    padding: 14px;
+  }
+
+  .leadMedia {
+    flex: 0 0 52%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    min-height: 200px;
+  }
+
+  .leadTextWrap {
+    flex: 1;
+    padding: 4px 8px 4px 0;
+    justify-content: center;
+  }
+
+  .leadSummary {
+    font-size: 16px;
+    line-height: 1.65;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cardSummary {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  :global([data-lang="hi"]) .cardSummary {
+    line-height: 1.72;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -471,7 +549,12 @@
   }
 
   :global([data-lang="hi"]) .leadSummary {
-    line-height: 1.62;
+    line-height: 1.72;
+  }
+
+  :global([data-lang="hi"]) .leadTitle {
+    line-height: 1.55;
+    padding-bottom: 0.06em;
   }
 
   .sectionBlock {

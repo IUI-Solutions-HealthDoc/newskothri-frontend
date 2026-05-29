@@ -29,16 +29,17 @@ export default function HomeCategorySection({
       <div className={styles.storyLayout}>
         <article className={`card-default ${styles.leadCard}`}>
           <Link href={`/article/${lead.id}`} className={styles.leadLink}>
-            {/* Native <img>: CMS/API may host images on domains outside `next.config` remotePatterns; next/image would 500 SSR. */}
-            <img
-              src={lead.image}
-              alt={headline(lead, locale)}
-              width={800}
-              height={450}
-              className={styles.leadImage}
-              loading="lazy"
-              decoding="async"
-            />
+            <div className={`kn-media-frame ${styles.leadMedia}`}>
+              <img
+                src={lead.image}
+                alt={headline(lead, locale)}
+                width={800}
+                height={450}
+                className={styles.leadImage}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
             <div className={styles.leadTextWrap}>
               <h3 className={styles.leadTitle}>{headline(lead, locale)}</h3>
               <p className={styles.leadSummary}>{dek(lead, locale)}</p>
@@ -50,15 +51,17 @@ export default function HomeCategorySection({
           {rest.map((item) => (
             <article key={String(item.id)} className={`card-default ${styles.cardBody}`}>
               <Link href={`/article/${item.id}`} className={styles.cardLink}>
-                <img
-                  src={item.image}
-                  alt={headline(item, locale)}
-                  width={800}
-                  height={450}
-                  className={styles.cardImage}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <div className={styles.cardMedia}>
+                  <img
+                    src={item.image}
+                    alt={headline(item, locale)}
+                    width={800}
+                    height={450}
+                    className={styles.cardImage}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
                 <h3 className={styles.cardTitle}>{headline(item, locale)}</h3>
                 <p className={styles.cardSummary}>{dek(item, locale)}</p>
               </Link>
@@ -69,4 +72,3 @@ export default function HomeCategorySection({
     </section>
   );
 }
-
