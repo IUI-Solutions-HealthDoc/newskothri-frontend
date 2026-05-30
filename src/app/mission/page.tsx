@@ -4,12 +4,11 @@ import InstitutionalRouteClient from "../InstitutionalRouteClient";
 
 export const metadata: Metadata = {
   title: "Mission",
-  description:
-    "Our mission: verified journalism, editorial independence, and reader-first products — every day.",
+  description: "Mission — News Kothari.",
   alternates: { canonical: toAbsoluteUrl("/mission") },
   openGraph: {
     title: `Mission | ${siteName}`,
-    description: "Purpose and promise: accuracy, integrity, and accountability in how we report.",
+    description: "Mission — News Kothari.",
     url: toAbsoluteUrl("/mission"),
   },
 };

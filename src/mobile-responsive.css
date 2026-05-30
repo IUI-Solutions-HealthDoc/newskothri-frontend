@@ -320,8 +320,8 @@ body {
     max-height: 26px;
   }
 
-  .hero-cin-overlay {
-    min-height: min(280px, 52vh);
+  .hero-cin-content-panel {
+    padding: var(--sp-4) var(--sp-3);
   }
 
   .reader-auth-input,

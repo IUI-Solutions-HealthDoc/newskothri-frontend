@@ -175,8 +175,10 @@ export default function ArticleContent({
       <ArticleHero
         imageSrc={imageSrc}
         imageAlt={title}
+        heroImage={article.heroImage}
         imgErr={imgErr}
         onImgError={onImgError}
+        t={t}
       />
       <motion.div className="article-body" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.45 }}>
         {bodyBlocks.length > 0 ? (

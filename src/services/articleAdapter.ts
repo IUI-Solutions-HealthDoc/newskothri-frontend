@@ -38,12 +38,38 @@ function relativeTime(dateStr?: string): { hi: string; en: string } {
   return { hi: new Date(dateStr).toLocaleDateString("hi-IN"), en: new Date(dateStr).toLocaleDateString("en-IN") };
 }
 
-function getImageUrl(article: BackendArticle): string {
+function getHeroImage(article: BackendArticle) {
   const imgs = Array.isArray(article.images) ? article.images : [];
   const hero = imgs.find((i) => i.isHero) ?? imgs[0];
+  return hero ?? null;
+}
+
+function getImageUrl(article: BackendArticle): string {
+  const hero = getHeroImage(article);
   const id = String(article._id || "x").trim() || "x";
   if (!hero?.url) return `https://picsum.photos/seed/${encodeURIComponent(id)}/800/500`;
   return withPublicOrigin(hero.url);
+}
+
+function getHeroImageMeta(article: BackendArticle) {
+  const hero = getHeroImage(article);
+  if (!hero?.url) return undefined;
+
+  const source = String(hero.source || "").trim();
+  const imageDescription = String(hero.imageDescription || "").trim();
+  const caption = String(hero.caption || "").trim();
+  const alt = String(hero.alt || "").trim();
+  const imageTitle = String(hero.imageTitle || "").trim();
+
+  if (!source && !imageDescription && !caption && !alt && !imageTitle) return undefined;
+
+  return {
+    alt: alt || undefined,
+    source: source || undefined,
+    imageDescription: imageDescription || undefined,
+    caption: caption || undefined,
+    imageTitle: imageTitle || undefined,
+  };
 }
 
 /** Public route segment for `/article/:id` (article number when set, else Mongo id). */
@@ -92,6 +118,7 @@ export function adaptArticle(a: BackendArticle): ContentArticle {
     summary,
     summaryEn:    summaryEnOut,
     image:        getImageUrl(a),
+    heroImage:    getHeroImageMeta(a),
     time:         time.hi,
     timeEn:       time.en,
     author:       authorName,

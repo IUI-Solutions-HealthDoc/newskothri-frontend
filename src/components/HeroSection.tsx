@@ -109,7 +109,7 @@ export default function HeroSection() {
 
   if (!heroLoading && stories.length === 0) {
     return (
-      <section className={`hero-section hero-cinematic-wrap ${styles.breakingSection}`} aria-live="polite">
+      <section className={`hero-cinematic-wrap ${styles.breakingSection}`} aria-live="polite">
         <div className="hero-breaking-formal-head section-inner">
           <h2 className="hero-breaking-formal-title">{t("ताज़ा खबर", "Breaking news")}</h2>
         </div>
@@ -128,7 +128,7 @@ export default function HeroSection() {
   const story = stories[displayIdx] ?? stories[0];
   if (!story) {
     return (
-      <section className={`hero-section hero-cinematic-wrap ${styles.breakingSection}`}>
+      <section className={`hero-cinematic-wrap ${styles.breakingSection}`}>
         <div className="hero-cinematic-inner" style={{ padding: 80, display: "flex", justifyContent: "center" }}>
           <span style={{ color: "var(--ink-400)" }}>…</span>
         </div>
@@ -145,7 +145,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className={`hero-section hero-cinematic-wrap ${styles.breakingSection}`}
+      className={`hero-cinematic-wrap ${styles.breakingSection}`}
       aria-live="polite"
     >
       <div className="hero-breaking-formal-head section-inner">
@@ -157,33 +157,35 @@ export default function HeroSection() {
 
       <div className="hero-cinematic-inner">
         <div className="hero-cinematic-main">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={String(story.id)}
-              className="hero-cin-img-frame"
-              initial={false}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
-              transition={reduceMotion ? { duration: 0 } : { duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {!imgErr[story.id] ? (
-                <img
-                  src={story.image}
-                  alt={title}
-                  className="hero-cin-img"
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                  onError={() => setImgErr((e) => ({ ...e, [story.id]: true }))}
-                />
-              ) : (
-                <div className="hero-cin-fallback" />
-              )}
-              <div className="hero-cin-gradient" />
-            </motion.div>
-          </AnimatePresence>
+          <div className="hero-cin-media-band">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={String(story.id)}
+                className="hero-cin-img-frame"
+                initial={false}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                transition={reduceMotion ? { duration: 0 } : { duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {!imgErr[story.id] ? (
+                  <img
+                    src={story.image}
+                    alt={title}
+                    className="hero-cin-img"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
+                    onError={() => setImgErr((e) => ({ ...e, [story.id]: true }))}
+                  />
+                ) : (
+                  <div className="hero-cin-fallback" />
+                )}
+              </motion.div>
+            </AnimatePresence>
+            <div className="hero-cin-gradient" aria-hidden />
+          </div>
 
-          <div className="hero-cin-overlay">
+          <div className="hero-cin-content-panel">
             <div className="hero-cin-badges">
               {story.isBreaking && (
                 <span className="hero-cin-breaking">

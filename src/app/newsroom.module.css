@@ -1,6 +1,5 @@
 .homeMain {
-  /* Navbar offset is applied on .hero-cinematic-wrap inside HeroSection only —
-     do not add padding here or content is double-pushed on mobile. */
+  /* Breaking news applies --kn-page-top on .breakingSection; keep main flush. */
   padding-top: 0;
   background:
     radial-gradient(1200px 380px at 50% -160px, color-mix(in srgb, var(--brand-red) 8%, transparent), transparent 70%),
@@ -126,8 +125,12 @@
 }
 
 .breakingSection {
-  padding-top: 0;
+  padding-top: var(--kn-page-top);
   min-width: 0;
+  width: 100%;
+  position: relative;
+  z-index: 0;
+  margin-bottom: 32px;
 }
 
 button.leadLink,
@@ -489,6 +492,10 @@ button.cardLink {
 }
 
 @media (max-width: 900px) {
+  .breakingSection {
+    margin-bottom: 26px;
+  }
+
   .homeMain {
     padding-top: 0;
     padding-bottom: max(20px, calc(var(--kn-bottom-nav-h, 72px) + 8px));
@@ -523,6 +530,10 @@ button.cardLink {
 }
 
 @media (max-width: 640px) {
+  .breakingSection {
+    margin-bottom: 22px;
+  }
+
   .homeMain {
     padding-top: 0;
     padding-bottom: max(24px, calc(var(--kn-bottom-nav-h, 72px) + 12px));

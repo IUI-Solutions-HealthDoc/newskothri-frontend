@@ -53,8 +53,8 @@ export default async function Home() {
   return (
     <main className={styles.homeMain}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <HeroSection />
       <div className={`section-inner ${styles.sectionStack}`}>
-        <HeroSection />
         <HomeDiscoverRow />
         {feed.length === 0 ? (
           <section className={styles.sectionBlock}>

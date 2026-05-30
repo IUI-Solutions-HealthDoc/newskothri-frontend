@@ -5,12 +5,12 @@ import InstitutionalRouteClient from "../InstitutionalRouteClient";
 export const metadata: Metadata = {
   title: "About us",
   description:
-    "News Kothri is a digital-first bilingual newsroom focused on verified journalism, clarity, and readers across India.",
+    "न्यूज़ कोठरी — आपके मोहल्ले की नुक्कड़ वाली चौपाल, जहाँ खबर, नज़रिया और भौकाल एक साथ मिलते हैं।",
   alternates: { canonical: toAbsoluteUrl("/about") },
   openGraph: {
     title: `About us | ${siteName}`,
     description:
-      "Who we are: a digital-first newsroom for Hindi and English readers — facts, context, and plain language.",
+      "न्यूज़ कोठरी — खबरों का असली स्वाद, बिना फिल्टर के।",
     url: toAbsoluteUrl("/about"),
   },
 };

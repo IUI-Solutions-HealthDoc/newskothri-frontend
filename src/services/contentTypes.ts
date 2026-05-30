@@ -1,5 +1,13 @@
 export type LocaleCode = "hi" | "en";
 
+export type ArticleHeroImage = {
+  alt?: string;
+  source?: string;
+  imageDescription?: string;
+  caption?: string;
+  imageTitle?: string;
+};
+
 /** Backend-adapted article model consumed by route UI/features. */
 export interface ContentArticle {
   /** Public route id (9-digit article number when assigned, else Mongo id). */
@@ -14,6 +22,7 @@ export interface ContentArticle {
   summary: string;
   summaryEn: string;
   image: string;
+  heroImage?: ArticleHeroImage;
   time: string;
   timeEn: string;
   author: string;

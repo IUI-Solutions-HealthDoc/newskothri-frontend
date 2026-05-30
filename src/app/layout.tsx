@@ -6,6 +6,7 @@ import {
   localizedSiteName,
 } from "../lib/seo/metadataHelpers";
 import type { UiLang } from "../i18n/siteCopy";
+import GoogleAnalytics from "../components/GoogleAnalytics";
 import AppChrome from "./AppChrome";
 import AppProviders from "./AppProviders";
 import "./globals.css";
@@ -69,6 +70,7 @@ export default async function RootLayout({
       style={{ colorScheme: initialDark ? "dark" : "light" }}
     >
       <body suppressHydrationWarning>
+        <GoogleAnalytics />
         <AppProviders initialLang={initialLang}>
           <AppChrome initialDark={initialDark}>{children}</AppChrome>
         </AppProviders>

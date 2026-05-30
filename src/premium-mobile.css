@@ -168,17 +168,16 @@
     border-right: none;
   }
 
-  .hero-cin-overlay {
-    min-height: clamp(320px, 70vw, 480px);
-    padding: 20px 18px 18px;
-    background:
-      linear-gradient(180deg,
-        rgba(0,0,0,.12) 0%,
-        transparent 20%,
-        transparent 35%,
-        rgba(0,0,0,.55) 60%,
-        rgba(0,0,0,.9) 90%,
-        rgba(0,0,0,.95) 100%);
+  .hero-cin-media-band {
+    aspect-ratio: 16 / 9;
+  }
+
+  .hero-cin-img-frame {
+    padding: clamp(8px, 2vw, 14px) clamp(10px, 2.5vw, 18px);
+  }
+
+  .hero-cin-content-panel {
+    padding: 18px 16px 16px;
   }
 
   .hero-cin-headline {
@@ -312,7 +311,8 @@
 
   .hero-cin-side-thumb-wrap {
     width: 72px;
-    height: 50px;
+    aspect-ratio: 16 / 9;
+    height: auto;
     border-radius: 8px;
   }
 }
@@ -1048,9 +1048,8 @@
 
 /* ── ULTRA-SMALL (480px) — PREMIUM REFINEMENTS ───────────────────── */
 @media (max-width: 480px) {
-  .hero-cin-overlay {
-    min-height: clamp(280px, 72vw, 400px);
-    padding: 16px 14px 14px;
+  .hero-cin-content-panel {
+    padding: 14px;
   }
 
   .hero-cin-headline {
@@ -1152,15 +1151,8 @@
 
 /* ── DARK MODE MOBILE EXTRAS ─────────────────────────────────────── */
 @media (max-width: 768px) {
-  [data-theme="dark"] .hero-cin-overlay {
-    background:
-      linear-gradient(180deg,
-        rgba(0,0,0,.2) 0%,
-        transparent 15%,
-        transparent 30%,
-        rgba(0,0,0,.65) 65%,
-        rgba(0,0,0,.95) 95%,
-        rgba(0,0,0,1) 100%);
+  [data-theme="dark"] .hero-cin-content-panel {
+    background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
   }
 
   [data-theme="dark"] .card-default,

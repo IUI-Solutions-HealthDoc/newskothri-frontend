@@ -4,12 +4,11 @@ import InstitutionalRouteClient from "../InstitutionalRouteClient";
 
 export const metadata: Metadata = {
   title: "Vision",
-  description:
-    "Our vision: India’s trusted home for news — bilingual, innovative, and rooted in community.",
+  description: "Vision — News Kothari.",
   alternates: { canonical: toAbsoluteUrl("/vision") },
   openGraph: {
     title: `Vision | ${siteName}`,
-    description: "Where we are headed: trust, excellence, and meaningful connection with readers.",
+    description: "Vision — News Kothari.",
     url: toAbsoluteUrl("/vision"),
   },
 };
