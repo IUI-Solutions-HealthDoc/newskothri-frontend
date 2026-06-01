@@ -48,12 +48,12 @@
   --navbar-bg:   rgba(253,252,251,0.96);
   --topbar-bg:   #141210;
 
-  /* Typography — English: editorial stack; Hindi: Kokila-only */
+  /* Typography — English: editorial stack; Hindi: Mukta */
   --font-display:  "Playfair Display", Georgia, "Times New Roman", serif;
   --font-body:     "Source Serif 4", Georgia, serif;
   --font-ui:       "Inter", system-ui, -apple-system, sans-serif;
-  --font-hi:       "Kokila", serif;
-  --font-hi-body:  "Kokila", serif;
+  --font-hi:       var(--font-mukta), "Mukta", sans-serif;
+  --font-hi-body:  var(--font-mukta), "Mukta", sans-serif;
   --font-mono:     "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
 
   /* Type scale — bumped for premium legibility */
@@ -5025,7 +5025,7 @@ a.cat-side-item:hover { color:inherit }
   font-size: 15px;
   line-height: 1.35;
   text-decoration: none;
-  font-family: var(--font-hi), var(--font-body), serif;
+  font-family: var(--font-hi), var(--font-body), sans-serif;
 }
 .reader-saved-link:hover {
   color: var(--brand-red);

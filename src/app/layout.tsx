@@ -9,6 +9,7 @@ import type { UiLang } from "../i18n/siteCopy";
 import GoogleAnalytics from "../components/GoogleAnalytics";
 import AppChrome from "./AppChrome";
 import AppProviders from "./AppProviders";
+import { mukta } from "../lib/fonts";
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -66,6 +67,7 @@ export default async function RootLayout({
   return (
     <html
       lang={initialLang === "en" ? "en" : "hi"}
+      className={mukta.variable}
       suppressHydrationWarning
       style={{ colorScheme: initialDark ? "dark" : "light" }}
     >
