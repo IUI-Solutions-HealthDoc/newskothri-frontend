@@ -1,0 +1,48 @@
+import type { ContentArticle } from "../../../services/contentTypes";
+import { adaptArticles } from "../../../services/articleAdapter";
+import { fetchPublicArticlesPage } from "../../../lib/serverPublicApi";
+
+const PAGE_SIZE = 24;
+const MIN_INITIAL = 12;
+const MAX_PAGES = 3;
+
+export type HomeInitialMoreResult = {
+  items: ContentArticle[];
+  total: number;
+  startPage: number;
+};
+
+/** First screen of home “और खबरें”, skipping category-block articles only. */
+export async function buildHomeInitialMoreStories(
+  locale: "hi" | "en",
+  displayedIds: string[]
+): Promise<HomeInitialMoreResult> {
+  const displayed = new Set(displayedIds);
+  const collected: ContentArticle[] = [];
+  const collectedIds = new Set<string>();
+  let catalogTotal = 0;
+  let lastFetchedPage = 0;
+
+  for (let page = 1; page <= MAX_PAGES; page += 1) {
+    const { articles, total } = await fetchPublicArticlesPage({ limit: PAGE_SIZE, page, locale });
+    catalogTotal = total;
+    lastFetchedPage = page;
+    if (!articles.length) break;
+
+    for (const a of adaptArticles(articles)) {
+      if (displayed.has(a.id) || collectedIds.has(a.id)) continue;
+      collectedIds.add(a.id);
+      collected.push(a);
+    }
+
+    if (collected.length >= MIN_INITIAL) break;
+    if (total > 0 && page * PAGE_SIZE >= total) break;
+    if (articles.length < PAGE_SIZE) break;
+  }
+
+  return {
+    items: collected,
+    total: catalogTotal,
+    startPage: lastFetchedPage > 0 ? lastFetchedPage + 1 : 2,
+  };
+}

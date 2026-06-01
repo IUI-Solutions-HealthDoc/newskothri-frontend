@@ -8,6 +8,8 @@ import InfinitePublicArticleList, {
   type InfinitePublicArticleListProps,
 } from "../components/InfinitePublicArticleList";
 import HomeDiscoverRow from "../components/HomeDiscoverRow";
+import { collectHomeDisplayedIds } from "../features/home/server/homeFeed";
+import { buildHomeInitialMoreStories } from "../features/home/server/homeInitialMore";
 import { getServerUiLang } from "../lib/serverLocale";
 import { localizedDefaultDescription, localizedSiteName } from "../lib/seo/metadataHelpers";
 import styles from "./newsroom.module.css";
@@ -37,15 +39,21 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const locale = await getServerUiLang();
-  const { articles: raw, total: feedTotal } = await fetchPublicArticlesPage({ limit: 120, locale });
+  const { articles: raw } = await fetchPublicArticlesPage({ limit: 120, locale });
   const feed = adaptArticles(raw);
-  const seedIds = feed.map((a) => a.id);
+  const excludeIds = collectHomeDisplayedIds(feed);
+  const { items: initialItems, total: catalogTotal, startPage } = await buildHomeInitialMoreStories(
+    locale,
+    excludeIds
+  );
   const jsonLd = buildHomeWebSiteJsonLd();
 
   const infiniteListProps: InfinitePublicArticleListProps = {
     locale,
-    seedIds,
-    total: feedTotal,
+    excludeIds,
+    initialItems,
+    startPage,
+    total: catalogTotal,
     feedSource: "home",
     sectionTitle: locale === "hi" ? "और खबरें" : "More stories",
   };

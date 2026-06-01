@@ -5,7 +5,7 @@ import { useLang } from "../context/LangContext";
 import WeatherWidget from "./WeatherWidget";
 import styles from "./home-discover-row.module.css";
 
-/** Weather snapshot + link to the mixed “More stories” section on the home page. */
+/** Weather snapshot + link to the home “More stories” infinite feed. */
 export default function HomeDiscoverRow() {
   const { lang, t } = useLang();
 
@@ -17,8 +17,8 @@ export default function HomeDiscoverRow() {
           <p className={styles.hintTitle}>{t("और खबरें", "More stories")}</p>
           <p className={styles.hintBody}>
             {t(
-              "नीचे की ओर «और खबरें» में श्रेणियों से मिली-जुली खबरें मिलेंगी। यहाँ मौसम का संक्षिप्त विवरण है।",
-              "Scroll to “More stories” for a mixed feed from across sections. Here is a quick weather snapshot."
+              "नीचे «और खबरें» में सभी ताज़ा खबरें स्क्रॉल के साथ मिलेंगी। यहाँ मौसम का संक्षिप्त विवरण है।",
+              "Scroll to “More stories” for all latest articles. Here is a quick weather snapshot."
             )}
           </p>
           <Link href="#kn-more-stories" className={styles.hintLink}>

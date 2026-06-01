@@ -1,28 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { ContentArticle } from "../services/contentTypes";
 import { categoryDek, categoryHeadline } from "../features/category/server/categoryFeed";
 import { dek as homeDek, headline as homeHeadline } from "../features/home/server/homeFeed";
 import { adaptArticles } from "../services/articleAdapter";
 import { fetchPublishedArticlesPage } from "../services/newsApi";
-import { interleaveByCategory } from "../lib/mixedArticleOrder";
 import styles from "../app/newsroom.module.css";
-
-const MIXED_FALLBACK_TARGET = 12;
-const MIXED_FETCH_PAGES = 5;
-const MIXED_PAGE_SIZE = 24;
 
 const PAGE_SIZE = 24;
 const MAX_SKIP_PAGES = 60;
 
-/** True when another page might exist (handles missing `total` from older APIs). */
-function computeLoadable(total: number, seedLen: number): boolean {
-  if (seedLen === 0) return false;
-  if (total > seedLen) return true;
-  if (total === 0 && seedLen >= PAGE_SIZE) return true;
-  return false;
+function computeLoadable(total: number, seenSize: number, hasListContent: boolean): boolean {
+  if (!hasListContent && total === 0) return false;
+  if (total > 0) return seenSize < total;
+  return hasListContent;
 }
 
 type FeedSource = "home" | "category";
@@ -30,8 +23,10 @@ type FeedSource = "home" | "category";
 /** Serializable props only — never add functions (RSC → client boundary). */
 export type InfinitePublicArticleListProps = {
   locale: "hi" | "en";
-  seedIds: string[];
+  excludeIds: string[];
   total: number;
+  initialItems?: ContentArticle[];
+  startPage?: number;
   category?: string;
   latestDays?: number;
   feedSource?: FeedSource;
@@ -46,129 +41,79 @@ function itemDek(item: ContentArticle, locale: "hi" | "en", source: FeedSource):
   return source === "category" ? categoryDek(item, locale) : homeDek(item, locale);
 }
 
+function ArticleCard({
+  item,
+  locale,
+  feedSource,
+}: {
+  item: ContentArticle;
+  locale: "hi" | "en";
+  feedSource: FeedSource;
+}) {
+  return (
+    <article className={`card-default ${styles.cardBody}`}>
+      <Link href={`/article/${item.id}`} className={styles.cardLink}>
+        <div className={styles.cardMedia}>
+          <img
+            src={item.image}
+            alt={itemHeadline(item, locale, feedSource)}
+            width={800}
+            height={450}
+            className={styles.cardImage}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <h3 className={styles.cardTitle}>{itemHeadline(item, locale, feedSource)}</h3>
+        <p className={styles.cardSummary}>{itemDek(item, locale, feedSource)}</p>
+      </Link>
+    </article>
+  );
+}
+
 export default function InfinitePublicArticleList({
   locale,
-  seedIds,
+  excludeIds,
   total,
+  initialItems = [],
+  startPage = 1,
   category,
   latestDays,
   feedSource = "home",
   sectionTitle,
 }: InfinitePublicArticleListProps) {
-  const seen = useRef(new Set(seedIds));
+  const excludeKey = excludeIds.join(",");
+  const initialKey = initialItems.map((a) => a.id).join(",");
+
+  const bootstrapSeen = useMemo(() => {
+    const s = new Set(excludeIds);
+    for (const a of initialItems) s.add(a.id);
+    return s;
+  }, [excludeKey, initialKey]);
+
+  const seen = useRef(new Set(bootstrapSeen));
   const [extra, setExtra] = useState<ContentArticle[]>([]);
-  const [nextPage, setNextPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const loadable = computeLoadable(total, seedIds.length);
+  const hasListContent = initialItems.length > 0;
+  const loadable = computeLoadable(total, bootstrapSeen.size, hasListContent);
   const [done, setDone] = useState(!loadable);
+  const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const sentinelRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const nextPageRef = useRef(1);
+  const nextPageRef = useRef(startPage);
   const doneRef = useRef(!loadable);
   const inFlightRef = useRef(false);
 
-  const [mixedFallback, setMixedFallback] = useState<ContentArticle[]>([]);
-  const [mixedLoading, setMixedLoading] = useState(false);
-  const [mixedErr, setMixedErr] = useState("");
-
-  const seedKey = seedIds.join(",");
-
   useEffect(() => {
-    nextPageRef.current = nextPage;
-  }, [nextPage]);
-
-  useEffect(() => {
-    doneRef.current = done;
-  }, [done]);
-
-  useEffect(() => {
-    const nextLoadable = computeLoadable(total, seedIds.length);
-    seen.current = new Set(seedIds);
+    seen.current = new Set(bootstrapSeen);
     setExtra([]);
-    setNextPage(1);
-    nextPageRef.current = 1;
+    nextPageRef.current = startPage;
+    const nextLoadable = computeLoadable(total, bootstrapSeen.size, hasListContent);
     const initialDone = !nextLoadable;
     setDone(initialDone);
     doneRef.current = initialDone;
     setErr("");
-    setMixedFallback([]);
-    setMixedErr("");
-  }, [seedKey, total]);
-
-  useEffect(() => {
-    if (seedIds.length === 0) {
-      setMixedFallback([]);
-      setMixedLoading(false);
-      setMixedErr("");
-      return;
-    }
-
-    const loadableNow = computeLoadable(total, seedIds.length);
-    /* Category + paginated API: only infinite scroll; no duplicate mixed strip. */
-    if (feedSource === "category" && loadableNow) {
-      setMixedFallback([]);
-      setMixedLoading(false);
-      setMixedErr("");
-      return;
-    }
-
-    const seed = new Set(seedIds);
-    let cancelled = false;
-    const ac = new AbortController();
-
-    async function loadMixed() {
-      setMixedLoading(true);
-      setMixedErr("");
-      const collected: ContentArticle[] = [];
-      const seenIds = new Set<string>();
-
-      try {
-        for (let page = 1; page <= MIXED_FETCH_PAGES && collected.length < MIXED_FALLBACK_TARGET; page += 1) {
-          const { articles } = await fetchPublishedArticlesPage({
-            category,
-            latestDays,
-            limit: MIXED_PAGE_SIZE,
-            page,
-            locale,
-            signal: ac.signal,
-          });
-          if (!articles.length) break;
-
-          const ordered = interleaveByCategory(articles);
-          const adapted = adaptArticles(ordered);
-          for (const a of adapted) {
-            if (seed.has(a.id) || seenIds.has(a.id)) continue;
-            seenIds.add(a.id);
-            collected.push(a);
-            if (collected.length >= MIXED_FALLBACK_TARGET) break;
-          }
-        }
-        if (!cancelled) {
-          setMixedFallback(collected);
-          if (feedSource === "home" && collected.length) {
-            collected.forEach((a) => seen.current.add(a.id));
-          }
-        }
-      } catch (e: unknown) {
-        if (e instanceof DOMException && e.name === "AbortError") return;
-        if (!cancelled) {
-          setMixedFallback([]);
-          setMixedErr(
-            locale === "hi" ? "मिश्रित खबरें लोड नहीं हो सकीं।" : "Could not load mixed picks."
-          );
-        }
-      } finally {
-        if (!cancelled) setMixedLoading(false);
-      }
-    }
-
-    void loadMixed();
-    return () => {
-      cancelled = true;
-      ac.abort();
-    };
-  }, [seedKey, total, locale, category, latestDays, feedSource]);
+  }, [excludeKey, initialKey, total, startPage, bootstrapSeen, hasListContent]);
 
   const loadMore = useCallback(async () => {
     if (inFlightRef.current || doneRef.current) return;
@@ -219,23 +164,18 @@ export default function InfinitePublicArticleList({
           if (fresh.length) setExtra((prev) => [...prev, ...fresh]);
           setDone(true);
           doneRef.current = true;
-          const np = p + 1;
-          nextPageRef.current = np;
-          setNextPage(np);
+          nextPageRef.current = p + 1;
           break;
         }
 
         if (fresh.length) {
           setExtra((prev) => [...prev, ...fresh]);
-          const np = p + 1;
-          nextPageRef.current = np;
-          setNextPage(np);
+          nextPageRef.current = p + 1;
           break;
         }
 
         p += 1;
         nextPageRef.current = p;
-        setNextPage(p);
       }
 
       if (guard >= MAX_SKIP_PAGES) {
@@ -251,8 +191,11 @@ export default function InfinitePublicArticleList({
     }
   }, [category, latestDays, locale, total]);
 
+  const seenEstimate = bootstrapSeen.size + extra.length;
+  const canLoadMore = !done && computeLoadable(total, seenEstimate, hasListContent || extra.length > 0);
+
   useEffect(() => {
-    if (done || !computeLoadable(total, seedIds.length)) return;
+    if (done || !canLoadMore) return;
     const el = sentinelRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
@@ -263,17 +206,20 @@ export default function InfinitePublicArticleList({
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [done, loadMore, total, seedIds.length]);
+  }, [done, loadMore, canLoadMore]);
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  if (seedIds.length === 0) return null;
+  const allItems = [...initialItems, ...extra];
+  const showSection = total > 0 || allItems.length > 0;
+
+  if (!showSection) return null;
 
   return (
     <section
       id="kn-more-stories"
       className={styles.sectionBlock}
-      aria-busy={loading || mixedLoading}
+      aria-busy={loading}
     >
       {sectionTitle ? (
         <div className={styles.sectionHead}>
@@ -285,51 +231,17 @@ export default function InfinitePublicArticleList({
         <p className={styles.moreStoriesIntro}>
           {locale === "hi" ? (
             <>
-              नीचे श्रेणियों से मिलाकर चुनी गईं <strong>ताज़ा खबरें</strong> दिख रही हैं। ये ऊपर वाली सूची से अलग
-              हैं।
-              <br />
-              <span className={styles.moreStoriesIntroMuted}>
-                जब और पृष्ठ उपलब्ध होंगे तो स्क्रॉल करने पर वे भी जुड़ते रहेंगे।
-              </span>
+              नीचे <strong>सभी ताज़ा खबरें</strong> नवीनतम से पुरानी क्रम में हैं। स्क्रॉल करते रहें।
             </>
           ) : (
             <>
-              Below is a <strong>fresh mixed strip</strong> from across sections—different from the lists above.
-              <br />
-              <span className={styles.moreStoriesIntroMuted}>
-                When more pages exist, scrolling loads additional stories.
-              </span>
+              Below are <strong>all latest stories</strong>, newest first. Keep scrolling for more.
             </>
           )}
         </p>
       ) : null}
 
-      {feedSource === "home" ? (
-        <h3 className={styles.mixedStripTitle}>
-          {locale === "hi" ? "ताज़ी मिली-जुली खबरें" : "Latest mixed picks"}
-        </h3>
-      ) : null}
-
-      {mixedLoading ? (
-        <p className={styles.moreStoriesMeta}>
-          {locale === "hi" ? "लोड हो रहा है…" : "Loading…"}
-        </p>
-      ) : null}
-      {mixedErr ? (
-        <p className={styles.moreStoriesMeta} role="alert">
-          {mixedErr}
-        </p>
-      ) : null}
-
-      {feedSource === "home" && !mixedLoading && !mixedErr && mixedFallback.length === 0 && !loadable ? (
-        <p className={styles.moreStoriesMeta}>
-          {locale === "hi"
-            ? "अतिरिक्त खबरें अभी उपलब्ध नहीं हैं। श्रेणियाँ देखें।"
-            : "No additional stories to show right now. Browse categories."}
-        </p>
-      ) : null}
-
-      {feedSource === "category" && !loadable && !mixedLoading && !mixedErr && mixedFallback.length === 0 ? (
+      {feedSource === "category" && !loadable && allItems.length === 0 ? (
         <p className={styles.moreCategoryNote}>
           {locale === "hi"
             ? "इस सूची के लिए अभी और खबरें नहीं हैं।"
@@ -337,64 +249,21 @@ export default function InfinitePublicArticleList({
         </p>
       ) : null}
 
-      {mixedFallback.length > 0 ? (
+      {allItems.length > 0 ? (
         <div className={styles.homeMixedGrid}>
-          {mixedFallback.map((item) => (
-            <article key={String(item.id)} className={`card-default ${styles.cardBody}`}>
-              <Link href={`/article/${item.id}`} className={styles.cardLink}>
-                <div className={styles.cardMedia}>
-                  <img
-                    src={item.image}
-                    alt={itemHeadline(item, locale, feedSource)}
-                    width={800}
-                    height={450}
-                    className={styles.cardImage}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                <h3 className={styles.cardTitle}>{itemHeadline(item, locale, feedSource)}</h3>
-                <p className={styles.cardSummary}>{itemDek(item, locale, feedSource)}</p>
-              </Link>
-            </article>
+          {allItems.map((item) => (
+            <ArticleCard key={String(item.id)} item={item} locale={locale} feedSource={feedSource} />
           ))}
         </div>
+      ) : feedSource === "home" && !loading ? (
+        <p className={styles.moreStoriesMeta}>
+          {locale === "hi"
+            ? "अतिरिक्त खबरें अभी उपलब्ध नहीं हैं।"
+            : "No additional stories to show right now."}
+        </p>
       ) : null}
 
-      {loadable && feedSource === "home" && mixedFallback.length > 0 ? (
-        <>
-          <hr className={styles.moreStoriesDivider} />
-          <h3 className={styles.mixedStripTitle}>
-            {locale === "hi" ? "स्क्रॉल करके और पढ़ें" : "Keep scrolling"}
-          </h3>
-        </>
-      ) : null}
-
-      {loadable ? (
-        <div className={styles.homeMixedGrid}>
-          {extra.map((item) => (
-            <article key={String(item.id)} className={`card-default ${styles.cardBody}`}>
-              <Link href={`/article/${item.id}`} className={styles.cardLink}>
-                <div className={styles.cardMedia}>
-                  <img
-                    src={item.image}
-                    alt={itemHeadline(item, locale, feedSource)}
-                    width={800}
-                    height={450}
-                    className={styles.cardImage}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                <h3 className={styles.cardTitle}>{itemHeadline(item, locale, feedSource)}</h3>
-                <p className={styles.cardSummary}>{itemDek(item, locale, feedSource)}</p>
-              </Link>
-            </article>
-          ))}
-        </div>
-      ) : null}
-
-      {loadable && loading ? (
+      {loading ? (
         <p className={styles.moreStoriesMeta}>
           {locale === "hi" ? "लोड हो रहा है…" : "Loading…"}
         </p>
@@ -404,13 +273,13 @@ export default function InfinitePublicArticleList({
           {err}
         </p>
       ) : null}
-      {loadable && done && extra.length > 0 ? (
+      {loadable && done && allItems.length > 0 ? (
         <p className={styles.moreStoriesMeta} style={{ opacity: 0.88 }}>
           {locale === "hi" ? "और खबरें यहीं समाप्त।" : "You are caught up."}
         </p>
       ) : null}
 
-      {loadable ? <div ref={sentinelRef} style={{ height: 1, width: "100%" }} aria-hidden /> : null}
+      {loadable && !done ? <div ref={sentinelRef} style={{ height: 1, width: "100%" }} aria-hidden /> : null}
     </section>
   );
 }

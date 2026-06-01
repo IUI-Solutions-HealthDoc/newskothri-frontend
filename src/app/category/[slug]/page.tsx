@@ -32,13 +32,14 @@ export default async function CategoryPage(
       : { category: slug, limit: 24, locale }
   );
   const list = adaptArticles(rawList);
-  const seedIds = list.map((a) => a.id);
+  const excludeIds = list.map((a) => a.id);
   const jsonLd = buildCategoryCollectionJsonLd(slug, list, locale);
 
   const infiniteListProps: InfinitePublicArticleListProps = {
     locale,
-    seedIds,
+    excludeIds,
     total: listTotal,
+    startPage: 2,
     category: slug === "latest" ? undefined : slug,
     latestDays: slug === "latest" ? 3 : undefined,
     feedSource: "category",
