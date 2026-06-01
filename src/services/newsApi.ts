@@ -20,6 +20,7 @@ export interface BackendArticle {
     source?: string;
   }>;
   category: string;
+  categories?: string[];
   tags?: string[];
   isBreaking: boolean;
   readTime: number;

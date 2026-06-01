@@ -107,12 +107,19 @@ export function adaptArticle(a: BackendArticle): ContentArticle {
     }))
     .filter((e) => Boolean(youtubeVideoIdFromUrl(e.youtubeUrl)));
 
+  const categorySlugs =
+    Array.isArray(a.categories) && a.categories.length
+      ? a.categories.filter(Boolean)
+      : [a.category].filter(Boolean);
+  const primarySlug = categorySlugs[0] || a.category || "desh";
+
   return {
     id:           publicId,
     mongoId:      a._id,
-    category:     CAT_HI[a.category] ?? a.category,
-    categoryEn:   CAT_EN[a.category] ?? a.category,
-    categorySlug: a.category,
+    category:     CAT_HI[primarySlug] ?? primarySlug,
+    categoryEn:   CAT_EN[primarySlug] ?? primarySlug,
+    categorySlug: primarySlug,
+    categorySlugs,
     title,
     titleEn:      titleEnOut,
     summary,

@@ -17,6 +17,8 @@ export interface ContentArticle {
   category: string;
   categoryEn: string;
   categorySlug: string;
+  /** All category slugs (primary first). */
+  categorySlugs: string[];
   title: string;
   titleEn: string;
   summary: string;

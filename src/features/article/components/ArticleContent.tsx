@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { IconFacebook, IconWhatsApp, IconXLogo } from "../../../components/icons/ShareBrandIcons";
 import { categories } from "../../../data/publicCategories";
+import { categoryColors } from "../utils/formatArticle";
 import type { NewsItem } from "../types/article";
 import ArticleAuthor from "./ArticleAuthor";
 import CommentSection from "./CommentSection";
@@ -89,7 +90,8 @@ export default function ArticleContent({
 }) {
   const navigate = useNavigate();
   const sl = shareLabels(t);
-  const cat = categories.find((c) => c.slug === article.categorySlug);
+  const slugList =
+    article.categorySlugs?.length ? article.categorySlugs : [article.categorySlug];
   const time = lang === "hi" ? article.time : article.timeEn;
   const author = lang === "hi" ? article.author : article.authorEn;
   const youtubeEmbeds = article.youtubeEmbeds ?? [];
@@ -107,16 +109,40 @@ export default function ArticleContent({
         <button type="button" className="article-back-btn" onClick={() => navigate(-1)}>
           <ArrowLeft size={15} /> {t("वापस", "Back")}
         </button>
-        <ChevronRight size={13} style={{ opacity: 0.35 }} />
-        {cat && (
-          <Link to={`/category/${article.categorySlug}`} style={{ color, fontWeight: 600, fontSize: 13 }}>
-            {lang === "hi" ? cat.name : cat.nameEn}
-          </Link>
-        )}
+        {slugList.map((slug, i) => {
+          const cat = categories.find((c) => c.slug === slug);
+          if (!cat) return null;
+          const catColor = categoryColors[slug] || color;
+          return (
+            <span key={slug} className="inline-flex items-center gap-1">
+              {i > 0 && <ChevronRight size={13} style={{ opacity: 0.35 }} />}
+              <Link
+                to={`/category/${slug}`}
+                style={{ color: catColor, fontWeight: 600, fontSize: 13 }}
+              >
+                {lang === "hi" ? cat.name : cat.nameEn}
+              </Link>
+            </span>
+          );
+        })}
       </div>
       <div className="article-meta-top">
         {article.isBreaking && <span className="article-breaking-badge">⚡ {t("ब्रेकिंग", "Breaking")}</span>}
-        <span className="article-cat-badge" style={{ color, borderColor: color + "40" }}>{category}</span>
+        {slugList.map((slug) => {
+          const cat = categories.find((c) => c.slug === slug);
+          const label = cat ? (lang === "hi" ? cat.name : cat.nameEn) : category;
+          const catColor = categoryColors[slug] || color;
+          return (
+            <Link
+              key={slug}
+              to={`/category/${slug}`}
+              className="article-cat-badge"
+              style={{ color: catColor, borderColor: catColor + "40" }}
+            >
+              {label}
+            </Link>
+          );
+        })}
       </div>
       <motion.h1 className="article-headline" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.45 }}>
         {title}
