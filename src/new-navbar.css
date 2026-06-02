@@ -39,14 +39,44 @@
 }
 
 .nav-logo {
-  display: flex; align-items: center; gap: 4px;
+  display: flex; align-items: center; gap: 10px;
   text-decoration: none; flex-shrink: 0;
   border-radius: 12px;
   padding: 4px 6px 4px 2px;
   margin: -4px -6px -4px -2px;
   transition: background .2s ease;
+  min-width: 0;
 }
 .nav-logo:hover { background: var(--bg-secondary); }
+
+.nav-brand-name {
+  font-family: var(--font-display);
+  font-size: clamp(17px, 2vw, 22px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--ink-900);
+  white-space: nowrap;
+}
+[data-lang="hi"] .nav-brand-name {
+  font-family: var(--font-hi);
+  font-size: clamp(16px, 2.1vw, 21px);
+  letter-spacing: 0;
+}
+.nav-brand-name--mobile {
+  display: none;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 2px;
+}
+.nav-brand-name--desktop {
+  display: inline;
+}
+.nav-mobile-menu--lead {
+  display: none;
+}
 .nav-logo:focus-visible {
   outline: 2px solid var(--brand-red);
   outline-offset: 2px;
@@ -647,13 +677,44 @@
 }
 @media (max-width: 768px) {
   .nav-main-tabs { display: none }
-  .nav-mobile-menu { display: flex !important }
+  .nav-mobile-menu--lead {
+    display: inline-flex !important;
+    flex-shrink: 0;
+    order: 0;
+    min-width: 42px;
+  }
+  .nav-brand-name--mobile {
+    display: block;
+    order: 1;
+    text-align: left;
+  }
+  .nav-brand-name--desktop {
+    display: none;
+  }
+  .nav-logo {
+    order: 2;
+    flex: 0 0 auto;
+    gap: 0;
+    padding: 2px 4px;
+    margin: 0;
+    max-width: none;
+  }
+  .nav-row1-right {
+    order: 3;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
   .nav-util-cluster { display: none }
   .nav-util-btns .nav-util-btn:not(.nav-mobile-menu):not(.nav-profile-btn) { display: none }
   .nav-util-btns .nav-util-btn.nav-profile-btn {
     display: flex !important;
   }
-  .nav-row1 { min-height: 56px }
+  .nav-row1 {
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
   .nav-row2 { min-height: 48px }
   .nav-cat-pill { padding: 8px 16px; font-size: 14px }
   [data-lang="hi"] .nav-row1 { min-height: 60px }
@@ -673,7 +734,9 @@
 }
 @media (max-width: 480px) {
   .nav-brand-logo-img { width: 36px; height: 36px; }
-  .nav-brand-wordmark-img { height: 28px; max-width: 170px; }
+  .nav-brand-name--mobile {
+    font-size: clamp(14px, 4.5vw, 17px);
+  }
   .shows-grid { grid-template-columns: 1fr }
   .shows-page-grid { grid-template-columns: 1fr; gap: 14px }
   .shows-page-card-body { padding: 12px 14px 14px }

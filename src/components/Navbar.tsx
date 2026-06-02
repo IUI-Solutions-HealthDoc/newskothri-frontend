@@ -159,15 +159,31 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
 
         {/* ══════ ROW 1: Logo | Tabs | Socials ══════ */}
         <div className="nav-row1">
+          <button
+            ref={mobileMenuBtnRef}
+            type="button"
+            className="nav-util-btn nav-mobile-menu nav-mobile-menu--lead"
+            onClick={() => setMobileOpen(true)}
+            aria-label={t("मेनू खोलें", "Open menu")}
+            aria-expanded={mobileOpen}
+          >
+            <Menu size={20} strokeWidth={2} aria-hidden />
+          </button>
 
-          {/* Logo */}
+          <span className="nav-brand-name nav-brand-name--mobile" aria-hidden="true">
+            {t("न्यूज़ कोठरी", "News Kothri")}
+          </span>
+
           <a
             href="/"
             className="nav-logo"
             onClick={(e) => { e.preventDefault(); navigate("/"); }}
-            aria-label={t("न्यूज़ कोठ्री — होम", "News Kothri — Home")}
+            aria-label={t("न्यूज़ कोठरी — होम", "News Kothri — Home")}
           >
             <BrandLogo className="nav-brand-logo-img" height={44} decorative />
+            <span className="nav-brand-name nav-brand-name--desktop">
+              {t("न्यूज़ कोठरी", "News Kothri")}
+            </span>
           </a>
 
           {/* Center tabs: Home | Shows */}
@@ -216,16 +232,6 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
                   {darkMode ? <Sun size={15} strokeWidth={2} aria-hidden /> : <Moon size={15} strokeWidth={2} aria-hidden />}
                 </button>
               </div>
-              <button
-                ref={mobileMenuBtnRef}
-                type="button"
-                className="nav-util-btn nav-mobile-menu"
-                onClick={() => setMobileOpen(true)}
-                aria-label={t("मेनू खोलें", "Open menu")}
-                aria-expanded={mobileOpen}
-              >
-                <Menu size={20} strokeWidth={2} aria-hidden />
-              </button>
             </div>
           </div>
         </div>
