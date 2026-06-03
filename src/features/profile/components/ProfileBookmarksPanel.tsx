@@ -33,11 +33,24 @@ export default function ProfileBookmarksPanel({
             className="profile-row profile-row-dense"
             onClick={() => {
               const a = b.article;
-              const slug =
-                a?.articleNumber != null && Number.isFinite(Number(a.articleNumber))
+              if (!a) return;
+              const numStr =
+                a.articleNumber != null && Number.isFinite(Number(a.articleNumber))
                   ? String(a.articleNumber)
-                  : a?._id;
-              if (slug) navigate(`/article/${slug}`);
+                  : a._id;
+              let segment = numStr;
+              if (a.slug) {
+                const normSlug = String(a.slug)
+                  .trim()
+                  .toLowerCase()
+                  .replace(/[^a-z0-9-]/g, "")
+                  .replace(/-+/g, "-")
+                  .replace(/^-+|-+$/g, "");
+                if (normSlug) {
+                  segment = `${normSlug}-${numStr}`;
+                }
+              }
+              if (segment) navigate(`/article/${segment}`);
             }}
           >
             <span className="profile-row-title">
