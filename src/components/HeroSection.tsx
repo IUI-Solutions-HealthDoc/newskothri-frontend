@@ -28,6 +28,7 @@ export default function HeroSection() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   const [imgErr, setImgErr] = useState<Record<string | number, boolean>>({});
+  const [heroAspect, setHeroAspect] = useState<Record<string | number, number>>({});
   const { lang, t } = useLang();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
@@ -62,6 +63,16 @@ export default function HeroSection() {
     setProgress(0);
     startTimeRef.current = Date.now();
   }, [stories.length]);
+
+  const handleHeroImgLoad = useCallback(
+    (storyId: string | number, e: React.SyntheticEvent<HTMLImageElement>) => {
+      const { naturalWidth, naturalHeight } = e.currentTarget;
+      if (naturalWidth > 0 && naturalHeight > 0) {
+        setHeroAspect((prev) => ({ ...prev, [storyId]: naturalWidth / naturalHeight }));
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     if (stories.length <= 1 || reduceMotion) {
@@ -136,7 +147,7 @@ export default function HeroSection() {
     );
   }
 
-  const { title, summary, category, time, author } = storyFields(story, lang);
+  const { title, summary, category } = storyFields(story, lang);
   const rawTags = (lang === "hi" ? story.tags : story.tagsEn) ?? [];
   const tags = rawTags.slice(0, 8).map((tag) => (tag.startsWith("#") ? tag : `#${tag}`));
 
@@ -157,7 +168,55 @@ export default function HeroSection() {
 
       <div className="hero-cinematic-inner">
         <div className="hero-cinematic-main">
-          <div className="hero-cin-media-band">
+          <div className="hero-cin-lead-block">
+            <div className="hero-cin-badges">
+              <div className="hero-cin-badge-group">
+                {story.isBreaking && (
+                  <span className="hero-cin-breaking">
+                    <span className="hero-cin-dot" />
+                    {t("ब्रेकिंग", "Breaking")}
+                  </span>
+                )}
+                <span className="hero-cin-cat">{category}</span>
+              </div>
+              <button
+                type="button"
+                className="hero-cin-read-btn-inline"
+                onClick={() => navigate(`/article/${story.id}`)}
+              >
+                {t("पूरी खबर", "Read Story")}
+                <ArrowUpRight size={13} aria-hidden />
+              </button>
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={String(story.id) + lang + "-title"}
+                className="hero-cin-text"
+                initial={false}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
+                transition={reduceMotion ? { duration: 0 } : { delay: 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <h1
+                  className="hero-cin-headline"
+                  onClick={() => navigate(`/article/${story.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {title}
+                </h1>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div
+            className="hero-cin-media-band"
+            style={
+              heroAspect[story.id]
+                ? { aspectRatio: String(heroAspect[story.id]) }
+                : undefined
+            }
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={String(story.id)}
@@ -175,6 +234,7 @@ export default function HeroSection() {
                     loading="eager"
                     fetchPriority="high"
                     decoding="async"
+                    onLoad={(e) => handleHeroImgLoad(story.id, e)}
                     onError={() => setImgErr((e) => ({ ...e, [story.id]: true }))}
                   />
                 ) : (
@@ -185,62 +245,19 @@ export default function HeroSection() {
             <div className="hero-cin-gradient" aria-hidden />
           </div>
 
-          <div className="hero-cin-content-panel">
-            <div className="hero-cin-badges">
-              {story.isBreaking && (
-                <span className="hero-cin-breaking">
-                  <span className="hero-cin-dot" />
-                  {t("ब्रेकिंग", "Breaking")}
-                </span>
-              )}
-              <span className="hero-cin-cat">{category}</span>
-            </div>
-
+          <div className="hero-cin-body-block">
             <AnimatePresence mode="wait">
               <motion.div
-                key={String(story.id) + lang}
+                key={String(story.id) + lang + "-summary"}
                 className="hero-cin-text"
                 initial={false}
                 animate={{ opacity: 1, y: 0 }}
                 exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
                 transition={reduceMotion ? { duration: 0 } : { delay: 0.18, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                <h1
-                  className="hero-cin-headline"
-                  onClick={() => navigate(`/article/${story.id}`)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {title}
-                </h1>
                 <p className="hero-cin-summary">{summary}</p>
               </motion.div>
             </AnimatePresence>
-
-            <div className="hero-cin-byline">
-              <div className="hero-cin-author">
-                <span className="hero-cin-avatar">{author.charAt(0)}</span>
-                <span className="hero-cin-author-name">{author}</span>
-                <span className="hero-cin-sep">·</span>
-                <Clock size={12} style={{ opacity: 0.7 }} aria-hidden />
-                <span className="hero-cin-time">{time}</span>
-                {story.readTime ? (
-                  <>
-                    <span className="hero-cin-sep">·</span>
-                    <span className="hero-cin-readtime">
-                      {story.readTime} {t("मिनट", "min")}
-                    </span>
-                  </>
-                ) : null}
-              </div>
-              <button
-                type="button"
-                className="hero-cin-read-btn"
-                onClick={() => navigate(`/article/${story.id}`)}
-              >
-                {t("पूरी खबर", "Read Story")}
-                <ArrowUpRight size={15} aria-hidden />
-              </button>
-            </div>
 
             <div className="hero-cin-progress-row" role="tablist" aria-label={t("टॉप खबरें", "Top stories")}>
               {stories.map((s, i) => (

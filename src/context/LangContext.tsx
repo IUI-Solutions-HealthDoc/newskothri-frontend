@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { normalizePathname } from "../lib/routerShim";
 
 type Lang = "hi" | "en";
 
@@ -39,6 +40,7 @@ export function LangProvider({
   initialLang?: Lang;
 }) {
   const router = useRouter();
+  const pathname = normalizePathname(usePathname() || "/");
   const [lang, setLangState] = useState<Lang>(initialLang);
 
   useEffect(() => {
@@ -49,7 +51,11 @@ export function LangProvider({
     if (next === lang) return;
     persistLangCookie(next);
     setLangState(next);
-    router.refresh();
+    if (pathname.startsWith("/article/")) {
+      router.push("/");
+    } else {
+      router.refresh();
+    }
   };
 
   const setLang = (next: Lang) => pushLang(next);

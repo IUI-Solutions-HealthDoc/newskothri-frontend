@@ -55,8 +55,11 @@
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  color: var(--ink-900);
+  color: var(--brand-red);
   white-space: nowrap;
+}
+.nav-logo:hover .nav-brand-name {
+  color: var(--brand-red-dark);
 }
 [data-lang="hi"] .nav-brand-name {
   font-family: var(--font-hi);
@@ -65,11 +68,12 @@
 }
 .nav-brand-name--mobile {
   display: none;
-  flex: 1;
+  flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 2px;
+  align-self: center;
 }
 .nav-brand-name--desktop {
   display: inline;
@@ -687,6 +691,8 @@
     display: block;
     order: 1;
     text-align: left;
+    flex: 1 1 0;
+    min-width: 0;
   }
   .nav-brand-name--desktop {
     display: none;
@@ -694,6 +700,7 @@
   .nav-logo {
     order: 2;
     flex: 0 0 auto;
+    flex-shrink: 0;
     gap: 0;
     padding: 2px 4px;
     margin: 0;
