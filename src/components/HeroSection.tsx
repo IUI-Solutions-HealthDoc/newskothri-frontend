@@ -8,14 +8,15 @@ import type { ContentArticle } from "../services/contentTypes";
 import { useLang } from "../context/LangContext";
 import { fetchPublishedArticles } from "../services/newsApi";
 import { adaptArticles } from "../services/articleAdapter";
+import { displayDek, displayHeadline } from "../services/articleDisplay";
 import styles from "../app/newsroom.module.css";
 
 const ROTATION_INTERVAL = 5000;
 
 function storyFields(s: ContentArticle, lang: "hi" | "en") {
   return {
-    title: lang === "hi" ? s.title : s.titleEn,
-    summary: lang === "hi" ? s.summary : s.summaryEn,
+    title: displayHeadline(s, lang),
+    summary: displayDek(s, lang),
     category: lang === "hi" ? s.category : s.categoryEn,
     time: lang === "hi" ? s.time : s.timeEn,
     author: lang === "hi" ? s.author : s.authorEn,
@@ -44,7 +45,7 @@ export default function HeroSection() {
     fetchPublishedArticles({ limit: 4, locale: lang })
       .then((articles) => {
         if (cancelled) return;
-        setStories(adaptArticles(articles).slice(0, 4));
+        setStories(adaptArticles(articles, lang).slice(0, 4));
         setActiveIdx(0);
         setProgress(0);
       })

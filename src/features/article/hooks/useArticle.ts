@@ -27,16 +27,27 @@ export function useArticle(articleId: string, lang: "hi" | "en") {
       return;
     }
     let cancelled = false;
-    getArticleById(articleId).then((raw) => {
+    getArticleById(articleId, lang).then((raw) => {
       if (cancelled) return;
-      const next = raw ? adaptArticle(raw) : null;
+      if (!raw) {
+        setArticle(null);
+        setLoading(false);
+        return;
+      }
+      const pl = raw.primaryLocale === "hi" ? "hi" : "en";
+      if (pl !== lang) {
+        setArticle(null);
+        setLoading(false);
+        return;
+      }
+      const next = adaptArticle(raw);
       setArticle(next);
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [articleId]);
+  }, [articleId, lang]);
 
   useEffect(() => {
     if (!articleId || !article || !publicArticleSegmentsMatch(articleId, article)) {
@@ -50,10 +61,10 @@ export function useArticle(articleId: string, lang: "hi" | "en") {
       getPublishedArticlesPage({ limit: 24, page: 2, locale: lang }),
     ]).then(([recRaw, moreRaw]) => {
       if (cancelled) return;
-      const recItems = adaptArticles(recRaw).filter((n) => String(n.id) !== String(article.id));
+      const recItems = adaptArticles(recRaw, lang).filter((n) => String(n.id) !== String(article.id));
       setRecommendedArticles(recItems);
       const recIds = new Set(recItems.map((r) => String(r.id)));
-      const more = adaptArticles(moreRaw)
+      const more = adaptArticles(moreRaw, lang)
         .filter((n) => String(n.id) !== String(article.id) && !recIds.has(String(n.id)))
         .slice(0, 5);
       setMostReadSidebar(more);

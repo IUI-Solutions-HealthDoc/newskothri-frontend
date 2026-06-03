@@ -34,8 +34,8 @@ export default function LatestNews() {
       fetchPublishedArticles({ limit: 10, locale: lang, latestDays: 3 }),
       fetchPublishedArticles({ limit: 10, page: 2, locale: lang, latestDays: 3 }),
     ]).then(([p1, p2]) => {
-      setNews(adaptArticles(p1));
-      setMostRead(adaptArticles(p2).slice(0, 5));
+      setNews(adaptArticles(p1, lang));
+      setMostRead(adaptArticles(p2, lang).slice(0, 5));
       setReady(true);
     });
   }, [lang]);

@@ -40,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const locale = await getServerUiLang();
   const { articles: raw } = await fetchPublicArticlesPage({ limit: 120, locale });
-  const feed = adaptArticles(raw);
+  const feed = adaptArticles(raw, locale);
   const excludeIds = collectHomeDisplayedIds(feed);
   const { items: initialItems, total: catalogTotal, startPage } = await buildHomeInitialMoreStories(
     locale,

@@ -21,6 +21,7 @@ import { useArticle, useArticleClipboard } from "../hooks/useArticle";
 import { useBookmarks } from "../hooks/useBookmarks";
 import { categoryColors } from "../utils/formatArticle";
 import { shareToTwitter, shareToWhatsApp } from "../utils/share";
+import { displayDek, displayHeadline } from "../../../services/articleDisplay";
 
 export default function ArticlePageClient({ articleId }: { articleId: string }) {
   const navigate = useNavigate();
@@ -87,8 +88,8 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
     );
   }
 
-  const title = lang === "hi" ? article.title : article.titleEn;
-  const summary = lang === "hi" ? article.summary : article.summaryEn;
+  const title = displayHeadline(article, lang);
+  const summary = displayDek(article, lang);
   const category = lang === "hi" ? article.category : article.categoryEn;
   const tags = lang === "hi" ? (article.tags ?? []) : (article.tagsEn ?? []);
   const rawContent = lang === "hi" ? article.content : article.contentEn;

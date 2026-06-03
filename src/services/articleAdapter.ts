@@ -1,5 +1,5 @@
 import type { BackendArticle } from "./newsApi";
-import type { ContentArticle } from "./contentTypes";
+import type { ContentArticle, LocaleCode } from "./contentTypes";
 import { withPublicOrigin } from "../config/publicApi";
 import { youtubeVideoIdFromUrl } from "../utils/youtube";
 
@@ -27,7 +27,9 @@ const CAT_EN: Record<string, string> = {
 
 function relativeTime(dateStr?: string): { hi: string; en: string } {
   if (!dateStr) return { hi: "अभी", en: "Just now" };
-  const diff = Date.now() - new Date(dateStr).getTime();
+  const t = new Date(dateStr).getTime();
+  if (!Number.isFinite(t)) return { hi: "अभी", en: "Just now" };
+  const diff = Date.now() - t;
   const mins  = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days  = Math.floor(diff / 86400000);
@@ -92,10 +94,28 @@ export function adaptArticle(a: BackendArticle): ContentArticle {
   const bodyHi = String(a.bodyHi || "").trim();
   const bodyEn = String(a.body || "").trim();
 
-  const title = rawTitleHi || rawTitleEn;
-  const titleEnOut = rawTitleEn || rawTitleHi;
-  const summary = rawSummaryHi || rawSummaryEn;
-  const summaryEnOut = rawSummaryEn || rawSummaryHi;
+  const primaryLocale: LocaleCode = a.primaryLocale === "hi" ? "hi" : "en";
+
+  const title = primaryLocale === "hi" ? rawTitleHi : rawTitleEn;
+  const titleEn = primaryLocale === "en" ? rawTitleEn : rawTitleEn;
+  const summary = primaryLocale === "hi" ? rawSummaryHi : rawSummaryEn;
+  const summaryEn = primaryLocale === "en" ? rawSummaryEn : rawSummaryEn;
+  const content =
+    primaryLocale === "hi"
+      ? bodyHi
+        ? [bodyHi]
+        : undefined
+      : bodyEn
+        ? [bodyEn]
+        : undefined;
+  const contentEn =
+    primaryLocale === "en"
+      ? bodyEn
+        ? [bodyEn]
+        : undefined
+      : bodyHi
+        ? [bodyHi]
+        : undefined;
 
   const publicId = backendArticlePublicId(a);
 
@@ -116,14 +136,15 @@ export function adaptArticle(a: BackendArticle): ContentArticle {
   return {
     id:           publicId,
     mongoId:      a._id,
+    primaryLocale,
     category:     CAT_HI[primarySlug] ?? primarySlug,
     categoryEn:   CAT_EN[primarySlug] ?? primarySlug,
     categorySlug: primarySlug,
     categorySlugs,
     title,
-    titleEn:      titleEnOut,
+    titleEn,
     summary,
-    summaryEn:    summaryEnOut,
+    summaryEn,
     image:        getImageUrl(a),
     heroImage:    getHeroImageMeta(a),
     time:         time.hi,
@@ -137,13 +158,18 @@ export function adaptArticle(a: BackendArticle): ContentArticle {
     upvoteCount:  typeof a.upvotes === "number" ? a.upvotes : 0,
     tags:         Array.isArray(a.tags) ? a.tags : [],
     tagsEn:       Array.isArray(a.tags) ? a.tags : [],
-    content:      bodyHi ? [bodyHi] : bodyEn ? [bodyEn] : undefined,
-    contentEn:    bodyEn ? [bodyEn] : bodyHi ? [bodyHi] : undefined,
+    content,
+    contentEn,
     slug:         String(a.slug || "").trim() || undefined,
     youtubeEmbeds: youtubeEmbeds.length ? youtubeEmbeds : undefined,
   };
 }
 
-export function adaptArticles(articles: BackendArticle[]): ContentArticle[] {
-  return articles.map(adaptArticle);
+export function adaptArticles(
+  articles: BackendArticle[],
+  siteLocale?: LocaleCode
+): ContentArticle[] {
+  const mapped = articles.map(adaptArticle);
+  if (!siteLocale) return mapped;
+  return mapped.filter((a) => a.primaryLocale === siteLocale);
 }

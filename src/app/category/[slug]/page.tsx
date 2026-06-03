@@ -31,7 +31,7 @@ export default async function CategoryPage(
       ? { latestDays: 3, limit: 24, locale }
       : { category: slug, limit: 24, locale }
   );
-  const list = adaptArticles(rawList);
+  const list = adaptArticles(rawList, locale);
   const excludeIds = list.map((a) => a.id);
   const jsonLd = buildCategoryCollectionJsonLd(slug, list, locale);
 

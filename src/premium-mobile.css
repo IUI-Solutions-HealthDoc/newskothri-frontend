@@ -185,7 +185,7 @@
     line-height: 1.15;
     letter-spacing: -.3px;
     -webkit-line-clamp: 3;
-    text-shadow: 0 2px 4px rgba(0,0,0,.6), 0 8px 24px rgba(0,0,0,.4);
+    text-shadow: none;
   }
 
   [data-lang="hi"] .hero-cin-headline {
@@ -195,10 +195,7 @@
     font-weight: 800;
     padding-bottom: 0.12em;
     -webkit-line-clamp: 4;
-    text-shadow:
-      0 0 2px rgba(0, 0, 0, 0.95),
-      0 2px 6px rgba(0, 0, 0, 0.88),
-      0 8px 28px rgba(0, 0, 0, 0.72);
+    text-shadow: none;
   }
 
   [data-lang="hi"] .hero-cin-summary {

@@ -114,10 +114,19 @@ export async function fetchPublishedArticlesPage(opts: {
   }
 }
 
-export async function fetchArticleById(id: string): Promise<BackendArticle | null> {
+export async function fetchArticleById(
+  id: string,
+  locale?: "hi" | "en"
+): Promise<BackendArticle | null> {
   try {
     const enc = encodeURIComponent(String(id || "").trim());
-    const res = await fetch(publicUrl(`${BASE}/articles/${enc}`), { signal: apiFetchSignal() });
+    const params = new URLSearchParams();
+    if (locale) params.set("locale", locale);
+    const qs = params.toString();
+    const res = await fetch(
+      publicUrl(`${BASE}/articles/${enc}${qs ? `?${qs}` : ""}`),
+      { signal: apiFetchSignal() }
+    );
     if (!res.ok) return null;
     const data = await res.json();
     return data.article ?? null;

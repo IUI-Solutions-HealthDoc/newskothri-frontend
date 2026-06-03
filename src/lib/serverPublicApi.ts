@@ -51,9 +51,15 @@ export async function fetchPublicArticlesPage(params: {
   }
 }
 
-export async function fetchPublicArticleById(id: string): Promise<BackendArticle | null> {
+export async function fetchPublicArticleById(
+  id: string,
+  locale?: "hi" | "en"
+): Promise<BackendArticle | null> {
   try {
-    const res = await fetch(serverApiUrl(`/api/public/articles/${encodeURIComponent(String(id || "").trim())}`), {
+    const qs = locale ? `?locale=${locale}` : "";
+    const res = await fetch(
+      serverApiUrl(`/api/public/articles/${encodeURIComponent(String(id || "").trim())}${qs}`),
+      {
       cache: "no-store",
       signal: apiFetchSignal(),
     });

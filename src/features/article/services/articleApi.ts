@@ -7,8 +7,8 @@ import {
   fetchRecommendedForArticle as fetchRecommendedForArticleRaw,
 } from "../../../services/newsApi";
 
-export async function getArticleById(id: string) {
-  return fetchArticleByIdRaw(id);
+export async function getArticleById(id: string, locale?: "hi" | "en") {
+  return fetchArticleByIdRaw(id, locale);
 }
 
 export async function getRecommendedForArticle(

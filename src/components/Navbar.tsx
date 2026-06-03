@@ -137,7 +137,7 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
     setSearchFetched(false);
     const handle = window.setTimeout(() => {
       fetchPublicSearch(q, 12, lang)
-        .then((raw) => setRemoteResults(adaptArticles(raw)))
+        .then((raw) => setRemoteResults(adaptArticles(raw, lang)))
         .finally(() => {
           setSearchLoading(false);
           setSearchFetched(true);

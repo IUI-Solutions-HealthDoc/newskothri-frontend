@@ -152,7 +152,7 @@ export default function InfinitePublicArticleList({
           break;
         }
 
-        const adapted = adaptArticles(articles);
+        const adapted = adaptArticles(articles, locale);
         const fresh = adapted.filter((a) => !seen.current.has(a.id));
         fresh.forEach((a) => seen.current.add(a.id));
 

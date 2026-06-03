@@ -39,17 +39,20 @@ function absolute(path: string): string {
   return `${getSiteUrl()}${p}`;
 }
 
-async function fetchPublishedArticles(): Promise<PublicArticle[]> {
+async function fetchPublishedArticlesForLocale(locale: "hi" | "en"): Promise<PublicArticle[]> {
   const all: PublicArticle[] = [];
   let page = 1;
 
   while (all.length < MAX_ARTICLES) {
     let res: Response;
     try {
-      res = await fetch(serverApiUrl(`/api/public/articles?limit=${PAGE_LIMIT}&page=${page}`), {
-        next: { revalidate: 300 },
-        signal: apiFetchSignal(),
-      });
+      res = await fetch(
+        serverApiUrl(`/api/public/articles?limit=${PAGE_LIMIT}&page=${page}&locale=${locale}`),
+        {
+          next: { revalidate: 300 },
+          signal: apiFetchSignal(),
+        }
+      );
     } catch {
       break;
     }
@@ -65,7 +68,24 @@ async function fetchPublishedArticles(): Promise<PublicArticle[]> {
     page += 1;
   }
 
-  return all.slice(0, MAX_ARTICLES);
+  return all;
+}
+
+async function fetchPublishedArticles(): Promise<PublicArticle[]> {
+  const [hi, en] = await Promise.all([
+    fetchPublishedArticlesForLocale("hi"),
+    fetchPublishedArticlesForLocale("en"),
+  ]);
+  const seen = new Set<string>();
+  const merged: PublicArticle[] = [];
+  for (const a of [...hi, ...en]) {
+    const key = String(a.articleNumber ?? a._id);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(a);
+    if (merged.length >= MAX_ARTICLES) break;
+  }
+  return merged;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

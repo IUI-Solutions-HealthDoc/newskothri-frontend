@@ -29,7 +29,7 @@ export async function buildHomeInitialMoreStories(
     lastFetchedPage = page;
     if (!articles.length) break;
 
-    for (const a of adaptArticles(articles)) {
+    for (const a of adaptArticles(articles, locale)) {
       if (displayed.has(a.id) || collectedIds.has(a.id)) continue;
       collectedIds.add(a.id);
       collected.push(a);

@@ -14,6 +14,8 @@ export interface ContentArticle {
   id: string;
   /** Mongo `_id` for reader API calls when needed; mirrors backend document id. */
   mongoId: string;
+  /** Which language edition this article belongs on (public feeds). */
+  primaryLocale: LocaleCode;
   category: string;
   categoryEn: string;
   categorySlug: string;
