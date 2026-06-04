@@ -10,6 +10,7 @@ import { fetchPublishedArticles } from "../services/newsApi";
 import { adaptArticles } from "../services/articleAdapter";
 import { displayDek, displayHeadline } from "../services/articleDisplay";
 import styles from "../app/newsroom.module.css";
+import { formatDisplayTag } from "../lib/formatDisplayTag";
 
 const ROTATION_INTERVAL = 5000;
 
@@ -150,7 +151,7 @@ export default function HeroSection() {
 
   const { title, summary, category } = storyFields(story, lang);
   const rawTags = (lang === "hi" ? story.tags : story.tagsEn) ?? [];
-  const tags = rawTags.slice(0, 8).map((tag) => (tag.startsWith("#") ? tag : `#${tag}`));
+  const tags = rawTags.slice(0, 8).map((tag) => formatDisplayTag(tag)).filter(Boolean);
 
   const progressWidth = (i: number) =>
     i < displayIdx ? "100%" : i === displayIdx ? `${fillProgress}%` : "0%";

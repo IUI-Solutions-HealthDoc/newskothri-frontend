@@ -1210,6 +1210,18 @@ a { text-decoration:none; color:inherit }
     var(--bg) 100%
   );
 }
+.article-hero-source {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(12px, 1.1vw, 14px);
+  line-height: 1.5;
+  color: var(--ink-500);
+}
+.article-hero-source em {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--ink-600);
+}
 .article-hero-caption-text {
   margin: 0;
   font-family: var(--font-body);
@@ -1526,6 +1538,20 @@ a { text-decoration:none; color:inherit }
   display:block;
   margin:var(--sp-6) auto;
   border-radius:var(--r-card);
+}
+.article-body figure.article-inline-img {
+  margin:var(--sp-6) 0;
+  padding:0;
+}
+.article-body figure.article-inline-img img {
+  margin:0 auto;
+}
+.article-body figure.article-inline-img figcaption {
+  margin-top:var(--sp-2);
+  font-size:var(--text-sm);
+  line-height:1.5;
+  color:var(--ink-600);
+  text-align:center;
 }
 .article-body blockquote {
   margin:var(--sp-6) 0;

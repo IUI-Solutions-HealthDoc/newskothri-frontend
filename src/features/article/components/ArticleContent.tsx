@@ -18,6 +18,7 @@ import { ArticleYoutubeClip } from "./ArticleYoutubeEmbeds";
 import { splitBodyWithYoutubeSlots } from "../utils/youtubeEmbedMarkers";
 import { youtubeVideoIdFromUrl } from "../../../utils/youtube";
 import ArticleHero from "./ArticleHero";
+import { formatDisplayTag } from "../../../lib/formatDisplayTag";
 import RelatedCard from "./RelatedCard";
 import { isHtmlParagraph } from "../utils/formatArticle";
 import { nativeShare, shareToFacebook, shareToTwitter, shareToWhatsApp } from "../utils/share";
@@ -28,7 +29,7 @@ function sanitizeArticleHtml(html: string): string {
   const clean = DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
       "p", "br", "strong", "b", "em", "i", "u", "a", "ul", "ol", "li",
-      "h2", "h3", "blockquote", "span", "div", "img",
+      "h2", "h3", "blockquote", "span", "div", "img", "figure", "figcaption",
     ],
     ALLOWED_ATTR: ["href", "rel", "target", "class", "src", "alt", "width", "height", "loading", "decoding"],
   });
@@ -204,7 +205,6 @@ export default function ArticleContent({
         heroImage={article.heroImage}
         imgErr={imgErr}
         onImgError={onImgError}
-        t={t}
       />
       <motion.div className="article-body" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.45 }}>
         {bodyBlocks.length > 0 ? (
@@ -250,7 +250,17 @@ export default function ArticleContent({
       {tags.length > 0 && (
         <div className="article-tags-section">
           <p className="article-tags-label">{t("टैग्स", "Tags")}</p>
-          <div className="article-tags">{tags.map((tag) => <button key={tag} type="button" className="article-tag">#{tag}</button>)}</div>
+          <div className="article-tags">
+            {tags.map((tag) => {
+              const label = formatDisplayTag(tag);
+              if (!label) return null;
+              return (
+                <button key={label} type="button" className="article-tag">
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
       <div className="article-share-section article-share-section--desktop-only">
