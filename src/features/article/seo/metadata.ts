@@ -7,11 +7,18 @@ import {
 } from "../../../lib/seo/metadataHelpers";
 import { getServerUiLang } from "../../../lib/serverLocale";
 import { getArticle } from "../server/getArticle";
+import { publicArticleRouteSegment } from "../utils/formatArticle";
 
 export async function buildArticleMetadata(id: string): Promise<Metadata> {
   const uiLang = await getServerUiLang();
-  const canonicalPath = `/article/${id}`;
   const article = await getArticle(id);
+  const canonicalPath = article
+    ? `/article/${publicArticleRouteSegment({
+        _id: article._id,
+        articleNumber: article.articleNumber,
+        slug: article.slug,
+      }) || id}`
+    : `/article/${id}`;
   const brand = localizedSiteName(uiLang);
   const fallbackDesc = localizedDefaultDescription(uiLang);
 
@@ -23,7 +30,7 @@ export async function buildArticleMetadata(id: string): Promise<Metadata> {
     };
   }
 
-  const useHi = uiLang === "hi";
+  const useHi = article.primaryLocale === "hi";
   const metaTitle = useHi
     ? String(article.metaTitleHi || "").trim() || article.titleHi || article.title || ""
     : String(article.metaTitle || "").trim() || article.title || article.titleHi || "";

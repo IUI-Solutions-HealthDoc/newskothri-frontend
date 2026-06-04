@@ -19,13 +19,13 @@ import ArticleContent from "../components/ArticleContent";
 import ArticleSidebar from "../components/ArticleSidebar";
 import { useArticle, useArticleClipboard } from "../hooks/useArticle";
 import { useBookmarks } from "../hooks/useBookmarks";
-import { categoryColors } from "../utils/formatArticle";
+import { categoryColors, publicArticleRouteSegment } from "../utils/formatArticle";
 import { shareToTwitter, shareToWhatsApp } from "../utils/share";
 import { displayDek, displayHeadline } from "../../../services/articleDisplay";
 
 export default function ArticlePageClient({ articleId }: { articleId: string }) {
   const navigate = useNavigate();
-  const { lang, t } = useLang();
+  const { t } = useLang();
   const { token } = useReaderAuth();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30 });
@@ -38,7 +38,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
     recommendedArticles,
     mostReadSidebar,
     showBackTop,
-  } = useArticle(articleId, lang);
+  } = useArticle(articleId);
 
   const { copied, handleCopyLink, handleUnifiedMobileShare } = useArticleClipboard();
 
@@ -52,14 +52,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
 
   useEffect(() => {
     if (!article) return;
-    const slug = String(article.slug || "")
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "");
-    const canonicalSeg =
-      slug && /^[a-z0-9-]+$/.test(slug) ? `${slug}-${article.id}` : article.id;
+    const canonicalSeg = publicArticleRouteSegment(article);
     if (String(canonicalSeg) === String(articleId).trim()) return;
     navigate(`/article/${canonicalSeg}`, { replace: true });
   }, [article, articleId, navigate]);
@@ -88,11 +81,12 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
     );
   }
 
-  const title = displayHeadline(article, lang);
-  const summary = displayDek(article, lang);
-  const category = lang === "hi" ? article.category : article.categoryEn;
-  const tags = lang === "hi" ? (article.tags ?? []) : (article.tagsEn ?? []);
-  const rawContent = lang === "hi" ? article.content : article.contentEn;
+  const articleLang = article.primaryLocale;
+  const title = displayHeadline(article, articleLang);
+  const summary = displayDek(article, articleLang);
+  const category = articleLang === "hi" ? article.category : article.categoryEn;
+  const tags = articleLang === "hi" ? (article.tags ?? []) : (article.tagsEn ?? []);
+  const rawContent = articleLang === "hi" ? article.content : article.contentEn;
   const paragraphs = rawContent && rawContent.length > 0 ? rawContent : [];
   const bodyHtml = paragraphs[0] && typeof paragraphs[0] === "string" ? paragraphs[0] : "";
 
@@ -112,7 +106,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
       <div className="article-page-layout">
         <ArticleContent
           article={article}
-          lang={lang}
+          lang={articleLang}
           t={t}
           color={color}
           title={title}
@@ -140,7 +134,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
           sideRelated={sideRelated}
           mostReadSidebar={mostReadSidebar}
           color={color}
-          lang={lang}
+          lang={articleLang}
           t={t}
           title={title}
           pageUrl={pageUrl}

@@ -1,5 +1,6 @@
 import { siteName, toAbsoluteUrl } from "../../../lib/seo/metadataHelpers";
 import { getArticle } from "../server/getArticle";
+import { publicArticleRouteSegment } from "../utils/formatArticle";
 
 /**
  * Schema.org NewsArticle JSON-LD for server-rendered injection on article routes.
@@ -16,8 +17,11 @@ export async function buildNewsArticleJsonLd(id: string): Promise<Record<string,
     ? String(article.metaDescriptionHi || "").trim() || article.summaryHi || article.summary || ""
     : String(article.metaDescription || "").trim() || article.summary || article.summaryHi || "";
   const imageUrl = article.images?.[0]?.url ? toAbsoluteUrl(article.images[0].url) : undefined;
-  const publicId =
-    article.articleNumber != null ? String(article.articleNumber) : id;
+  const publicId = publicArticleRouteSegment({
+    _id: article._id,
+    articleNumber: article.articleNumber,
+    slug: article.slug,
+  }) || id;
   const url = toAbsoluteUrl(`/article/${publicId}`);
   const datePublished = article.publishedAt || article.createdAt;
 

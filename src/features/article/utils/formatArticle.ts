@@ -16,6 +16,35 @@ export function isMongoId(id: string): boolean {
   return /^[a-f0-9]{24}$/.test(id);
 }
 
+export function normalizeArticleSlug(s: unknown): string {
+  return String(s || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function publicArticleRouteSegment(article: {
+  id?: string | number | null;
+  mongoId?: string | null;
+  _id?: string | null;
+  articleNumber?: string | number | null;
+  slug?: string | null;
+}): string {
+  const articleNumber =
+    article.articleNumber != null && /^\d{9}$/.test(String(article.articleNumber))
+      ? String(article.articleNumber)
+      : "";
+  const id = String(article.id ?? article.mongoId ?? article._id ?? "").trim();
+  const publicId = articleNumber || id;
+  if (!publicId) return "";
+
+  const slug = normalizeArticleSlug(article.slug);
+  if (slug && /^\d{9}$/.test(publicId)) return `${slug}-${publicId}`;
+  return publicId;
+}
+
 /** Article URL segment: Mongo ObjectId, public 9-digit article number, or slug-9digits. */
 export function isArticleRefId(id: string): boolean {
   const s = String(id || "").trim();

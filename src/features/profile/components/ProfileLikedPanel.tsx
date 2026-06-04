@@ -1,5 +1,6 @@
 "use client";
 
+import { publicArticleRouteSegment } from "../../article/utils/formatArticle";
 import type { ProfileNavigate, ProfileReaderListRow } from "../types/profile";
 
 type TFn = (hi: string, en: string) => string;
@@ -34,22 +35,7 @@ export default function ProfileLikedPanel({
             onClick={() => {
               const a = row.article;
               if (!a) return;
-              const numStr =
-                a.articleNumber != null && Number.isFinite(Number(a.articleNumber))
-                  ? String(a.articleNumber)
-                  : a._id;
-              let segment = numStr;
-              if (a.slug) {
-                const normSlug = String(a.slug)
-                  .trim()
-                  .toLowerCase()
-                  .replace(/[^a-z0-9-]/g, "")
-                  .replace(/-+/g, "-")
-                  .replace(/^-+|-+$/g, "");
-                if (normSlug) {
-                  segment = `${normSlug}-${numStr}`;
-                }
-              }
+              const segment = publicArticleRouteSegment(a);
               if (segment) navigate(`/article/${segment}`);
             }}
           >

@@ -5,7 +5,7 @@ import { adaptArticle, adaptArticles } from "../../../services/articleAdapter";
 import { getArticleById, getPublishedArticlesPage, getRecommendedForArticle } from "../services/articleApi";
 import { isArticleRefId, publicArticleSegmentsMatch } from "../utils/formatArticle";
 
-export function useArticle(articleId: string, lang: "hi" | "en") {
+export function useArticle(articleId: string) {
   const [article, setArticle] = useState<NewsItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [imgErr, setImgErr] = useState(false);
@@ -27,15 +27,9 @@ export function useArticle(articleId: string, lang: "hi" | "en") {
       return;
     }
     let cancelled = false;
-    getArticleById(articleId, lang).then((raw) => {
+    getArticleById(articleId).then((raw) => {
       if (cancelled) return;
       if (!raw) {
-        setArticle(null);
-        setLoading(false);
-        return;
-      }
-      const pl = raw.primaryLocale === "hi" ? "hi" : "en";
-      if (pl !== lang) {
         setArticle(null);
         setLoading(false);
         return;
@@ -47,7 +41,7 @@ export function useArticle(articleId: string, lang: "hi" | "en") {
     return () => {
       cancelled = true;
     };
-  }, [articleId, lang]);
+  }, [articleId]);
 
   useEffect(() => {
     if (!articleId || !article || !publicArticleSegmentsMatch(articleId, article)) {
@@ -56,15 +50,16 @@ export function useArticle(articleId: string, lang: "hi" | "en") {
       return;
     }
     let cancelled = false;
+    const articleLocale = article.primaryLocale;
     Promise.all([
-      getRecommendedForArticle(articleId, { limit: 14, locale: lang }),
-      getPublishedArticlesPage({ limit: 24, page: 2, locale: lang }),
+      getRecommendedForArticle(articleId, { limit: 14, locale: articleLocale }),
+      getPublishedArticlesPage({ limit: 24, page: 2, locale: articleLocale }),
     ]).then(([recRaw, moreRaw]) => {
       if (cancelled) return;
-      const recItems = adaptArticles(recRaw, lang).filter((n) => String(n.id) !== String(article.id));
+      const recItems = adaptArticles(recRaw, articleLocale).filter((n) => String(n.id) !== String(article.id));
       setRecommendedArticles(recItems);
       const recIds = new Set(recItems.map((r) => String(r.id)));
-      const more = adaptArticles(moreRaw, lang)
+      const more = adaptArticles(moreRaw, articleLocale)
         .filter((n) => String(n.id) !== String(article.id) && !recIds.has(String(n.id)))
         .slice(0, 5);
       setMostReadSidebar(more);
@@ -72,7 +67,7 @@ export function useArticle(articleId: string, lang: "hi" | "en") {
     return () => {
       cancelled = true;
     };
-  }, [articleId, article, lang]);
+  }, [articleId, article]);
 
   useEffect(() => {
     const onScroll = () => setShowBackTop(window.scrollY > 600);
