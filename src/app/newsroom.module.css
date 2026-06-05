@@ -513,6 +513,19 @@ button.cardLink {
   }
 }
 
+@media (min-width: 1440px) {
+  .homeMixedGrid,
+  .cardsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .storyLayout {
+    grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+
 @media (max-width: 900px) {
   .breakingSection {
     margin-bottom: 26px;

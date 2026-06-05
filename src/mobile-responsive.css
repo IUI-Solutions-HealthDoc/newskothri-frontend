@@ -135,10 +135,11 @@ body {
     display: none !important;
   }
 
-  .nav-util-btns .nav-util-btn:not(.nav-mobile-menu):not(.nav-profile-btn) {
+  .nav-util-btns .nav-util-btn:not(.nav-mobile-menu):not(.nav-profile-btn):not(.nav-lang-btn-mobile) {
     display: none !important;
   }
 
+  .nav-util-btns .nav-util-btn.nav-lang-btn-mobile,
   .nav-util-btns .nav-util-btn.nav-profile-btn {
     display: flex !important;
   }

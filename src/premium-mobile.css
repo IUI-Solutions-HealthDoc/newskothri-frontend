@@ -706,8 +706,8 @@
   }
 }
 
-/* ── BOTTOM NAV — PREMIUM ────────────────────────────────────────── */
-@media (max-width: 768px) {
+/* ── BOTTOM NAV — PREMIUM (matches mobile chrome ≤900px) ─────────── */
+@media (max-width: 900px) {
   .bottom-nav {
     background: rgba(253,252,251,.96);
     backdrop-filter: saturate(180%) blur(20px);
@@ -721,9 +721,9 @@
   }
   [data-theme="dark"] .bottom-nav {
     background: rgba(16,14,12,.96);
-    border-top-color: rgba(255,255,255,.07);
+    border-top-color: rgba(255,255,255,.12);
     box-shadow:
-      0 -1px 0 rgba(255,255,255,.05),
+      0 -1px 0 rgba(255,255,255,.06),
       0 -8px 32px rgba(0,0,0,.45);
   }
 
@@ -736,8 +736,12 @@
     gap: 3px;
     border-radius: 12px;
     transition: color .15s ease, background .15s ease, transform .1s ease;
-    color: var(--ink-300);
+    color: var(--ink-500);
     position: relative;
+  }
+
+  [data-theme="dark"] .bottom-nav-tab {
+    color: var(--ink-600);
   }
 
   .bottom-nav-tab:active {
@@ -749,16 +753,14 @@
     background: var(--brand-red-tint);
   }
   [data-theme="dark"] .bottom-nav-tab.active {
-    background: rgba(129,1,2,.18);
-    color: #e05555;
+    background: rgba(129,1,2,.22);
+    color: #f0a0a0;
   }
 
-  /* Replace thin bar indicator with pill bg instead of absolute bar */
   .bottom-nav-indicator {
     display: none;
   }
 
-  /* Icon size on bottom nav */
   .bottom-nav-tab svg {
     width: 22px;
     height: 22px;
@@ -1166,7 +1168,16 @@
   }
 
   [data-theme="dark"] .bottom-nav {
-    border-top-color: var(--ink-100);
+    border-top-color: rgba(255,255,255,.12);
+  }
+
+  [data-theme="dark"] .bottom-nav-tab {
+    color: var(--ink-600);
+  }
+
+  [data-theme="dark"] .bottom-nav-tab.active {
+    color: #f0a0a0;
+    background: rgba(129,1,2,.22);
   }
 
   [data-theme="dark"] .section-header {

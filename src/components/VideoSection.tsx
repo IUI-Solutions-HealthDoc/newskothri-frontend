@@ -1,37 +1,30 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Play, Clock, Eye, Tv2, ArrowRight, ExternalLink } from "lucide-react";
+import { Clock, Eye, Tv2, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import type { VideoItem } from "../data/mockData";
 import { useLang } from "../context/LangContext";
 import BrandLogo from "./BrandLogo";
-import YoutubeThumbImg from "./YoutubeThumbImg";
-import { fetchPublishedVideos } from "../services/newsApi";
-import { adaptVideos } from "../services/videoAdapter";
+import YoutubeLazyEmbed from "./YoutubeLazyEmbed";
+import { useYoutubeChannelVideos } from "../hooks/useYoutubeChannelVideos";
 import { useYoutubeChannelStats } from "../hooks/useYoutubeChannelStats";
 import { formatSubscriberSubtitle } from "../lib/youtube/formatChannelCount";
 
 export default function VideoSection() {
   const { lang, t } = useLang();
   const navigate = useNavigate();
-  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const { videos, loading } = useYoutubeChannelVideos({ limit: 12, locale: lang });
   const { stats: channelStats } = useYoutubeChannelStats();
 
-  useEffect(() => {
-    fetchPublishedVideos({ limit: 12, locale: lang }).then((raw) => setVideos(adaptVideos(raw)));
-  }, [lang]);
-
-  if (videos.length === 0) return null;
+  if (!loading && videos.length === 0) return null;
 
   const featured = videos[0];
   const stack = videos.slice(1, 5);
 
-  const featuredTitle = lang === "hi" ? featured.title : featured.titleEn;
-  const featuredCategory = lang === "hi" ? featured.category : featured.categoryEn;
-  const featuredSummary =
-    lang === "hi" ? featured.summary ?? "" : featured.summaryEn ?? featured.summary ?? "";
-  const featuredPublished =
-    lang === "hi" ? featured.publishedHi : featured.publishedEn;
+  const featuredTitle = featured ? (lang === "hi" ? featured.title : featured.titleEn) : "";
+  const featuredPublished = featured
+    ? lang === "hi"
+      ? featured.publishedHi
+      : featured.publishedEn
+    : "";
 
   return (
     <section className="section video-section">
@@ -56,138 +49,126 @@ export default function VideoSection() {
           </button>
         </motion.div>
 
-        <div className="video-layout">
-          {/* Featured — opens on YouTube in new tab */}
-          <motion.article
-            className="video-featured"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <a
-              href={featured.youtubeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="video-featured-link"
-              aria-label={`${featuredTitle} — ${t("YouTube पर देखें", "Watch on YouTube")}`}
+        {loading && !featured ? (
+          <div className="video-layout" aria-busy="true">
+            <div className="video-featured-skeleton" />
+            <div className="video-stack-skeleton" />
+          </div>
+        ) : featured ? (
+          <div className="video-layout">
+            <motion.article
+              className="video-featured"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
             >
               <div className="video-thumb-wrap">
-                <YoutubeThumbImg
+                <YoutubeLazyEmbed
                   youtubeUrl={featured.youtubeUrl}
-                  alt={featuredTitle}
-                  className="video-thumb"
-                  fallbackSrc={featured.thumbnail}
+                  title={featuredTitle}
+                  thumbnail={featured.thumbnail}
+                  playBtnClassName="video-play-btn"
+                  playSize="lg"
+                  duration={
+                    featured.duration ? (
+                      <div className="video-duration">
+                        <Clock size={11} aria-hidden />
+                        {featured.duration}
+                      </div>
+                    ) : null
+                  }
                 />
-                <div className="video-thumb-overlay" />
-                <motion.div className="video-play-btn" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} aria-hidden>
-                  <Play size={22} fill="white" color="white" />
-                </motion.div>
-                <div className="video-duration">
-                  <Clock size={11} aria-hidden />
-                  {featured.duration}
-                </div>
               </div>
-            </a>
-            <div className="video-body">
-              <div className="video-channel-row">
-                <BrandLogo className="video-channel-logo" height={36} decorative />
-                <div>
-                  <div className="video-channel-name">{t("टीवी", "TV")}</div>
-                  <div className="video-channel-sub">
-                    {channelStats
-                      ? formatSubscriberSubtitle(channelStats.subscribersFormatted, lang)
-                      : t("सब्सक्राइबर्स", "subscribers")}
+              <div className="video-body">
+                <div className="video-channel-row">
+                  <BrandLogo className="video-channel-logo" height={36} decorative />
+                  <div>
+                    <div className="video-channel-name">{t("टीवी", "TV")}</div>
+                    <div className="video-channel-sub">
+                      {channelStats
+                        ? formatSubscriberSubtitle(channelStats.subscribersFormatted, lang)
+                        : t("सब्सक्राइबर्स", "subscribers")}
+                    </div>
                   </div>
                 </div>
+                <h3 className="video-featured-title">{featuredTitle}</h3>
+                <div className="card-meta" style={{ marginTop: 8 }}>
+                  {featured.views ? (
+                    <>
+                      <Eye size={12} aria-hidden />
+                      <span>
+                        {featured.views} {t("व्यूज़", "views")}
+                      </span>
+                    </>
+                  ) : null}
+                  {featured.duration ? (
+                    <>
+                      {featured.views ? <span className="card-meta-dot" /> : null}
+                      <Clock size={12} aria-hidden />
+                      <span>{featured.duration}</span>
+                    </>
+                  ) : null}
+                  {featuredPublished ? (
+                    <>
+                      <span className="card-meta-dot" />
+                      <span>{featuredPublished}</span>
+                    </>
+                  ) : null}
+                </div>
               </div>
-              <span className="card-cat-label" style={{ color: "var(--brand-red)" }}>
-                {featuredCategory}
-              </span>
-              <h3 className="video-featured-title">{featuredTitle}</h3>
-              {featuredSummary ? <p className="video-summary">{featuredSummary}</p> : null}
-              <div className="card-meta" style={{ marginTop: 8 }}>
-                <Eye size={12} aria-hidden />
-                <span>{featured.views}</span>
-                <span className="card-meta-dot" />
-                <Clock size={12} aria-hidden />
-                <span>{featured.duration}</span>
-                {featuredPublished ? (
-                  <>
-                    <span className="card-meta-dot" />
-                    <span>{featuredPublished}</span>
-                  </>
-                ) : null}
-              </div>
-              <a
-                href={featured.youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="video-yt-cta"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <ExternalLink size={14} aria-hidden />
-                {t("YouTube पर देखें", "Watch on YouTube")}
-              </a>
-            </div>
-          </motion.article>
+            </motion.article>
 
-          {/* Stack */}
-          <div className="video-stack">
-            {stack.map((video, i) => {
-              const title = lang === "hi" ? video.title : video.titleEn;
-              const category = lang === "hi" ? video.category : video.categoryEn;
-              const summary =
-                lang === "hi" ? video.summary ?? "" : video.summaryEn ?? video.summary ?? "";
-              const published = lang === "hi" ? video.publishedHi : video.publishedEn;
-              return (
-                <motion.a
-                  key={video.id}
-                  href={video.youtubeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="video-stack-item"
-                  initial={{ opacity: 0, x: 16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08, duration: 0.4 }}
-                  aria-label={`${title} — ${t("YouTube पर देखें", "Watch on YouTube")}`}
-                >
-                  <div className="video-stack-thumb-wrap" style={{ position: "relative" }}>
-                    <YoutubeThumbImg
-                      youtubeUrl={video.youtubeUrl}
-                      alt={title}
-                      className="video-stack-thumb"
-                      fallbackSrc={video.thumbnail}
-                    />
-                    <div className="video-thumb-overlay" />
-                    <div className="video-stack-play" aria-hidden>
-                      <Play size={14} fill="white" color="white" />
+            <div className="video-stack">
+              {stack.map((video, i) => {
+                const title = lang === "hi" ? video.title : video.titleEn;
+                const published = lang === "hi" ? video.publishedHi : video.publishedEn;
+                return (
+                  <motion.article
+                    key={video.id}
+                    className="video-stack-item"
+                    initial={{ opacity: 0, x: 16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08, duration: 0.4 }}
+                  >
+                    <div className="video-stack-thumb-wrap">
+                      <YoutubeLazyEmbed
+                        youtubeUrl={video.youtubeUrl}
+                        title={title}
+                        thumbnail={video.thumbnail}
+                        playBtnClassName="video-stack-play"
+                        playSize="sm"
+                        duration={
+                          video.duration ? (
+                            <div className="video-duration video-stack-duration">{video.duration}</div>
+                          ) : null
+                        }
+                      />
                     </div>
-                    <div className="video-duration video-stack-duration">{video.duration}</div>
-                  </div>
-                  <div className="video-stack-body">
-                    <span className="card-cat-label" style={{ color: "var(--brand-red)", fontSize: 10 }}>
-                      {category}
-                    </span>
-                    <h4 className="video-stack-title">{title}</h4>
-                    {summary ? <p className="video-stack-summary">{summary}</p> : null}
-                    <div className="card-meta" style={{ marginTop: 4 }}>
-                      <Eye size={11} aria-hidden />
-                      <span>{video.views}</span>
-                      {published ? (
-                        <>
-                          <span className="card-meta-dot" />
-                          <span>{published}</span>
-                        </>
-                      ) : null}
+                    <div className="video-stack-body">
+                      <h4 className="video-stack-title">{title}</h4>
+                      <div className="card-meta" style={{ marginTop: 4 }}>
+                        {video.views ? (
+                          <>
+                            <Eye size={11} aria-hidden />
+                            <span>{video.views}</span>
+                          </>
+                        ) : null}
+                        {published ? (
+                          <>
+                            {video.views ? <span className="card-meta-dot" /> : null}
+                            <span>{published}</span>
+                          </>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
-                </motion.a>
-              );
-            })}
+                  </motion.article>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </section>
   );
