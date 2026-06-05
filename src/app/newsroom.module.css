@@ -249,7 +249,7 @@ button.cardLink {
 }
 
 .cardBody {
-  padding: 14px;
+  padding: 0;
   border-radius: 14px;
   border: 1px solid color-mix(in srgb, var(--card-border) 88%, transparent);
   background: linear-gradient(
@@ -259,6 +259,11 @@ button.cardLink {
   );
   box-shadow: var(--shadow-ui-rest);
   transition: transform 180ms var(--ease), box-shadow 180ms var(--ease), border-color 180ms var(--ease);
+  overflow: hidden;
+}
+
+.cardBody:not(:has(.cardMedia)) {
+  padding: 14px;
 }
 
 .cardBody:hover {
@@ -270,31 +275,48 @@ button.cardLink {
 .cardLink {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
   align-content: start;
   min-width: 0;
 }
 
 .cardMedia {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: var(--bg-secondary);
-  border-radius: 12px;
-  min-height: 120px;
-  max-height: min(280px, 38vw);
+  background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary, var(--bg-secondary)));
+  border-radius: 0;
+  flex-shrink: 0;
+  min-height: 0;
+  max-height: min(320px, 52vw);
 }
 
 .cardImage {
   width: 100%;
-  height: auto;
-  max-height: min(280px, 38vw);
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
   object-position: center;
   display: block;
-  border-radius: 12px;
+  border-radius: 0;
   transition: transform 220ms var(--ease), filter 220ms var(--ease);
+}
+
+.cardLink:has(.cardMedia) .cardTitle,
+.cardLink:has(.cardMedia) .cardSummary,
+.cardLink:has(.cardMedia) :global(.card-title),
+.cardLink:has(.cardMedia) :global(.card-summary) {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.cardLink:has(.cardMedia) .cardTitle,
+.cardLink:has(.cardMedia) :global(.card-title) {
+  padding-top: 12px;
+}
+
+.cardLink:has(.cardMedia) .cardSummary,
+.cardLink:has(.cardMedia) :global(.card-summary) {
+  padding-bottom: 14px;
 }
 
 .cardTitle {
@@ -573,11 +595,33 @@ button.cardLink {
 
   .cardBody {
     border-radius: 14px;
+    padding: 0;
+  }
+
+  .cardBody:not(:has(.cardMedia)) {
     padding: 12px;
   }
 
-  .cardImage {
-    border-radius: 10px;
+  .cardLink:has(.cardMedia) .cardTitle,
+  .cardLink:has(.cardMedia) .cardSummary,
+  .cardLink:has(.cardMedia) :global(.card-title),
+  .cardLink:has(.cardMedia) :global(.card-summary) {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .cardLink:has(.cardMedia) .cardTitle,
+  .cardLink:has(.cardMedia) :global(.card-title) {
+    padding-top: 11px;
+  }
+
+  .cardLink:has(.cardMedia) .cardSummary,
+  .cardLink:has(.cardMedia) :global(.card-summary) {
+    padding-bottom: 12px;
+  }
+
+  .cardMedia {
+    max-height: min(280px, 56vw);
   }
 
   .sectionBlock {
@@ -621,9 +665,21 @@ button.cardLink {
   }
 
   .cardBody {
-    padding: 12px;
+    padding: 0;
     border-radius: 12px;
     box-shadow: var(--shadow-ui-rest);
+  }
+
+  .cardBody:not(:has(.cardMedia)) {
+    padding: 12px;
+  }
+
+  .cardLink {
+    gap: 0;
+  }
+
+  .cardMedia {
+    max-height: none;
   }
 
   .cardBody:hover {
@@ -631,12 +687,15 @@ button.cardLink {
     box-shadow: var(--shadow-ui-rest);
   }
 
-  .cardLink {
-    gap: 8px;
-  }
-
   .articleLayout {
     padding-bottom: calc(var(--sp-20) + var(--kn-bottom-nav-h, 0px));
+  }
+}
+
+@media (max-width: 768px) {
+  :global(.cat-page-grid) .cardMedia {
+    aspect-ratio: 16 / 9;
+    max-height: none;
   }
 }
 
@@ -697,7 +756,7 @@ button.cardLink {
   .breakingSection :global(.hero-cin-headline),
   .breakingSection :global([data-lang="hi"] .hero-cin-headline) {
     text-shadow: none !important;
-    color: #0a0a0a;
+    color: var(--ink-900);
   }
 
   .breakingSection :global(.hero-cin-badges) {
@@ -779,7 +838,7 @@ button.cardLink {
   .breakingSection :global(.hero-cin-summary) {
     font-size: 14px;
     line-height: 1.55;
-    color: #0a0a0a;
+    color: var(--ink-700);
     -webkit-line-clamp: 3;
   }
 }

@@ -72,8 +72,15 @@
 [data-theme="dark"] .latest-grid-title,
 [data-theme="dark"] .mostread-title,
 [data-theme="dark"] .cat-main-title,
+[data-theme="dark"] .cat-section-title,
 [data-theme="dark"] .state-main-title,
 [data-theme="dark"] .state-side-title,
+[data-theme="dark"] .hero-headline,
+[data-theme="dark"] .hero-cin-headline,
+[data-theme="dark"] [data-lang="hi"] .hero-cin-headline,
+[data-theme="dark"] .hero-cin-side-title,
+[data-theme="dark"] [data-lang="hi"] .hero-cin-side-title,
+[data-theme="dark"] .hero-cin-side-item.active .hero-cin-side-title,
 [data-theme="dark"] .opinion-title,
 [data-theme="dark"] .article-headline,
 [data-theme="dark"] .shows-page-title,
@@ -83,8 +90,21 @@
 [data-theme="dark"] .inst-title,
 [data-theme="dark"] .profile-title,
 [data-theme="dark"] .profile-h3,
-[data-theme="dark"] .reader-auth-title {
+[data-theme="dark"] .reader-auth-title,
+[data-theme="dark"] .cat-page-title,
+[data-theme="dark"] .aside-related-title,
+[data-theme="dark"] .aside-mostread-title,
+[data-theme="dark"] .article-rec-card-title,
+[data-theme="dark"] .article-rec-strip-title,
+[data-theme="dark"] .article-related-mobile-title {
   color: #f7f1ea !important;
+}
+
+[data-theme="dark"] .hero-cin-summary,
+[data-theme="dark"] [data-lang="hi"] .hero-cin-summary,
+[data-theme="dark"] .hero-summary,
+[data-theme="dark"] .article-deck {
+  color: #ddd1c2 !important;
 }
 
 [data-theme="dark"] .section-subtitle,

@@ -216,6 +216,16 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
             <div className="nav-util-btns">
               <button
                 type="button"
+                className="nav-util-btn nav-lang-btn-mobile"
+                onClick={toggleLang}
+                title={t("भाषा बदलें", "Change language")}
+                aria-label={t("भाषा बदलें", "Change language")}
+              >
+                <Globe2 size={15} strokeWidth={2} aria-hidden />
+                <span className="nav-util-label">{lang === "hi" ? "EN" : "हि"}</span>
+              </button>
+              <button
+                type="button"
                 className={`nav-util-btn nav-profile-btn${isAccountRoute ? " nav-profile-btn--active" : ""}`}
                 onClick={() => navigate(reader ? "/profile" : "/login?next=%2Fprofile")}
                 title={reader ? t("प्रोफ़ाइल", "Profile") : t("लॉग इन", "Log in")}
@@ -384,10 +394,6 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
                 >
                   <User size={16} strokeWidth={2} aria-hidden />
                   {reader ? t("प्रोफ़ाइल", "Profile") : t("लॉग इन", "Log in")}
-                </button>
-                <button type="button" className="drawer-action-btn" onClick={toggleLang}>
-                  <Globe2 size={16} strokeWidth={2} aria-hidden />
-                  {lang === "hi" ? "Switch to English" : "हिंदी में बदलें"}
                 </button>
                 <button type="button" className="drawer-action-btn" onClick={toggleDark}>
                   {darkMode ? <Sun size={16} strokeWidth={2} aria-hidden /> : <Moon size={16} strokeWidth={2} aria-hidden />}
