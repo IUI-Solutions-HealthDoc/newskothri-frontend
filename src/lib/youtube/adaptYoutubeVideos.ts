@@ -26,11 +26,12 @@ export function adaptYoutubeVideo(v: YoutubeChannelVideo): ContentVideo {
     thumbnail: v.thumbnailUrl,
     duration: v.duration,
     views: v.viewsFormatted,
-    category: "वीडियो",
-    categoryEn: "Videos",
+    category: v.isShort ? "शॉर्ट" : "वीडियो",
+    categoryEn: v.isShort ? "Shorts" : "Videos",
     youtubeUrl: v.youtubeUrl,
     publishedHi: rel.hi,
     publishedEn: rel.en,
+    isShort: v.isShort,
   };
 }
 

@@ -11,13 +11,18 @@ export default function ShowsVideoGrid({
   lang,
   t,
   title,
+  variant = "video",
 }: {
   videos: VideoItem[];
   lang: "hi" | "en";
   t: TFn;
   title: string;
+  variant?: "video" | "short";
 }) {
   if (!videos.length) return null;
+
+  const gridClass =
+    variant === "short" ? "shows-page-grid shows-page-grid--shorts" : "shows-page-grid";
 
   return (
     <div className="shows-cat-group">
@@ -28,9 +33,9 @@ export default function ShowsVideoGrid({
         </h2>
         <span className="shows-yt-count">{videos.length}</span>
       </div>
-      <div className="shows-page-grid">
+      <div className={gridClass}>
         {videos.map((v, i) => (
-          <ShowsVideoCard key={v.id} v={v} lang={lang} t={t} index={i} />
+          <ShowsVideoCard key={v.id} v={v} lang={lang} t={t} index={i} isShort={variant === "short"} />
         ))}
       </div>
     </div>

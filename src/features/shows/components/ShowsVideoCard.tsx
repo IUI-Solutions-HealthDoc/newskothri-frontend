@@ -12,24 +12,27 @@ export default function ShowsVideoCard({
   lang,
   t,
   index,
+  isShort = false,
 }: {
   v: VideoItem;
   lang: "hi" | "en";
   t: TFn;
   index: number;
+  isShort?: boolean;
 }) {
   const title = lang === "hi" ? v.title : v.titleEn;
   const published = lang === "hi" ? v.publishedHi : v.publishedEn;
+  const short = isShort || v.isShort;
 
   return (
     <motion.article
-      className="shows-page-card"
+      className={`shows-page-card${short ? " shows-page-card--short" : ""}`}
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.04, duration: 0.4 }}
     >
-      <div className="shows-page-thumb">
+      <div className={`shows-page-thumb${short ? " shows-page-thumb--short" : ""}`}>
         <YoutubeLazyEmbed
           youtubeUrl={v.youtubeUrl}
           title={title}
@@ -45,6 +48,9 @@ export default function ShowsVideoCard({
         />
       </div>
       <div className="shows-page-card-body">
+        {short ? (
+          <span className="shows-short-badge">{t("शॉर्ट", "Short")}</span>
+        ) : null}
         <h3 className="shows-page-card-title">{title}</h3>
         <div className="shows-meta">
           {v.views ? (

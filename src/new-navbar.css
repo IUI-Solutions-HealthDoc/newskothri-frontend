@@ -639,6 +639,73 @@
   padding: 2px 10px;
 }
 
+/* YouTube filter: Videos vs Shorts */
+.shows-yt-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.shows-yt-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: var(--bg);
+  color: var(--ink-600);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.shows-yt-filter-btn:hover {
+  border-color: color-mix(in srgb, var(--brand-red) 40%, var(--card-border));
+  color: var(--ink-900);
+}
+.shows-yt-filter-btn--active {
+  background: color-mix(in srgb, var(--brand-red) 10%, var(--bg));
+  border-color: var(--brand-red);
+  color: var(--brand-red);
+}
+.shows-yt-filter-count {
+  font-size: 11px;
+  font-weight: 800;
+  opacity: .85;
+}
+
+/* Shorts grid — more columns, vertical thumbnails */
+.shows-page-grid--shorts {
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+.shows-page-card--short .shows-page-card-title {
+  font-size: 13px;
+  -webkit-line-clamp: 2;
+}
+.shows-page-thumb--short {
+  aspect-ratio: 9/16;
+}
+.shows-page-thumb--short .yt-lazy-embed {
+  height: 100%;
+}
+.shows-short-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #ff0000;
+  background: color-mix(in srgb, #ff0000 8%, transparent);
+  border: 1px solid color-mix(in srgb, #ff0000 25%, transparent);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-bottom: 4px;
+  font-family: var(--font-ui);
+}
+
 /* Lazy YouTube facade — no iframe until play */
 .yt-lazy-embed {
   position: relative;
@@ -767,6 +834,7 @@
    ═══════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .shows-page-grid { grid-template-columns: repeat(3, 1fr) }
+  .shows-page-grid--shorts { grid-template-columns: repeat(4, 1fr) }
   .shows-loading-grid { grid-template-columns: repeat(3, 1fr) }
 }
 @media (max-width: 900px) {
@@ -774,6 +842,7 @@
   .shows-layout { grid-template-columns: 1fr }
   .shows-grid { grid-template-columns: repeat(2, 1fr) }
   .shows-page-grid { grid-template-columns: repeat(2, 1fr) }
+  .shows-page-grid--shorts { grid-template-columns: repeat(3, 1fr) }
   .shows-loading-grid { grid-template-columns: repeat(2, 1fr) }
 }
 /* Mobile top bar: lang toggle beside profile only (no duplicate desktop cluster) */
@@ -855,6 +924,7 @@
   }
   .shows-grid { grid-template-columns: 1fr }
   .shows-page-grid { grid-template-columns: 1fr; gap: 14px }
+  .shows-page-grid--shorts { grid-template-columns: repeat(2, 1fr); gap: 12px }
   .shows-loading-grid { grid-template-columns: 1fr; gap: 14px }
   .shows-page-card-body { padding: 12px 14px 14px }
   .shows-page-card-title { font-size: 15px; line-height: 1.36 }

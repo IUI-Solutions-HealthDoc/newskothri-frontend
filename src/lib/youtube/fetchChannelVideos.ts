@@ -1,6 +1,7 @@
 import { YOUTUBE_CHANNEL_HANDLE } from "../../config/youtubeChannel";
 import { formatCompactCount } from "./formatChannelCount";
-import { formatIsoDuration } from "./formatIsoDuration";
+import { formatIsoDuration, parseIsoDurationSeconds } from "./formatIsoDuration";
+import { isYoutubeShort, youtubeUrlForVideo } from "./isYoutubeShort";
 
 export type YoutubeChannelVideo = {
   videoId: string;
@@ -8,6 +9,8 @@ export type YoutubeChannelVideo = {
   thumbnailUrl: string;
   duration: string;
   durationIso: string;
+  durationSeconds: number;
+  isShort: boolean;
   viewCount: number;
   viewsFormatted: string;
   publishedAt: string;
@@ -83,6 +86,7 @@ async function fetchVideoDetails(apiKey: string, videoIds: string[]): Promise<Yo
         id?: string;
         snippet?: {
           title?: string;
+          description?: string;
           publishedAt?: string;
           thumbnails?: Record<string, { url?: string }>;
         };
@@ -105,6 +109,12 @@ async function fetchVideoDetails(apiKey: string, videoIds: string[]): Promise<Yo
 
       const viewCount = Number.parseInt(item.statistics?.viewCount ?? "0", 10) || 0;
       const durationIso = item.contentDetails?.duration ?? "";
+      const durationSeconds = parseIsoDurationSeconds(durationIso);
+      const short = isYoutubeShort({
+        durationIso,
+        title: snippet.title,
+        description: snippet.description,
+      });
 
       results.push({
         videoId,
@@ -112,10 +122,12 @@ async function fetchVideoDetails(apiKey: string, videoIds: string[]): Promise<Yo
         thumbnailUrl: thumb,
         duration: formatIsoDuration(durationIso),
         durationIso,
+        durationSeconds,
+        isShort: short,
         viewCount,
         viewsFormatted: formatCompactCount(viewCount),
         publishedAt: snippet.publishedAt ?? "",
-        youtubeUrl: `https://www.youtube.com/watch?v=${videoId}`,
+        youtubeUrl: youtubeUrlForVideo(videoId, short),
       });
     }
   }

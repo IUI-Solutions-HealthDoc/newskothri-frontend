@@ -61,4 +61,6 @@ export interface ContentVideo {
   summaryEn?: string;
   publishedHi?: string;
   publishedEn?: string;
+  /** From YouTube API — vertical Shorts (≤60s) vs regular uploads */
+  isShort?: boolean;
 }
