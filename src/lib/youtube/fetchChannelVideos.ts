@@ -2,6 +2,7 @@ import { YOUTUBE_CHANNEL_HANDLE } from "../../config/youtubeChannel";
 import { formatCompactCount } from "./formatChannelCount";
 import { formatIsoDuration, parseIsoDurationSeconds } from "./formatIsoDuration";
 import { isYoutubeShort, youtubeUrlForVideo } from "./isYoutubeShort";
+import { fetchShortsVideoIds } from "./shortsPlaylist";
 
 export type YoutubeChannelVideo = {
   videoId: string;
@@ -22,9 +23,12 @@ const MAX_VIDEOS = 500;
 const PLAYLIST_PAGE_SIZE = 50;
 const VIDEO_BATCH_SIZE = 50;
 
-async function fetchUploadsPlaylistId(apiKey: string, handle: string): Promise<string | null> {
+async function fetchChannelUploadsContext(
+  apiKey: string,
+  handle: string
+): Promise<{ channelId: string; uploadsPlaylistId: string } | null> {
   const url = new URL("https://www.googleapis.com/youtube/v3/channels");
-  url.searchParams.set("part", "contentDetails");
+  url.searchParams.set("part", "contentDetails,id");
   url.searchParams.set("forHandle", handle);
   url.searchParams.set("key", apiKey);
 
@@ -32,9 +36,16 @@ async function fetchUploadsPlaylistId(apiKey: string, handle: string): Promise<s
   if (!res.ok) return null;
 
   const data = (await res.json()) as {
-    items?: { contentDetails?: { relatedPlaylists?: { uploads?: string } } }[];
+    items?: {
+      id?: string;
+      contentDetails?: { relatedPlaylists?: { uploads?: string } };
+    }[];
   };
-  return data.items?.[0]?.contentDetails?.relatedPlaylists?.uploads ?? null;
+  const item = data.items?.[0];
+  const channelId = item?.id;
+  const uploadsPlaylistId = item?.contentDetails?.relatedPlaylists?.uploads;
+  if (!channelId || !uploadsPlaylistId) return null;
+  return { channelId, uploadsPlaylistId };
 }
 
 async function fetchPlaylistVideoIds(apiKey: string, playlistId: string): Promise<string[]> {
@@ -68,13 +79,17 @@ async function fetchPlaylistVideoIds(apiKey: string, playlistId: string): Promis
   return ids;
 }
 
-async function fetchVideoDetails(apiKey: string, videoIds: string[]): Promise<YoutubeChannelVideo[]> {
+async function fetchVideoDetails(
+  apiKey: string,
+  videoIds: string[],
+  shortsVideoIds: Set<string>
+): Promise<YoutubeChannelVideo[]> {
   const results: YoutubeChannelVideo[] = [];
 
   for (let i = 0; i < videoIds.length; i += VIDEO_BATCH_SIZE) {
     const batch = videoIds.slice(i, i + VIDEO_BATCH_SIZE);
     const url = new URL("https://www.googleapis.com/youtube/v3/videos");
-    url.searchParams.set("part", "snippet,contentDetails,statistics");
+    url.searchParams.set("part", "snippet,contentDetails,statistics,player");
     url.searchParams.set("id", batch.join(","));
     url.searchParams.set("key", apiKey);
 
@@ -87,11 +102,13 @@ async function fetchVideoDetails(apiKey: string, videoIds: string[]): Promise<Yo
         snippet?: {
           title?: string;
           description?: string;
+          tags?: string[];
           publishedAt?: string;
-          thumbnails?: Record<string, { url?: string }>;
+          thumbnails?: Record<string, { url?: string; width?: number; height?: number }>;
         };
         contentDetails?: { duration?: string };
         statistics?: { viewCount?: string };
+        player?: { embedHtml?: string };
       }[];
     };
 
@@ -110,10 +127,16 @@ async function fetchVideoDetails(apiKey: string, videoIds: string[]): Promise<Yo
       const viewCount = Number.parseInt(item.statistics?.viewCount ?? "0", 10) || 0;
       const durationIso = item.contentDetails?.duration ?? "";
       const durationSeconds = parseIsoDurationSeconds(durationIso);
+      const inShortsPlaylist = shortsVideoIds.has(videoId);
       const short = isYoutubeShort({
+        videoId,
+        inShortsPlaylist: shortsVideoIds.size > 0 ? inShortsPlaylist : undefined,
         durationIso,
         title: snippet.title,
         description: snippet.description,
+        tags: snippet.tags,
+        thumbnails: snippet.thumbnails,
+        embedHtml: item.player?.embedHtml,
       });
 
       results.push({
@@ -143,13 +166,16 @@ export async function fetchYoutubeChannelVideos(): Promise<YoutubeChannelVideo[]
   const handle = YOUTUBE_CHANNEL_HANDLE;
 
   try {
-    const playlistId = await fetchUploadsPlaylistId(apiKey, handle);
-    if (!playlistId) return [];
+    const context = await fetchChannelUploadsContext(apiKey, handle);
+    if (!context) return [];
 
-    const videoIds = await fetchPlaylistVideoIds(apiKey, playlistId);
+    const [videoIds, shortsVideoIds] = await Promise.all([
+      fetchPlaylistVideoIds(apiKey, context.uploadsPlaylistId),
+      fetchShortsVideoIds(apiKey, context.channelId, REVALIDATE_SEC),
+    ]);
     if (!videoIds.length) return [];
 
-    const videos = await fetchVideoDetails(apiKey, videoIds);
+    const videos = await fetchVideoDetails(apiKey, videoIds, shortsVideoIds);
     const orderMap = new Map(videoIds.map((id, idx) => [id, idx]));
     videos.sort((a, b) => (orderMap.get(a.videoId) ?? 0) - (orderMap.get(b.videoId) ?? 0));
 
