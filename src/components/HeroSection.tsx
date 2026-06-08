@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Clock, ArrowUpRight, Zap, Eye } from "lucide-react";
@@ -13,6 +13,12 @@ import styles from "../app/newsroom.module.css";
 import { formatDisplayTag } from "../lib/formatDisplayTag";
 
 const ROTATION_INTERVAL = 5000;
+const EMPTY_STORIES: ContentArticle[] = [];
+
+type HeroSectionProps = {
+  initialStories?: ContentArticle[];
+  initialLocale?: "hi" | "en";
+};
 
 function storyFields(s: ContentArticle, lang: "hi" | "en") {
   return {
@@ -24,9 +30,13 @@ function storyFields(s: ContentArticle, lang: "hi" | "en") {
   };
 }
 
-export default function HeroSection() {
-  const [stories, setStories] = useState<ContentArticle[]>([]);
-  const [heroLoading, setHeroLoading] = useState(true);
+export default function HeroSection({
+  initialStories = EMPTY_STORIES,
+  initialLocale = "hi",
+}: HeroSectionProps) {
+  const serverStories = useMemo(() => initialStories.slice(0, 4), [initialStories]);
+  const [clientStories, setClientStories] = useState<ContentArticle[]>([]);
+  const [heroLoading, setHeroLoading] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
   const [progress, setProgress] = useState(0);
   const [imgErr, setImgErr] = useState<Record<string | number, boolean>>({});
@@ -39,6 +49,8 @@ export default function HeroSection() {
   const startTimeRef = useRef<number>(0);
 
   useEffect(() => {
+    if (lang === initialLocale) return;
+
     let cancelled = false;
     queueMicrotask(() => {
       if (!cancelled) setHeroLoading(true);
@@ -46,7 +58,7 @@ export default function HeroSection() {
     fetchPublishedArticles({ limit: 4, locale: lang })
       .then((articles) => {
         if (cancelled) return;
-        setStories(adaptArticles(articles, lang).slice(0, 4));
+        setClientStories(adaptArticles(articles, lang).slice(0, 4));
         setActiveIdx(0);
         setProgress(0);
       })
@@ -56,7 +68,10 @@ export default function HeroSection() {
     return () => {
       cancelled = true;
     };
-  }, [lang]);
+  }, [lang, initialLocale]);
+
+  const stories = lang === initialLocale ? serverStories : clientStories;
+  const isHeroLoading = lang !== initialLocale && heroLoading;
 
   const goTo = useCallback((idx: number) => {
     const len = stories.length;
@@ -120,7 +135,7 @@ export default function HeroSection() {
     stories.length === 0 ? 0 : Math.min(activeIdx, stories.length - 1);
   const fillProgress = reduceMotion ? 0 : progress;
 
-  if (!heroLoading && stories.length === 0) {
+  if (!isHeroLoading && stories.length === 0) {
     return (
       <section className={`hero-cinematic-wrap ${styles.breakingSection}`} aria-live="polite">
         <div className="hero-breaking-formal-head section-inner">

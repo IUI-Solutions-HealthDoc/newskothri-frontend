@@ -39,12 +39,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const locale = await getServerUiLang();
-  const { articles: raw } = await fetchPublicArticlesPage({ limit: 120, locale });
+  const { articles: raw, total: feedTotal } = await fetchPublicArticlesPage({ limit: 120, locale });
   const feed = adaptArticles(raw, locale);
   const excludeIds = collectHomeDisplayedIds(feed);
   const { items: initialItems, total: catalogTotal, startPage } = await buildHomeInitialMoreStories(
     locale,
-    excludeIds
+    excludeIds,
+    { articles: raw.slice(0, 24), total: feedTotal }
   );
   const jsonLd = buildHomeWebSiteJsonLd();
 
@@ -61,7 +62,7 @@ export default async function Home() {
   return (
     <main className={styles.homeMain}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <HeroSection />
+      <HeroSection initialStories={feed.slice(0, 4)} initialLocale={locale} />
       <div className={`section-inner ${styles.sectionStack}`}>
         <HomeDiscoverRow />
         {feed.length === 0 ? (
