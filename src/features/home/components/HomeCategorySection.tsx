@@ -4,6 +4,7 @@ import type { ContentArticle } from "../../../services/contentTypes";
 import { homeSections } from "../config/sections";
 import { dek, headline } from "../server/homeFeed";
 import { categoryColors } from "../../article/utils/formatArticle";
+import ArticleImage from "../../../components/ArticleImage";
 import styles from "./home-category-section.module.css";
 
 type HomeSection = (typeof homeSections)[number];
@@ -53,14 +54,14 @@ export default function HomeCategorySection({
         <article>
           <Link href={`/article/${lead.id}`} className={styles.leadLink}>
             <div className={styles.leadMedia}>
-              <img
+              <ArticleImage
                 src={lead.image}
                 alt={leadTitle}
-                width={800}
-                height={450}
+                width={lead.imageWidth}
+                height={lead.imageHeight}
                 className={styles.leadImg}
+                sizes="(max-width: 900px) 100vw, 50vw"
                 loading="lazy"
-                decoding="async"
               />
             </div>
             <div className={styles.leadBody}>
@@ -93,14 +94,14 @@ export default function HomeCategorySection({
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div className={styles.sideThumb}>
-                    <img
+                    <ArticleImage
                       src={item.image}
                       alt=""
-                      width={152}
-                      height={108}
+                      width={item.imageWidth}
+                      height={item.imageHeight}
                       className={styles.sideThumbImg}
+                      sizes="76px"
                       loading="lazy"
-                      decoding="async"
                     />
                   </div>
                   <div className={styles.sideBody}>
@@ -125,14 +126,14 @@ export default function HomeCategorySection({
             return (
               <Link key={String(item.id)} href={`/article/${item.id}`} className={styles.moreCard}>
                 <div className={styles.moreCardMedia}>
-                  <img
+                  <ArticleImage
                     src={item.image}
                     alt={itemTitle}
-                    width={400}
-                    height={250}
+                    width={item.imageWidth}
+                    height={item.imageHeight}
                     className={styles.moreCardImg}
+                    sizes="(max-width: 700px) 50vw, 25vw"
                     loading="lazy"
-                    decoding="async"
                   />
                 </div>
                 <div className={styles.moreCardBody}>

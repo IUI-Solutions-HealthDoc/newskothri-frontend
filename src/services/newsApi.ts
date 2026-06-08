@@ -18,6 +18,8 @@ export interface BackendArticle {
     imageTitle?: string;
     imageDescription?: string;
     source?: string;
+    width?: number | null;
+    height?: number | null;
   }>;
   category: string;
   categories?: string[];
@@ -101,7 +103,7 @@ export async function fetchPublishedArticlesPage(opts: {
     if (opts.locale) params.set("locale", opts.locale);
     if (opts.latestDays) params.set("latestDays", String(opts.latestDays));
     const signal = opts.signal ?? apiFetchSignal() ?? undefined;
-    const res = await fetch(publicUrl(`${BASE}/articles?${params}`), { signal });
+    const res = await fetch(publicUrl(`${BASE}/articles?${params}`), { cache: "no-store", signal });
     if (!res.ok) return { articles: [], total: 0, page: Number(opts.page) || 1 };
     const data = (await res.json()) as { articles?: BackendArticle[]; total?: number; page?: number };
     return {
@@ -125,7 +127,7 @@ export async function fetchArticleById(
     const qs = params.toString();
     const res = await fetch(
       publicUrl(`${BASE}/articles/${enc}${qs ? `?${qs}` : ""}`),
-      { signal: apiFetchSignal() }
+      { cache: "no-store", signal: apiFetchSignal() }
     );
     if (!res.ok) return null;
     const data = await res.json();
@@ -146,6 +148,7 @@ export async function fetchRecommendedForArticle(
     if (opts.locale) params.set("locale", opts.locale);
     const enc = encodeURIComponent(String(articleId || "").trim());
     const res = await fetch(publicUrl(`${BASE}/articles/${enc}/recommendations?${params}`), {
+      cache: "no-store",
       signal: apiFetchSignal(),
     });
     if (!res.ok) return [];
@@ -162,7 +165,10 @@ export async function fetchBreakingArticles(limit = 20, locale?: "hi" | "en"): P
     const params = new URLSearchParams();
     params.set("limit", String(Math.min(limit, 50)));
     if (locale) params.set("locale", locale);
-    const res = await fetch(publicUrl(`${BASE}/breaking?${params}`), { signal: apiFetchSignal() });
+    const res = await fetch(publicUrl(`${BASE}/breaking?${params}`), {
+      cache: "no-store",
+      signal: apiFetchSignal(),
+    });
     if (!res.ok) return [];
     const data = await res.json();
     return data.articles ?? [];
@@ -201,7 +207,10 @@ export async function fetchPublicSearch(q: string, limit = 15, locale?: "hi" | "
     params.set("q", query);
     params.set("limit", String(Math.min(limit, 30)));
     if (locale) params.set("locale", locale);
-    const res = await fetch(publicUrl(`${BASE}/search?${params}`), { signal: apiFetchSignal() });
+    const res = await fetch(publicUrl(`${BASE}/search?${params}`), {
+      cache: "no-store",
+      signal: apiFetchSignal(),
+    });
     if (!res.ok) return [];
     const data = await res.json();
     return data.articles ?? [];

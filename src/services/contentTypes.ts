@@ -26,6 +26,8 @@ export interface ContentArticle {
   summary: string;
   summaryEn: string;
   image: string;
+  imageWidth?: number;
+  imageHeight?: number;
   heroImage?: ArticleHeroImage;
   time: string;
   timeEn: string;

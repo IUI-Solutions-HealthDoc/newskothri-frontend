@@ -2,16 +2,21 @@
 
 import type { ArticleHeroImage } from "../../../services/contentTypes";
 import { IMG_EAGER_HIGH } from "../../../lib/imageLoading";
+import ArticleImage from "../../../components/ArticleImage";
 
 export default function ArticleHero({
   imageSrc,
   imageAlt,
+  imageWidth,
+  imageHeight,
   heroImage,
   imgErr,
   onImgError,
 }: {
   imageSrc: string;
   imageAlt: string;
+  imageWidth?: number;
+  imageHeight?: number;
   heroImage?: ArticleHeroImage;
   imgErr: boolean;
   onImgError: () => void;
@@ -46,10 +51,14 @@ export default function ArticleHero({
   return (
     <figure className="article-hero-figure">
       <div className="article-hero-media">
-        <img
+        <ArticleImage
           src={imageSrc}
           alt={resolvedAlt}
+          width={imageWidth}
+          height={imageHeight}
           className="article-hero-img"
+          fill={false}
+          sizes="(max-width: 900px) 100vw, 920px"
           onError={onImgError}
           {...IMG_EAGER_HIGH}
         />

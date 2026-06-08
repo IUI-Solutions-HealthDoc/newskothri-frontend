@@ -35,7 +35,7 @@ export async function fetchPublicArticlesPage(params: {
 
   try {
     const res = await fetch(serverApiUrl(`/api/public/articles?${qs.toString()}`), {
-      next: { revalidate: 60 },
+      cache: "no-store",
       signal: apiFetchSignal(),
     });
     if (!res.ok) return { articles: [], total: 0, page: Number(params.page) || 1 };

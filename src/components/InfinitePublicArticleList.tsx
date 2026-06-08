@@ -7,6 +7,7 @@ import { categoryDek, categoryHeadline } from "../features/category/server/categ
 import { dek as homeDek, headline as homeHeadline } from "../features/home/server/homeFeed";
 import { adaptArticles } from "../services/articleAdapter";
 import { fetchPublishedArticlesPage } from "../services/newsApi";
+import ArticleImage from "./ArticleImage";
 import styles from "../app/newsroom.module.css";
 
 const PAGE_SIZE = 24;
@@ -54,14 +55,14 @@ function ArticleCard({
     <article className={`card-default ${styles.cardBody}`}>
       <Link href={`/article/${item.id}`} className={styles.cardLink}>
         <div className={styles.cardMedia}>
-          <img
+          <ArticleImage
             src={item.image}
             alt={itemHeadline(item, locale, feedSource)}
-            width={800}
-            height={450}
+            width={item.imageWidth}
+            height={item.imageHeight}
             className={styles.cardImage}
+            sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw"
             loading="lazy"
-            decoding="async"
           />
         </div>
         <h3 className={styles.cardTitle}>{itemHeadline(item, locale, feedSource)}</h3>

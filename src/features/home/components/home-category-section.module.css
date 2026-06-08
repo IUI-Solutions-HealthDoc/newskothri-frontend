@@ -213,6 +213,7 @@
 }
 
 .sideThumb {
+  position: relative;
   flex-shrink: 0;
   width: 76px;
   height: 54px;
@@ -292,6 +293,7 @@
 }
 
 .moreCardMedia {
+  position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: var(--bg-secondary);

@@ -9,6 +9,7 @@ import { useLang } from "../context/LangContext";
 import { fetchPublishedArticles } from "../services/newsApi";
 import { adaptArticles } from "../services/articleAdapter";
 import { displayDek, displayHeadline } from "../services/articleDisplay";
+import ArticleImage from "./ArticleImage";
 import styles from "../app/newsroom.module.css";
 import { formatDisplayTag } from "../lib/formatDisplayTag";
 
@@ -244,13 +245,15 @@ export default function HeroSection({
                 transition={reduceMotion ? { duration: 0 } : { duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               >
                 {!imgErr[story.id] ? (
-                  <img
+                  <ArticleImage
                     src={story.image}
                     alt={title}
+                    width={story.imageWidth}
+                    height={story.imageHeight}
                     className="hero-cin-img"
+                    sizes="(max-width: 900px) 100vw, 68vw"
                     loading="eager"
                     fetchPriority="high"
-                    decoding="async"
                     onLoad={(e) => handleHeroImgLoad(story.id, e)}
                     onError={() => setImgErr((e) => ({ ...e, [story.id]: true }))}
                   />
@@ -327,12 +330,14 @@ export default function HeroSection({
                   <span className="hero-cin-side-num">{String(i + 1).padStart(2, "0")}</span>
                   <div className="hero-cin-side-thumb-wrap">
                     {!imgErr[s.id] ? (
-                      <img
+                      <ArticleImage
                         src={s.image}
                         alt=""
+                        width={s.imageWidth}
+                        height={s.imageHeight}
                         className="hero-cin-side-thumb"
+                        sizes="88px"
                         loading="lazy"
-                        decoding="async"
                         onError={() => setImgErr((e) => ({ ...e, [s.id]: true }))}
                       />
                     ) : (

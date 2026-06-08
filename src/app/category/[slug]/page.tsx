@@ -10,6 +10,7 @@ import { getServerUiLang } from "../../../lib/serverLocale";
 import InfinitePublicArticleList, {
   type InfinitePublicArticleListProps,
 } from "../../../components/InfinitePublicArticleList";
+import ArticleImage from "../../../components/ArticleImage";
 import styles from "../../newsroom.module.css";
 
 export async function generateMetadata(
@@ -78,14 +79,14 @@ export default async function CategoryPage(
             <article key={String(item.id)} className={`card-default ${styles.cardBody}`}>
               <Link href={`/article/${item.id}`} className={styles.cardLink}>
                 <div className={styles.cardMedia}>
-                  <img
+                  <ArticleImage
                     src={item.image}
                     alt={categoryHeadline(item, locale)}
-                    width={800}
-                    height={450}
+                    width={item.imageWidth}
+                    height={item.imageHeight}
                     className={styles.cardImage}
+                    sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw"
                     loading="lazy"
-                    decoding="async"
                   />
                 </div>
                 <h3 className="card-title">{categoryHeadline(item, locale)}</h3>

@@ -202,6 +202,8 @@ export default function ArticleContent({
       <ArticleHero
         imageSrc={imageSrc}
         imageAlt={title}
+        imageWidth={article.imageWidth}
+        imageHeight={article.imageHeight}
         heroImage={article.heroImage}
         imgErr={imgErr}
         onImgError={onImgError}

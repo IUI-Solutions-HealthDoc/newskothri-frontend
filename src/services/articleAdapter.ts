@@ -53,6 +53,16 @@ function getImageUrl(article: BackendArticle): string {
   return withPublicOrigin(hero.url);
 }
 
+function getImageDimensions(article: BackendArticle): { width?: number; height?: number } {
+  const hero = getHeroImage(article);
+  const width = Number(hero?.width);
+  const height = Number(hero?.height);
+  return {
+    width: Number.isFinite(width) && width > 0 ? width : undefined,
+    height: Number.isFinite(height) && height > 0 ? height : undefined,
+  };
+}
+
 function getHeroImageMeta(article: BackendArticle) {
   const hero = getHeroImage(article);
   if (!hero?.url) return undefined;
@@ -118,6 +128,7 @@ export function adaptArticle(a: BackendArticle): ContentArticle {
         : undefined;
 
   const publicId = backendArticlePublicId(a);
+  const imageDimensions = getImageDimensions(a);
 
   const rawEmbeds = Array.isArray(a.youtubeEmbeds) ? a.youtubeEmbeds : [];
   const youtubeEmbeds = rawEmbeds
@@ -146,6 +157,8 @@ export function adaptArticle(a: BackendArticle): ContentArticle {
     summary,
     summaryEn,
     image:        getImageUrl(a),
+    imageWidth:   imageDimensions.width,
+    imageHeight:  imageDimensions.height,
     heroImage:    getHeroImageMeta(a),
     time:         time.hi,
     timeEn:       time.en,
