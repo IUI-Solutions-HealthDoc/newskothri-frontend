@@ -53,6 +53,13 @@ export function isArticleRefId(id: string): boolean {
   return /^[a-z0-9-]+-\d{9}$/i.test(s);
 }
 
+/** Stable id to send to the API for any public article URL segment. */
+export function articleLookupId(routeSegment: string): string {
+  const seg = String(routeSegment || "").trim();
+  const m = /^[a-z0-9-]+-(\d{9})$/i.exec(seg);
+  return m ? m[1] : seg;
+}
+
 /** True when the route segment refers to the same article as adapted `article`. */
 export function publicArticleSegmentsMatch(
   routeSegment: string,

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import type { NewsItem } from "../types/article";
 import { adaptArticle, adaptArticles } from "../../../services/articleAdapter";
 import { getArticleById, getPublishedArticlesPage, getRecommendedForArticle } from "../services/articleApi";
-import { isArticleRefId, publicArticleSegmentsMatch } from "../utils/formatArticle";
+import { articleLookupId, isArticleRefId, publicArticleSegmentsMatch } from "../utils/formatArticle";
 
 export function useArticle(articleId: string) {
   const [article, setArticle] = useState<NewsItem | null>(null);
@@ -26,8 +26,9 @@ export function useArticle(articleId: string) {
       setLoading(false);
       return;
     }
+    const lookupId = articleLookupId(articleId);
     let cancelled = false;
-    getArticleById(articleId).then((raw) => {
+    getArticleById(lookupId).then((raw) => {
       if (cancelled) return;
       if (!raw) {
         setArticle(null);
@@ -51,8 +52,9 @@ export function useArticle(articleId: string) {
     }
     let cancelled = false;
     const articleLocale = article.primaryLocale;
+    const lookupId = articleLookupId(articleId);
     Promise.all([
-      getRecommendedForArticle(articleId, { limit: 14, locale: articleLocale }),
+      getRecommendedForArticle(lookupId, { limit: 14, locale: articleLocale }),
       getPublishedArticlesPage({ limit: 24, page: 2, locale: articleLocale }),
     ]).then(([recRaw, moreRaw]) => {
       if (cancelled) return;
