@@ -22,6 +22,7 @@ import { useBookmarks } from "../hooks/useBookmarks";
 import { categoryColors, publicArticleRouteSegment } from "../utils/formatArticle";
 import { shareToTwitter, shareToWhatsApp } from "../utils/share";
 import { displayDek, displayHeadline } from "../../../services/articleDisplay";
+import { isBusinessArticle } from "../../../lib/markets/isBusinessArticle";
 
 export default function ArticlePageClient({ articleId }: { articleId: string }) {
   const navigate = useNavigate();
@@ -91,6 +92,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
   const bodyHtml = paragraphs[0] && typeof paragraphs[0] === "string" ? paragraphs[0] : "";
 
   const color = categoryColors[article.categorySlug] || "#BB1919";
+  const showMarket = isBusinessArticle(article);
   const sideRelated = recommendedArticles.slice(0, 8);
   const stripItems = recommendedArticles.slice(0, 8);
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -129,6 +131,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
           copied={copied}
           onCopyLink={handleCopyLink}
           pageUrl={pageUrl}
+          showMarket={showMarket}
         />
         <ArticleSidebar
           sideRelated={sideRelated}
@@ -140,6 +143,7 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
           pageUrl={pageUrl}
           copied={copied}
           onCopyLink={handleCopyLink}
+          showMarket={showMarket}
         />
       </div>
       {showBackTop && (

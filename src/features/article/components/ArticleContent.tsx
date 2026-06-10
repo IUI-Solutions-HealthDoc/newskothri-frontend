@@ -24,6 +24,7 @@ import { isHtmlParagraph } from "../utils/formatArticle";
 import { nativeShare, shareToFacebook, shareToTwitter, shareToWhatsApp } from "../utils/share";
 import { shareLabels } from "../../../i18n/siteCopy";
 import { lazyLoadImagesInHtml } from "../../../lib/imageLoading";
+import MarketWidget from "../../../components/MarketWidget";
 
 function sanitizeArticleHtml(html: string): string {
   const clean = DOMPurify.sanitize(html, {
@@ -63,6 +64,7 @@ export default function ArticleContent({
   copied,
   onCopyLink,
   pageUrl,
+  showMarket = false,
 }: {
   article: NewsItem;
   lang: "hi" | "en";
@@ -88,6 +90,7 @@ export default function ArticleContent({
   copied: boolean;
   onCopyLink: () => void;
   pageUrl: string;
+  showMarket?: boolean;
 }) {
   const navigate = useNavigate();
   const sl = shareLabels(t);
@@ -149,6 +152,7 @@ export default function ArticleContent({
         {title}
       </motion.h1>
       <p className="article-deck">{summary}</p>
+      {showMarket ? <MarketWidget variant="inline" accentColor={color} /> : null}
       <div className="article-byline">
         <ArticleAuthor
           authorInitial={author.charAt(0)}

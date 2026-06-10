@@ -8,6 +8,7 @@ import type { NewsItem } from "../types/article";
 import { categoryColors } from "../utils/formatArticle";
 import { shareToFacebook, shareToTwitter, shareToWhatsApp } from "../utils/share";
 import { shareLabels } from "../../../i18n/siteCopy";
+import MarketWidget from "../../../components/MarketWidget";
 
 type TFn = (hi: string, en: string) => string;
 
@@ -34,6 +35,7 @@ export default function ArticleSidebar({
   pageUrl,
   copied,
   onCopyLink,
+  showMarket = false,
 }: {
   sideRelated: NewsItem[];
   mostReadSidebar: NewsItem[];
@@ -44,6 +46,7 @@ export default function ArticleSidebar({
   pageUrl: string;
   copied: boolean;
   onCopyLink: () => void;
+  showMarket?: boolean;
 }) {
   const navigate = useNavigate();
   const sl = shareLabels(t);
@@ -54,6 +57,7 @@ export default function ArticleSidebar({
 
   return (
     <aside className="article-sidebar">
+      {showMarket ? <MarketWidget variant="sidebar" accentColor={color} /> : null}
       {moreArticles.length > 0 && (
         <div className="aside-block">
           <div className="aside-block-header" style={{ borderLeftColor: color }}>
