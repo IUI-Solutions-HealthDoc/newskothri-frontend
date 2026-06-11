@@ -2,8 +2,18 @@ import type { ContentArticle } from "../../../services/contentTypes";
 import { displayDek, displayHeadline } from "../../../services/articleDisplay";
 import { homeSections } from "../config/sections";
 
-export function pickCategory<T extends { categorySlug: string }>(feed: T[], slug: string, max: number): T[] {
-  return feed.filter((a) => a.categorySlug === slug).slice(0, max);
+export function pickCategory<T extends { categorySlug: string; categorySlugs?: string[] }>(
+  feed: T[],
+  slug: string,
+  max: number
+): T[] {
+  return feed
+    .filter(
+      (a) =>
+        a.categorySlug === slug ||
+        (a.categorySlugs ?? []).some((s) => s === slug)
+    )
+    .slice(0, max);
 }
 
 /** IDs already shown in home category blocks (not the full prefetch). */

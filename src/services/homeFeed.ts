@@ -9,5 +9,11 @@ export async function loadHomeArticles(limit = 100, locale: "hi" | "en" = "hi"):
 }
 
 export function pickCategory(feed: NewsItem[], slug: string, max: number): NewsItem[] {
-  return feed.filter((a) => a.categorySlug === slug).slice(0, max);
+  return feed
+    .filter(
+      (a) =>
+        a.categorySlug === slug ||
+        (a.categorySlugs ?? []).some((s) => s === slug)
+    )
+    .slice(0, max);
 }
