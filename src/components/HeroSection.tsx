@@ -228,11 +228,22 @@ export default function HeroSection({
 
           <div
             className="hero-cin-media-band"
-            style={
-              heroAspect[story.id]
+            style={{
+              ...(heroAspect[story.id]
                 ? { aspectRatio: String(heroAspect[story.id]) }
-                : undefined
-            }
+                : undefined),
+              cursor: "pointer",
+            }}
+            onClick={() => navigate(`/article/${story.id}`)}
+            role="link"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                navigate(`/article/${story.id}`);
+              }
+            }}
+            aria-label={title}
           >
             <AnimatePresence mode="wait">
               <motion.div

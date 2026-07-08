@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "react-router-dom";
-import { Heart, Flag, Tv, Sparkles, Building2 } from "lucide-react";
+import { Tv, Sparkles, Building2 } from "lucide-react";
 import { useLang } from "../context/LangContext";
 import { categories } from "../data/publicCategories";
 import BrandLogo from "./BrandLogo";
@@ -148,14 +148,11 @@ export default function SiteFooter() {
           <Link to="/terms" className="footer-premium-legal-chip">
             {t("नियम", "Terms")}
           </Link>
-          <button type="button" className="footer-premium-legal-chip">
+          <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="footer-premium-legal-chip">
             {t("साइट मैप", "Sitemap")}
-          </button>
+          </a>
           <span className="footer-premium-made">
-            {t("भारत में निर्मित", "Made in")}{" "}
-            <Flag size={13} className="footer-premium-flag" aria-hidden />
-            {t("प्यार से", "with")}{" "}
-            <Heart size={13} className="footer-premium-heart" fill="currentColor" aria-hidden />
+            {t("भारत में निर्मित", "Made in")} 🇮🇳
           </span>
         </div>
       </div>
