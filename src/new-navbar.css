@@ -864,11 +864,22 @@
 
 @media (max-width: 768px) {
   .nav-main-tabs { display: none }
+  /* -- Hamburger now lives inside nav-util-btns, not as a standalone lead element -- */
   .nav-mobile-menu--lead {
-    display: inline-flex !important;
-    flex-shrink: 0;
+    display: none !important;
+  }
+  .nav-util-btns .nav-mobile-menu {
+    display: flex !important;
+    order: 99;
+  }
+  .nav-logo {
     order: 0;
-    min-width: 42px;
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    gap: 0;
+    padding: 2px 4px;
+    margin: 0;
+    max-width: none;
   }
   .nav-brand-name--mobile {
     display: block;
@@ -880,17 +891,8 @@
   .nav-brand-name--desktop {
     display: none;
   }
-  .nav-logo {
-    order: 2;
-    flex: 0 0 auto;
-    flex-shrink: 0;
-    gap: 0;
-    padding: 2px 4px;
-    margin: 0;
-    max-width: none;
-  }
   .nav-row1-right {
-    order: 3;
+    order: 2;
     margin-left: auto;
     flex-shrink: 0;
   }

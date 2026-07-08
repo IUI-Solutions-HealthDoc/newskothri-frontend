@@ -159,17 +159,6 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
 
         {/* ══════ ROW 1: Logo | Tabs | Socials ══════ */}
         <div className="nav-row1">
-          <button
-            ref={mobileMenuBtnRef}
-            type="button"
-            className="nav-util-btn nav-mobile-menu nav-mobile-menu--lead"
-            onClick={() => setMobileOpen(true)}
-            aria-label={t("मेनू खोलें", "Open menu")}
-            aria-expanded={mobileOpen}
-          >
-            <Menu size={20} strokeWidth={2} aria-hidden />
-          </button>
-
           <span className="nav-brand-name nav-brand-name--mobile" aria-hidden="true">
             {t("न्यूज़ कोठरी", "News Kothri")}
           </span>
@@ -232,6 +221,16 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
                 aria-label={reader ? t("प्रोफ़ाइल", "Profile") : t("लॉग इन", "Log in")}
               >
                 <User size={15} strokeWidth={2} aria-hidden />
+              </button>
+              <button
+                ref={mobileMenuBtnRef}
+                type="button"
+                className="nav-util-btn nav-mobile-menu"
+                onClick={() => setMobileOpen(true)}
+                aria-label={t("मेनू खोलें", "Open menu")}
+                aria-expanded={mobileOpen}
+              >
+                <Menu size={20} strokeWidth={2} aria-hidden />
               </button>
               <div className="nav-util-cluster" role="group" aria-label={t("भाषा और थीम", "Language and theme")}>
                 <button type="button" className="nav-util-btn" onClick={toggleLang} title={t("भाषा बदलें", "Change language")}>
