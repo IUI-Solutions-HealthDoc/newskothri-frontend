@@ -17,6 +17,7 @@ const CAT_COLOR: Record<string, string> = {
   krishi: "var(--cat-krishi)",
   business: "var(--cat-business)",
   manoranjan: "var(--cat-manoranjan)",
+  lifestyle: "var(--cat-lifestyle, #C2185B)",
   home: "var(--brand-red)",
 };
 

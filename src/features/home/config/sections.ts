@@ -7,4 +7,5 @@ export const homeSections = [
   { slug: "krishi", title: "Agriculture", titleHi: "कृषि" },
   { slug: "business", title: "Business", titleHi: "व्यापार" },
   { slug: "manoranjan", title: "Entertainment", titleHi: "मनोरंजन" },
+  { slug: "lifestyle", title: "Lifestyle", titleHi: "लाइफस्टाइल" },
 ] as const;

@@ -9,6 +9,7 @@ export const categoryColors: CategoryColorMap = {
   krishi: "#2E7D32",
   business: "#7C4A00",
   manoranjan: "#6B1FA5",
+  lifestyle: "#C2185B",
   home: "#BB1919",
 };
 

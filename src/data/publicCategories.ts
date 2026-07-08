@@ -10,4 +10,5 @@ export const categories = [
   { name: "कृषि", nameEn: "Agriculture", slug: "krishi" },
   { name: "व्यापार", nameEn: "Business", slug: "business" },
   { name: "मनोरंजन", nameEn: "Entertainment", slug: "manoranjan" },
+  { name: "लाइफस्टाइल", nameEn: "Lifestyle", slug: "lifestyle" },
 ] as const;

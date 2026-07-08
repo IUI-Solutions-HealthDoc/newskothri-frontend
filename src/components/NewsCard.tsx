@@ -15,7 +15,7 @@ interface NewsCardProps {
 const categoryColors: Record<string, string> = {
   desh: "#BB1919", videsh: "#1A3A6B", rajneeti: "#810102",
   khel: "#00695C", health: "#1B6B3A", krishi: "#2E7D32",
-  business: "#7C4A00", manoranjan: "#6B1FA5", home: "#BB1919",
+  business: "#7C4A00", manoranjan: "#6B1FA5", lifestyle: "#C2185B", home: "#BB1919",
 };
 
 const CATEGORY_LABELS = {
@@ -28,6 +28,7 @@ const CATEGORY_LABELS = {
     krishi: "कृषि",
     business: "व्यापार",
     manoranjan: "मनोरंजन",
+    lifestyle: "लाइफस्टाइल",
   },
   en: {
     desh: "Country",
@@ -38,6 +39,7 @@ const CATEGORY_LABELS = {
     krishi: "Agriculture",
     business: "Business",
     manoranjan: "Entertainment",
+    lifestyle: "Lifestyle",
   },
 } as const;
 
