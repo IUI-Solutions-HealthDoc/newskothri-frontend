@@ -21,6 +21,7 @@ export interface NewsItem {
   /** From CMS when available */
   viewCount?: number;
   upvoteCount?: number;
+  categorySlugs?: string[];
 }
 
 export interface VideoItem {
