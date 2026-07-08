@@ -7,7 +7,8 @@ function stripTrailingSlash(url: string): string {
 
 /**
  * Canonical origin for metadata, sitemap, and robots.
- * Uses `NEXT_PUBLIC_SITE_URL`, then Vercel preview host, then local dev default.
+ * Priority: NEXT_PUBLIC_SITE_URL → VERCEL_PROJECT_PRODUCTION_URL → VERCEL_URL → localhost.
+ * Only accepts hostnames that contain a dot (guards against bare internal names like "vercel").
  */
 export function getSiteUrl(): string {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "";
@@ -20,14 +21,23 @@ export function getSiteUrl(): string {
     }
   }
 
+  // Vercel sets this to the canonical production domain (e.g. "newskothri.vercel.app")
+  const prodUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (prodUrl) {
+    const host = prodUrl.replace(/^https?:\/\//i, "");
+    if (host && host.includes(".")) return `https://${host}`;
+  }
+
   const vercel = process.env.VERCEL_URL?.trim();
   if (vercel) {
     const host = vercel.replace(/^https?:\/\//i, "");
-    if (host) return `https://${host}`;
+    // Only use if it looks like a real hostname (contains a dot)
+    if (host && host.includes(".")) return `https://${host}`;
   }
 
   return "http://localhost:5280";
 }
+
 
 /** Default English — prefer `siteName(lang)` / `siteDefaultDescription(lang)` with `getServerUiLang()`. */
 export const siteName = siteNameForLang("en");
