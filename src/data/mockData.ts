@@ -20,10 +20,8 @@ export interface NewsItem {
   tags?: string[];
   tagsEn?: string[];
   readTime?: string;
-  /** From CMS when available */
   viewCount?: number;
   upvoteCount?: number;
-  categorySlugs?: string[];
 }
 
 export interface VideoItem {
