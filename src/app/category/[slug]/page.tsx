@@ -13,6 +13,8 @@ import InfinitePublicArticleList, {
 import ArticleImage from "../../../components/ArticleImage";
 import styles from "../../newsroom.module.css";
 
+export const revalidate = 60;
+
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {

@@ -88,7 +88,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
         >
           <div className="card-small-img-wrap">
             {!imgError
-              ? <img src={item.image} alt={title} className="card-small-img" onError={() => setImgError(true)} loading="lazy" />
+              ? <img src={item.image} alt={title} className="card-small-img" width={120} height={80} onError={() => setImgError(true)} loading="lazy" decoding="async" />
               : <div className="card-img-fallback" style={{ background: color + "22" }} />}
           </div>
           <div className="card-small-body">
@@ -113,7 +113,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
         <Link href={href} className="card card-horizontal card-link-reset">
           <div className="card-h-img-wrap">
             {!imgError
-              ? <img src={item.image} alt={title} className="card-h-img" onError={() => setImgError(true)} loading="lazy" />
+              ? <img src={item.image} alt={title} className="card-h-img" width={200} height={134} onError={() => setImgError(true)} loading="lazy" decoding="async" />
               : <div className="card-img-fallback" style={{ background: color + "22" }} />}
           </div>
           <div className="card-h-body">
@@ -142,7 +142,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
         <Link href={href} className="card-link-reset card-editor-link">
           <div className="card-editor-img-wrap">
             {!imgError
-              ? <img src={item.image} alt={title} className="card-editor-img" onError={() => setImgError(true)} loading="lazy" />
+              ? <img src={item.image} alt={title} className="card-editor-img" width={400} height={225} onError={() => setImgError(true)} loading="lazy" decoding="async" />
               : <div className="card-img-fallback" style={{ background: color + "22", height: "100%" }} />}
           </div>
           <div className="card-editor-body">
@@ -194,7 +194,7 @@ export default function NewsCard({ item, variant = "default", index = 0 }: NewsC
         <div className="card-img-wrap">
           {item.isBreaking && <span className="card-breaking-tag">{labels.breaking}</span>}
           {!imgError
-            ? <img src={item.image} alt={title} className="card-img" onError={() => setImgError(true)} loading="lazy" />
+            ? <img src={item.image} alt={title} className="card-img" width={400} height={225} onError={() => setImgError(true)} loading="lazy" decoding="async" />
             : <div className="card-img-fallback" style={{ background: color + "22" }} />}
         </div>
 

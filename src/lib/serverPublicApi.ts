@@ -2,6 +2,9 @@ import type { BackendArticle } from "../services/newsApi";
 import { apiFetchSignal } from "./apiFetchSignal";
 import { serverApiUrl } from "./serverApiOrigin";
 
+/** ISR revalidate for public pages — keep in sync with `revalidate` exports on home/category/article routes. */
+export const PUBLIC_PAGE_REVALIDATE_SEC = 60;
+
 export type PublicArticlesPage = {
   articles: BackendArticle[];
   total: number;
@@ -35,7 +38,7 @@ export async function fetchPublicArticlesPage(params: {
 
   try {
     const res = await fetch(serverApiUrl(`/api/public/articles?${qs.toString()}`), {
-      cache: "no-store",
+      next: { revalidate: PUBLIC_PAGE_REVALIDATE_SEC },
       signal: apiFetchSignal(),
     });
     if (!res.ok) return { articles: [], total: 0, page: Number(params.page) || 1 };
@@ -60,9 +63,10 @@ export async function fetchPublicArticleById(
     const res = await fetch(
       serverApiUrl(`/api/public/articles/${encodeURIComponent(String(id || "").trim())}${qs}`),
       {
-      cache: "no-store",
-      signal: apiFetchSignal(),
-    });
+        next: { revalidate: PUBLIC_PAGE_REVALIDATE_SEC },
+        signal: apiFetchSignal(),
+      }
+    );
     if (!res.ok) return null;
 
     const data = (await res.json()) as { article?: BackendArticle };

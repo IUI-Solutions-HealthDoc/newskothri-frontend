@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { assertVercelWebNextEnv } from "./src/lib/vercelBuildEnv";
+import { getSecurityHeaders } from "./src/lib/securityHeaders";
 
 assertVercelWebNextEnv();
 
@@ -46,6 +47,8 @@ function r2PublicImagePattern(): { protocol: "https"; hostname: string } | null 
 const r2HostPattern = r2PublicImagePattern();
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["html-encoding-sniffer", "@exodus/bytes", "isomorphic-dompurify"],
+  serverExternalPackages: ["jsdom"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
@@ -68,6 +71,14 @@ const nextConfig: NextConfig = {
       "react-router-dom": require("path").resolve(__dirname, "src/lib/routerShim.tsx"),
     };
     return config;
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: getSecurityHeaders(),
+      },
+    ];
   },
   async rewrites() {
     // Remote-only `NEXT_PUBLIC_API_ORIGIN` (e.g. https://api.example.com): browser hits API directly; no proxy.

@@ -14,6 +14,8 @@ import { getServerUiLang } from "../lib/serverLocale";
 import { localizedDefaultDescription, localizedSiteName } from "../lib/seo/metadataHelpers";
 import styles from "./newsroom.module.css";
 
+export const revalidate = 60;
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerUiLang();
   const name = localizedSiteName(locale);

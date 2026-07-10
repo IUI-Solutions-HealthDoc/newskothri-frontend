@@ -15,11 +15,26 @@ export const IMG_EAGER_HIGH = {
   fetchPriority: "high" as const,
 };
 
-/** Inject loading="lazy" on `<img>` tags inside sanitized HTML (article body). */
+/** Default width/height for article body images when CMS omits dimensions (16:9). */
+const BODY_IMG_WIDTH = 800;
+const BODY_IMG_HEIGHT = 450;
+
+/** Inject loading, decoding, and fallback dimensions on `<img>` tags inside sanitized HTML. */
 export function lazyLoadImagesInHtml(html: string): string {
   return String(html || "").replace(/<img\b([^>]*?)>/gi, (full, attrs) => {
-    if (/\bloading\s*=/i.test(attrs)) return full;
-    const decoding = /\bdecoding\s*=/i.test(attrs) ? "" : ' decoding="async"';
-    return `<img loading="lazy"${decoding}${attrs}>`;
+    let next = attrs;
+    if (!/\bloading\s*=/i.test(next)) {
+      next = ` loading="lazy"${next}`;
+    }
+    if (!/\bdecoding\s*=/i.test(next)) {
+      next = ` decoding="async"${next}`;
+    }
+    if (!/\bwidth\s*=/i.test(next)) {
+      next = ` width="${BODY_IMG_WIDTH}"${next}`;
+    }
+    if (!/\bheight\s*=/i.test(next)) {
+      next = ` height="${BODY_IMG_HEIGHT}"${next}`;
+    }
+    return `<img${next}>`;
   });
 }

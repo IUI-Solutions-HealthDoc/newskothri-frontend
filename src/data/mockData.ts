@@ -3,6 +3,8 @@ export interface NewsItem {
   category: string;
   categoryEn: string;
   categorySlug: string;
+  /** All category slugs from API (primary + secondary tags). */
+  categorySlugs?: string[];
   title: string;
   titleEn: string;
   summary: string;

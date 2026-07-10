@@ -6,7 +6,7 @@ import { buildNewsArticleJsonLd } from "../../../features/article/seo/schema";
 /**
  * Article body + recommendations load in the client so the page works when SSR cannot reach the API.
  */
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> }

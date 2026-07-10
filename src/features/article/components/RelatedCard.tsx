@@ -21,7 +21,7 @@ export default function RelatedCard({ item, lang }: { item: NewsItem; lang: stri
     >
       <div className="aside-related-img">
         {!err ? (
-          <img src={item.image} alt="" onError={() => setErr(true)} loading="lazy" />
+          <img src={item.image} alt="" width={96} height={64} onError={() => setErr(true)} loading="lazy" decoding="async" />
         ) : (
           <div style={{ width: "100%", height: "100%", background: color + "22" }} />
         )}
