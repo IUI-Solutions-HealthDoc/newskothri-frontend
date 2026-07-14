@@ -47,8 +47,13 @@ function r2PublicImagePattern(): { protocol: "https"; hostname: string } | null 
 const r2HostPattern = r2PublicImagePattern();
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["html-encoding-sniffer", "@exodus/bytes", "isomorphic-dompurify"],
-  serverExternalPackages: ["jsdom"],
+    serverExternalPackages: [
+    "jsdom",
+    "html-encoding-sniffer",
+    "@exodus/bytes",
+    "whatwg-url",
+    "isomorphic-dompurify",
+  ],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
