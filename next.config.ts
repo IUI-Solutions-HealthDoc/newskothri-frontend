@@ -47,12 +47,12 @@ function r2PublicImagePattern(): { protocol: "https"; hostname: string } | null 
 const r2HostPattern = r2PublicImagePattern();
 
 const nextConfig: NextConfig = {
-    serverExternalPackages: [
+  serverExternalPackages: [
     "jsdom",
+    "isomorphic-dompurify",
     "html-encoding-sniffer",
     "@exodus/bytes",
     "whatwg-url",
-    "isomorphic-dompurify",
   ],
   images: {
     remotePatterns: [
