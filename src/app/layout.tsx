@@ -70,6 +70,7 @@ export default async function RootLayout({
       className={mukta.variable}
       suppressHydrationWarning
       style={{ colorScheme: initialDark ? "dark" : "light" }}
+      data-scroll-behavior="smooth"
     >
       <body suppressHydrationWarning>
         <GoogleAnalytics />
