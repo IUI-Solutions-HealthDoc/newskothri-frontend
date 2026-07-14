@@ -23,15 +23,5 @@ export default async function ArticleRoutePage({
   const { id } = await params;
   const jsonLd = await buildNewsArticleJsonLd(id);
 
-  return (
-    <>
-      {jsonLd != null ? (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      ) : null}
-      <ArticlePageClient articleId={id} />
-    </>
-  );
+  return <ArticlePageClient articleId={id} jsonLd={jsonLd} />;
 }

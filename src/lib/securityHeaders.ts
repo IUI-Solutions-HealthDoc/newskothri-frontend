@@ -36,9 +36,19 @@ function buildContentSecurityPolicy(): string {
     apiHost ? `http://${apiHost}` : null,
   ].filter(Boolean);
 
+  const scriptSrc = [
+    "'self'",
+    "'unsafe-inline'",
+    "https://www.googletagmanager.com",
+    "https://www.google-analytics.com",
+  ];
+  if (process.env.NODE_ENV !== "production") {
+    scriptSrc.push("'unsafe-eval'");
+  }
+
   const directives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
+    `script-src ${scriptSrc.join(" ")}`,
     `connect-src ${connectSrc.join(" ")}`,
     `img-src ${imgSrc.join(" ")}`,
     "style-src 'self' 'unsafe-inline'",

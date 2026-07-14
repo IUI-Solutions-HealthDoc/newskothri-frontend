@@ -24,7 +24,13 @@ import { shareToTwitter, shareToWhatsApp } from "../utils/share";
 import { displayDek, displayHeadline } from "../../../services/articleDisplay";
 import { isBusinessArticle } from "../../../lib/markets/isBusinessArticle";
 
-export default function ArticlePageClient({ articleId }: { articleId: string }) {
+export default function ArticlePageClient({
+  articleId,
+  jsonLd,
+}: {
+  articleId: string;
+  jsonLd?: Record<string, unknown> | null;
+}) {
   const navigate = useNavigate();
   const { t } = useLang();
   const { token } = useReaderAuth();
@@ -104,6 +110,12 @@ export default function ArticlePageClient({ articleId }: { articleId: string }) 
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
+      {jsonLd != null && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
       <motion.div className="article-progress-bar" style={{ scaleX, transformOrigin: "0%" }} />
       <div className="article-page-layout">
         <ArticleContent
