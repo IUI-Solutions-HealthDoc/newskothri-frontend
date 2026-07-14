@@ -77,6 +77,12 @@ export function getSecurityHeaders(): SecurityHeader[] {
     { key: "Content-Security-Policy", value: buildContentSecurityPolicy() },
   ];
 
+  /* CSP is production-only; Turbopack / webpack HMR needs eval() + blob: + inline scripts in dev. */
+  if (process.env.NODE_ENV !== "production") {
+    const cspIdx = headers.findIndex((h) => h.key === "Content-Security-Policy");
+    if (cspIdx !== -1) headers.splice(cspIdx, 1);
+  }
+
   if (process.env.NODE_ENV === "production") {
     headers.push({
       key: "Strict-Transport-Security",
