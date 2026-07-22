@@ -51,7 +51,13 @@ export default function ShowsVideoCard({
         {short ? (
           <span className="shows-short-badge">{t("शॉर्ट", "Short")}</span>
         ) : null}
-        <h3 className="shows-page-card-title">{title}</h3>
+        <a
+          href={v.youtubeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Open on YouTube"
+        >
+          <h3 className="shows-page-card-title">{title}</h3></a>
         <div className="shows-meta">
           {v.views ? (
             <>
