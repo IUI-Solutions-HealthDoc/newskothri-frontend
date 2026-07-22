@@ -41,10 +41,17 @@ function buildContentSecurityPolicy(): string {
     "'unsafe-inline'",
     "https://www.googletagmanager.com",
     "https://www.google-analytics.com",
+    "https://accounts.google.com",
   ];
   if (process.env.NODE_ENV !== "production") {
     scriptSrc.push("'unsafe-eval'");
   }
+
+  const frameSrc = [
+    "https://accounts.google.com",
+    "https://www.youtube.com",
+    "https://www.youtube-nocookie.com",
+  ];
 
   const directives = [
     "default-src 'self'",
@@ -53,11 +60,15 @@ function buildContentSecurityPolicy(): string {
     `img-src ${imgSrc.join(" ")}`,
     "style-src 'self' 'unsafe-inline'",
     "font-src 'self' data:",
-    "frame-src https://accounts.google.com",
+    `frame-src ${frameSrc.join(" ")}`,
+    "media-src 'self' blob:",
+    "worker-src 'self' blob:",
+    "manifest-src 'self'",
     "base-uri 'self'",
     "form-action 'self'",
     "object-src 'none'",
     "frame-ancestors 'none'",
+    ...(process.env.NODE_ENV === "production" ? ["upgrade-insecure-requests"] : []),
   ];
 
   return directives.join("; ");
@@ -69,7 +80,9 @@ export function getSecurityHeaders(): SecurityHeader[] {
   const headers: SecurityHeader[] = [
     { key: "X-Frame-Options", value: "DENY" },
     { key: "X-Content-Type-Options", value: "nosniff" },
+    { key: "X-DNS-Prefetch-Control", value: "on" },
     { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+    { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
     {
       key: "Permissions-Policy",
       value: "camera=(), microphone=(), geolocation=()",

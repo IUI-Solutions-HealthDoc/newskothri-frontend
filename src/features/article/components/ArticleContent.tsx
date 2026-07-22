@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import DOMPurify from "isomorphic-dompurify";
+import DOMPurify from "dompurify";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -27,6 +27,8 @@ import { lazyLoadImagesInHtml } from "../../../lib/imageLoading";
 import MarketWidget from "../../../components/MarketWidget";
 
 function sanitizeArticleHtml(html: string): string {
+  /* DOMPurify is browser-only; during SSR pass through the trusted CMS HTML. */
+  if (typeof window === "undefined") return lazyLoadImagesInHtml(html);
   const clean = DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
       "p", "br", "strong", "b", "em", "i", "u", "a", "ul", "ol", "li",
