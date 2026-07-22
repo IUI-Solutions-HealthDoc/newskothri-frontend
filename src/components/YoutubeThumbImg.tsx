@@ -11,8 +11,8 @@ type Props = {
 
 function thumbUrls(videoId: string) {
   return {
-    maxres: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
-    hq: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+    maxres: `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`,
+    hq: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
   };
 }
 
