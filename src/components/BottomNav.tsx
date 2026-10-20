@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { normalizePathname } from "../lib/routerShim";
 import { Home, LayoutGrid, Video, User } from "lucide-react";
@@ -43,7 +43,7 @@ export default function BottomNav() {
           aria-current={active === id ? "page" : undefined}
         >
           {active === id && (
-            <motion.div
+            <m.div
               className="bottom-nav-indicator"
               layoutId="bottom-nav-indicator"
               transition={{ type: "spring", stiffness: 400, damping: 32 }}

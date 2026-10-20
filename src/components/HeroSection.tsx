@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { m, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Clock, ArrowUpRight, Zap, Eye, Pause, Play } from "lucide-react";
 import type { ContentArticle } from "../services/contentTypes";
 import { useLang } from "../context/LangContext";
 import { fetchPublishedArticles } from "../services/newsApi";
 import { adaptArticles } from "../services/articleAdapter";
 import { displayDek, displayHeadline } from "../services/articleDisplay";
-import styles from "../app/newsroom.module.css";
+import styles from "../app/[lang]/newsroom.module.css";
 import { formatDisplayTag } from "../lib/formatDisplayTag";
 import { publicArticleRouteSegment } from "../features/article/utils/formatArticle";
 import ArticleImage from "./ArticleImage";
@@ -40,16 +40,12 @@ export default function HeroSection({
   const [clientStories, setClientStories] = useState<ContentArticle[]>([]);
   const [heroLoading, setHeroLoading] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [imgErr, setImgErr] = useState<Record<string | number, boolean>>({});
   const [heroAspect, setHeroAspect] = useState<Record<string | number, number>>({});
   const { lang, t } = useLang();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const rafRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(0);
 
   useEffect(() => {
     if (lang === initialLocale) return;
@@ -63,7 +59,6 @@ export default function HeroSection({
         if (cancelled) return;
         setClientStories(adaptArticles(articles, lang).slice(0, 4));
         setActiveIdx(0);
-        setProgress(0);
       })
       .finally(() => {
         if (!cancelled) setHeroLoading(false);
@@ -80,8 +75,6 @@ export default function HeroSection({
     const len = stories.length;
     const clamped = len === 0 ? 0 : Math.min(Math.max(0, idx), len - 1);
     setActiveIdx(clamped);
-    setProgress(0);
-    startTimeRef.current = Date.now();
   }, [stories.length]);
 
   const handleHeroImgLoad = useCallback(
@@ -94,48 +87,11 @@ export default function HeroSection({
     []
   );
 
-  useEffect(() => {
-    if (stories.length <= 1 || reduceMotion || isPaused) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      return;
-    }
-
-    intervalRef.current = setInterval(() => {
-      setActiveIdx((i) => (i + 1) % stories.length);
-    }, ROTATION_INTERVAL);
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [stories.length, reduceMotion, isPaused]);
-
-  useEffect(() => {
-    if (stories.length <= 1 || reduceMotion || isPaused) {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      return;
-    }
-
-    startTimeRef.current = Date.now();
-
-    const tick = () => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const p = Math.min((elapsed / ROTATION_INTERVAL) * 100, 100);
-      setProgress(p);
-      if (p < 100) {
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [stories.length, reduceMotion, activeIdx, isPaused]);
-
   const displayIdx =
     stories.length === 0 ? 0 : Math.min(activeIdx, stories.length - 1);
-  const fillProgress = reduceMotion ? 0 : progress;
+  /** Auto-rotation is driven by the CSS progress animation (no per-frame React renders). */
+  const autoRotate = stories.length > 1 && !reduceMotion;
+  const advance = () => setActiveIdx((i) => (stories.length ? (i + 1) % stories.length : 0));
 
   if (!isHeroLoading && stories.length === 0) {
     return (
@@ -172,8 +128,16 @@ export default function HeroSection({
   const rawTags = (lang === "hi" ? story.tags : story.tagsEn) ?? [];
   const tags = rawTags.slice(0, 8).map((tag) => formatDisplayTag(tag)).filter(Boolean);
 
-  const progressWidth = (i: number) =>
-    i < displayIdx ? "100%" : i === displayIdx ? `${fillProgress}%` : "0%";
+  const progressStyle = (i: number): React.CSSProperties => {
+    if (i < displayIdx) return { width: "100%" };
+    if (i !== displayIdx || !autoRotate) return { width: "0%" };
+    return {
+      width: "100%",
+      transformOrigin: "left center",
+      animation: `hero-cin-progress ${ROTATION_INTERVAL}ms linear forwards`,
+      animationPlayState: isPaused ? "paused" : "running",
+    };
+  };
 
   const handleTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
     let nextIndex: number | null = null;
@@ -238,7 +202,7 @@ export default function HeroSection({
             </div>
 
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={String(story.id) + lang + "-title"}
                 className="hero-cin-text"
                 initial={false}
@@ -253,7 +217,7 @@ export default function HeroSection({
                 >
                   {title}
                 </h1>
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           </div>
 
@@ -277,7 +241,7 @@ export default function HeroSection({
             aria-label={title}
           >
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={String(story.id)}
                 className="hero-cin-img-frame"
                 initial={false}
@@ -303,14 +267,14 @@ export default function HeroSection({
                 ) : (
                   <div className="hero-cin-fallback" />
                 )}
-              </motion.div>
+              </m.div>
             </AnimatePresence>
             <div className="hero-cin-gradient" aria-hidden />
           </div>
 
           <div className="hero-cin-body-block">
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={String(story.id) + lang + "-summary"}
                 className="hero-cin-text"
                 initial={false}
@@ -319,7 +283,7 @@ export default function HeroSection({
                 transition={reduceMotion ? { duration: 0 } : { delay: 0.18, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
                 <p className="hero-cin-summary">{summary}</p>
-              </motion.div>
+              </m.div>
             </AnimatePresence>
 
             <div className="hero-cin-progress-row" role="tablist" aria-label={t("टॉप खबरें", "Top stories")}>
@@ -337,8 +301,10 @@ export default function HeroSection({
                   tabIndex={i === displayIdx ? 0 : -1}
                 >
                   <span
+                    key={i === displayIdx ? `active-${displayIdx}` : `idle-${i}`}
                     className="hero-cin-progress-fill"
-                    style={{ width: progressWidth(i) }}
+                    style={progressStyle(i)}
+                    onAnimationEnd={i === displayIdx && autoRotate ? advance : undefined}
                     aria-hidden="true"
                   />
                 </button>
@@ -358,7 +324,7 @@ export default function HeroSection({
             {stories.map((s, i) => {
               const f = storyFields(s, lang);
               return (
-                <motion.article
+                <m.article
                   key={String(s.id)}
                   className={`hero-cin-side-item${displayIdx === i ? " active" : ""}`}
                   initial={reduceMotion ? false : { opacity: 0, x: 16 }}
@@ -400,7 +366,7 @@ export default function HeroSection({
                       <span>{f.time}</span>
                     </div>
                   </div>
-                </motion.article>
+                </m.article>
               );
             })}
           </div>

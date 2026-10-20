@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Clock, Eye } from "lucide-react";
 import YoutubeLazyEmbed from "../../../components/YoutubeLazyEmbed";
 import type { VideoItem } from "../types/shows";
@@ -25,7 +25,7 @@ export default function ShowsVideoCard({
   const short = isShort || v.isShort;
 
   return (
-    <motion.article
+    <m.article
       className={`shows-page-card${short ? " shows-page-card--short" : ""}`}
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -82,6 +82,6 @@ export default function ShowsVideoCard({
           ) : null}
         </div>
       </div>
-    </motion.article>
+    </m.article>
   );
 }

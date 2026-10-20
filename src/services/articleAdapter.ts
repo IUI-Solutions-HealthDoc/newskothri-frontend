@@ -118,14 +118,8 @@ export function adaptArticle(a: BackendArticle): ContentArticle {
       : bodyEn
         ? [bodyEn]
         : undefined;
-  const contentEn =
-    primaryLocale === "en"
-      ? bodyEn
-        ? [bodyEn]
-        : undefined
-      : bodyHi
-        ? [bodyHi]
-        : undefined;
+  // Only the primary-locale body is shown; don't ship it twice to the client.
+  const contentEn = undefined;
 
   const publicId = backendArticlePublicId(a);
   const imageDimensions = getImageDimensions(a);

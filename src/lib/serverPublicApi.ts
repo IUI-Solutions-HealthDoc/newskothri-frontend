@@ -75,3 +75,69 @@ export async function fetchPublicArticleById(
     return null;
   }
 }
+
+export type PublicHomeFeed = {
+  /** Newest first: latest stories followed by each category's top stories, de-duplicated. */
+  articles: BackendArticle[];
+  latest: BackendArticle[];
+  total: number;
+};
+
+/**
+ * Home page data in one request (`/api/public/home`). Falls back to the large
+ * list call when the backend does not have the endpoint yet.
+ */
+export async function fetchPublicHomeFeed(locale: "hi" | "en"): Promise<PublicHomeFeed> {
+  try {
+    const res = await fetch(
+      serverApiUrl(`/api/public/home?locale=${locale}&perCategory=10&latest=24`),
+      {
+        next: { revalidate: PUBLIC_PAGE_REVALIDATE_SEC },
+        signal: apiFetchSignal(),
+      }
+    );
+    if (res.ok) {
+      const data = (await res.json()) as {
+        latest?: BackendArticle[];
+        byCategory?: Record<string, BackendArticle[]>;
+        total?: number;
+      };
+      const latest = data.latest || [];
+      const seen = new Set<string>();
+      const merged: BackendArticle[] = [];
+      for (const a of [...latest, ...Object.values(data.byCategory || {}).flat()]) {
+        const key = String(a._id);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        merged.push(a);
+      }
+      const time = (a: BackendArticle) => new Date(a.publishedAt || a.createdAt || 0).getTime() || 0;
+      merged.sort((a, b) => time(b) - time(a));
+      return { articles: merged, latest, total: Number(data.total) || 0 };
+    }
+  } catch {
+    /* fall back below */
+  }
+  const { articles, total } = await fetchPublicArticlesPage({ limit: 120, locale });
+  return { articles, latest: articles.slice(0, 24), total };
+}
+
+export async function fetchPublicRecommendations(
+  id: string,
+  opts: { limit?: number; locale?: "hi" | "en" } = {}
+): Promise<BackendArticle[]> {
+  const qs = new URLSearchParams();
+  qs.set("limit", String(opts.limit || 14));
+  if (opts.locale) qs.set("locale", opts.locale);
+  try {
+    const res = await fetch(
+      serverApiUrl(`/api/public/articles/${encodeURIComponent(id)}/recommendations?${qs.toString()}`),
+      { next: { revalidate: 300 }, signal: apiFetchSignal() }
+    );
+    if (!res.ok) return [];
+    const data = (await res.json()) as { articles?: BackendArticle[] };
+    return data.articles || [];
+  } catch {
+    return [];
+  }
+}

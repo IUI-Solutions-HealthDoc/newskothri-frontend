@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useNavigate } from "react-router-dom";
 import { usePathname } from "next/navigation";
 import { normalizePathname } from "../lib/routerShim";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   Search, Moon, Sun, Menu, X, Globe2,
   Home, Tv2, Clock, ChevronRight, User,
@@ -313,7 +313,7 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
                 {/* Results dropdown */}
                 <AnimatePresence>
                   {searchQuery.trim().length >= 2 && (
-                    <motion.div
+                    <m.div
                       className="nav-search-results"
                       initial={{ opacity: 0, y: -6 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -350,7 +350,7 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
                       {!searchLoading && searchFetched && results.length === 0 && (
                         <p className="nav-no-results">{t("कोई परिणाम नहीं", "No results found")}</p>
                       )}
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>
@@ -372,12 +372,12 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
       <AnimatePresence>
         {mobileOpen && (
           <>
-            <motion.div
+            <m.div
               className="mobile-overlay"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setMobileOpen(false)}
             />
-            <motion.div
+            <m.div
               ref={mobileDrawerRef}
               id="kn-mobile-drawer"
               className="mobile-drawer"
@@ -439,7 +439,7 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
 
               <nav className="drawer-nav">
                 {categories.map((cat) => (
-                  <motion.button
+                  <m.button
                     key={cat.slug}
                     className={`drawer-cat-btn${activeSlug === cat.slug ? " active" : ""}`}
                     whileTap={{ scale: 0.97 }}
@@ -448,7 +448,7 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
                   >
                     <span>{lang === "hi" ? cat.name : cat.nameEn}</span>
                     <ChevronRight size={15} className="drawer-chevron" />
-                  </motion.button>
+                  </m.button>
                 ))}
               </nav>
 
@@ -458,7 +458,7 @@ export default function Navbar({ darkMode, toggleDark }: NavbarProps) {
                   <SiteSocialIconButton key={link.key} link={link} lang={lang} />
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>

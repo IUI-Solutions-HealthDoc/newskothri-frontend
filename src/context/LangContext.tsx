@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { normalizePathname } from "../lib/routerShim";
 
 type Lang = "hi" | "en";
@@ -39,7 +39,6 @@ export function LangProvider({
   children: React.ReactNode;
   initialLang?: Lang;
 }) {
-  const router = useRouter();
   const pathname = normalizePathname(usePathname() || "/");
   const [lang, setLangState] = useState<Lang>(initialLang);
 
@@ -51,10 +50,11 @@ export function LangProvider({
     if (next === lang) return;
     persistLangCookie(next);
     setLangState(next);
+    // Each language is its own pre-rendered tree (see src/proxy.ts), so load the page fresh.
     if (pathname.startsWith("/article/")) {
-      router.push("/");
+      window.location.assign("/");
     } else {
-      router.refresh();
+      window.location.reload();
     }
   };
 

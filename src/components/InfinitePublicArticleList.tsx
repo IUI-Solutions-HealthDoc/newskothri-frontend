@@ -9,7 +9,7 @@ import { adaptArticles } from "../services/articleAdapter";
 import { fetchPublishedArticlesPage } from "../services/newsApi";
 import ArticleImage from "./ArticleImage";
 import { publicArticleRouteSegment } from "../features/article/utils/formatArticle";
-import styles from "../app/newsroom.module.css";
+import styles from "../app/[lang]/newsroom.module.css";
 
 const PAGE_SIZE = 24;
 const MAX_SKIP_PAGES = 60;

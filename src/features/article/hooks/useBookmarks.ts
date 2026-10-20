@@ -4,12 +4,13 @@ import type { NewsItem } from "../types/article";
 import {
   addBookmark,
   addUpvote,
+  getArticleState,
   hasBookmarked,
   hasUpvoted,
   recordHistory,
   removeBookmark,
   removeUpvote,
-  sendSignal,
+  sendArticleView,
 } from "../../../services/readerApi";
 import { publicArticleSegmentsMatch, upvoteCountFromApi } from "../utils/formatArticle";
 
@@ -48,8 +49,8 @@ export function useBookmarks(
       setBookmarked(false);
       return;
     }
+    // The bookmark endpoint records the recommendation signal itself.
     await addBookmark(token, articleId).catch(() => {});
-    await sendSignal(token, { eventType: "bookmark", articleId, weight: 3 }).catch(() => {});
     setBookmarked(true);
   }, [articleId, token, bookmarked, navigate]);
 
@@ -87,44 +88,42 @@ export function useBookmarks(
   useEffect(() => {
     if (!token || !articleId) {
       setUpvoted(false);
-      return;
-    }
-    let cancelled = false;
-    hasUpvoted(token, articleId)
-      .then((r) => {
-        if (!cancelled) setUpvoted(Boolean(r.hasUpvoted));
-      })
-      .catch(() => {
-        if (!cancelled) setUpvoted(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [token, articleId]);
-
-  useEffect(() => {
-    if (!token || !articleId) {
       setBookmarked(false);
       return;
     }
     let cancelled = false;
-    hasBookmarked(token, articleId)
+    getArticleState(token, articleId)
       .then((r) => {
-        if (!cancelled) setBookmarked(Boolean(r.bookmarked));
+        if (cancelled) return;
+        setBookmarked(Boolean(r.bookmarked));
+        setUpvoted(Boolean(r.upvoted));
       })
-      .catch(() => {
-        if (!cancelled) setBookmarked(false);
-      });
+      .catch(() =>
+        // Older backend: fall back to the two single-purpose endpoints.
+        Promise.all([
+          hasBookmarked(token, articleId).catch(() => ({ bookmarked: false })),
+          hasUpvoted(token, articleId).catch(() => ({ hasUpvoted: false })),
+        ]).then(([b, u]) => {
+          if (cancelled) return;
+          setBookmarked(Boolean(b.bookmarked));
+          setUpvoted(Boolean(u.hasUpvoted));
+        })
+      );
     return () => {
       cancelled = true;
     };
   }, [token, articleId]);
 
   useEffect(() => {
+    if (!articleId || !article || !publicArticleSegmentsMatch(articleId, article)) return;
+    sendArticleView(String(article.id || articleId));
+  }, [articleId, article]);
+
+  useEffect(() => {
     if (!token || !articleId) return;
     const timer = window.setTimeout(() => {
+      // History also records the "view" recommendation signal server-side.
       recordHistory(token, articleId, 15, 20).catch(() => {});
-      sendSignal(token, { eventType: "view", articleId, weight: 1 }).catch(() => {});
     }, 3000);
     return () => window.clearTimeout(timer);
   }, [token, articleId]);

@@ -37,7 +37,8 @@ export function sanitizeArticleBody(value: unknown): string {
 export function sanitizeServerArticle(article: BackendArticle): BackendArticle {
   return {
     ...article,
-    body: sanitizeArticleBody(article.body),
-    bodyHi: sanitizeArticleBody(article.bodyHi),
+    // Only the primary-locale body is rendered; drop the other to keep the page payload small.
+    body: article.primaryLocale === "hi" ? "" : sanitizeArticleBody(article.body),
+    bodyHi: article.primaryLocale === "hi" ? sanitizeArticleBody(article.bodyHi) : "",
   };
 }

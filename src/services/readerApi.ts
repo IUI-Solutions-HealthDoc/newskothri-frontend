@@ -121,6 +121,23 @@ export async function hasBookmarked(token: string, articleId: string) {
   return authed<{ bookmarked: boolean }>(`/bookmarks/${articleId}`, token);
 }
 
+/** Bookmark + upvote flags in one request. Throws on older backends without the endpoint. */
+export async function getArticleState(token: string, articleId: string) {
+  return authed<{ bookmarked: boolean; upvoted: boolean }>(`/article-state/${articleId}`, token);
+}
+
+/** Count a page view without blocking navigation (anonymous; batched server-side). */
+export function sendArticleView(articleId: string) {
+  if (typeof window === "undefined" || !articleId) return;
+  const url = withPublicOrigin(`/api/public/articles/${encodeURIComponent(articleId)}/view`);
+  try {
+    if (navigator.sendBeacon && navigator.sendBeacon(url)) return;
+  } catch {
+    /* fall back to fetch */
+  }
+  fetch(url, { method: "POST", keepalive: true }).catch(() => {});
+}
+
 export async function listUpvotes(token: string) {
   return authed<{ upvotes: Array<{ _id: string; article: any; createdAt: string }> }>("/upvotes", token);
 }

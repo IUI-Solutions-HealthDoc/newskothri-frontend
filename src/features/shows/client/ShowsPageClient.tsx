@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useLang } from "../../../context/LangContext";
 import ShowsPageHeader from "../components/ShowsPageHeader";
 import ShowsStatsRow from "../components/ShowsStatsRow";
@@ -39,7 +39,7 @@ export default function ShowsPageClient({
   const showFilter = shorts.length > 0 && longForm.length > 0;
 
   return (
-    <motion.div className="shows-page" initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+    <m.div className="shows-page" initial={false} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
       <ShowsPageHeader t={t} />
       <div className="shows-page-body">
         <ShowsStatsRow t={t} stats={channelStats} />
@@ -87,6 +87,6 @@ export default function ShowsPageClient({
           </>
         ) : null}
       </div>
-    </motion.div>
+    </m.div>
   );
 }

@@ -2,9 +2,8 @@
 
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
-import DOMPurify from "dompurify";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import {
   ArrowLeft, Bookmark, Share2, Link2, ThumbsUp, ChevronRight,
 } from "lucide-react";
@@ -30,17 +29,12 @@ const ArticleRecommendationStrip = dynamic(
   { ssr: false }
 );
 
+/**
+ * Server-rendered articles are sanitized before crossing the RSC boundary and
+ * client-fetched ones are sanitized in `useArticle`, so only image hints are added here.
+ */
 function sanitizeArticleHtml(html: string): string {
-  /* Initial server data is sanitized before crossing the RSC boundary. */
-  if (typeof window === "undefined") return lazyLoadImagesInHtml(html);
-  const clean = DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: [
-      "p", "br", "strong", "b", "em", "i", "u", "a", "ul", "ol", "li",
-      "h2", "h3", "blockquote", "span", "div", "img", "figure", "figcaption",
-    ],
-    ALLOWED_ATTR: ["href", "rel", "target", "class", "src", "alt", "width", "height", "loading", "decoding"],
-  });
-  return lazyLoadImagesInHtml(clean);
+  return lazyLoadImagesInHtml(html);
 }
 
 type TFn = (hi: string, en: string) => string;
@@ -157,9 +151,9 @@ export default function ArticleContent({
           );
         })}
       </div>
-      <motion.h1 className="article-headline" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.45 }}>
+      <m.h1 className="article-headline" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.45 }}>
         {title}
-      </motion.h1>
+      </m.h1>
       <p className="article-deck">{summary}</p>
       {showMarket ? <MarketWidget variant="inline" accentColor={color} /> : null}
       <div className="article-byline">
@@ -225,7 +219,7 @@ export default function ArticleContent({
         imgErr={imgErr}
         onImgError={onImgError}
       />
-      <motion.div className="article-body" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.45 }}>
+      <m.div className="article-body" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.45 }}>
         {bodyBlocks.length > 0 ? (
           <>
             {bodyBlocks.map((block, i) => {
@@ -265,7 +259,7 @@ export default function ArticleContent({
         ) : (
           <p className="article-subtle">{t("विस्तृत सामग्री उपलब्ध नहीं है।", "Detailed content is unavailable.")}</p>
         )}
-      </motion.div>
+      </m.div>
       {tags.length > 0 && (
         <div className="article-tags-section">
           <p className="article-tags-label">{t("टैग्स", "Tags")}</p>

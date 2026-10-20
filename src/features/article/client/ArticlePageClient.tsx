@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useSpring } from "framer-motion";
+import { m, useScroll, useSpring } from "framer-motion";
 import {
   ArrowLeft,
   ArrowUp,
@@ -17,7 +17,7 @@ import { useLang } from "../../../context/LangContext";
 import { useReaderAuth } from "../../../context/ReaderAuthContext";
 import ArticleContent from "../components/ArticleContent";
 import ArticleSidebar from "../components/ArticleSidebar";
-import { useArticle, useArticleClipboard } from "../hooks/useArticle";
+import { useArticle, useArticleClipboard, type InitialRelated } from "../hooks/useArticle";
 import { useBookmarks } from "../hooks/useBookmarks";
 import { categoryColors, publicArticleRouteSegment } from "../utils/formatArticle";
 import { shareToTwitter, shareToWhatsApp } from "../utils/share";
@@ -28,10 +28,12 @@ import type { NewsItem } from "../types/article";
 export default function ArticlePageClient({
   articleId,
   initialArticle,
+  initialRelated = null,
   jsonLd,
 }: {
   articleId: string;
   initialArticle?: NewsItem | null;
+  initialRelated?: InitialRelated | null;
   jsonLd?: Record<string, unknown> | null;
 }) {
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ export default function ArticlePageClient({
     recommendedArticles,
     mostReadSidebar,
     showBackTop,
-  } = useArticle(articleId, initialArticle);
+  } = useArticle(articleId, initialArticle, initialRelated);
 
   const { copied, handleCopyLink, handleUnifiedMobileShare } = useArticleClipboard();
 
@@ -96,7 +98,7 @@ export default function ArticlePageClient({
   const summary = displayDek(article, articleLang);
   const category = articleLang === "hi" ? article.category : article.categoryEn;
   const tags = articleLang === "hi" ? (article.tags ?? []) : (article.tagsEn ?? []);
-  const rawContent = articleLang === "hi" ? article.content : article.contentEn;
+  const rawContent = article.content ?? article.contentEn;
   const paragraphs = rawContent && rawContent.length > 0 ? rawContent : [];
   const bodyHtml = paragraphs[0] && typeof paragraphs[0] === "string" ? paragraphs[0] : "";
 
@@ -107,7 +109,7 @@ export default function ArticlePageClient({
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
 
   return (
-    <motion.div
+    <m.div
       className="article-page"
       initial={false}
       animate={{ opacity: 1 }}
@@ -119,7 +121,7 @@ export default function ArticlePageClient({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <motion.div
+      <m.div
         className="article-progress-bar"
         style={{ scaleX, transformOrigin: "0%" }}
         aria-hidden="true"
@@ -166,7 +168,7 @@ export default function ArticlePageClient({
         />
       </div>
       {showBackTop && (
-        <motion.button
+        <m.button
           type="button"
           className="article-back-top"
           initial={{ opacity: 0, y: 12 }}
@@ -175,7 +177,7 @@ export default function ArticlePageClient({
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
           <ArrowUp size={16} />
-        </motion.button>
+        </m.button>
       )}
       <div className="article-mobile-share-strip" role="toolbar" aria-label={t("शेयर", "Share")}>
         <button
@@ -232,6 +234,6 @@ export default function ArticlePageClient({
           <ThumbsUp size={18} fill={upvoted ? "currentColor" : "none"} />
         </button>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

@@ -5,12 +5,11 @@ import {
   localizedSiteName,
   toAbsoluteUrl,
 } from "../../../lib/seo/metadataHelpers";
-import { getServerUiLang } from "../../../lib/serverLocale";
+import type { ServerUiLang } from "../../../lib/serverLocale";
 import { getArticle } from "../server/getArticle";
 import { publicArticleRouteSegment } from "../utils/formatArticle";
 
-export async function buildArticleMetadata(id: string): Promise<Metadata> {
-  const uiLang = await getServerUiLang();
+export async function buildArticleMetadata(id: string, uiLang: ServerUiLang = "hi"): Promise<Metadata> {
   const article = await getArticle(id);
   const canonicalPath = article
     ? `/article/${publicArticleRouteSegment({
